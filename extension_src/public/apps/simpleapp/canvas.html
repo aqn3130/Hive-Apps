@@ -9,21 +9,28 @@
 	<body>
 		
 		<div class="container-fluid" id="icons">
-			<a href="#"><i class="fa fa-reorder" style="font-size:24px;color:red" align="right"></i></a>
+			<a href="#"><i class="glyphicon glyphicon-th" style="font-size:24px;color:#2F4F4F" align="right"></i></a>
 		</div>
 		<br><br>
 				
 		<div class="icon-bar" id="menu">
-			<a href="#" id="toHDM"><i class="fa fa-address-card">
-			<p style="font-size:16px;color:orange">Hive Disaster Management</p></i></a> 
-			<a href="#" id="toUFG"><i class="fa fa-tasks"><br>
-			<p style="font-size:16px;color:orange">Make Group Public</p></i></a> 
-			<a href="#" id="toRGM"><i class="fa fa-users"><br>
-			<p style="font-size:16px;color:orange">Remove Group Membership</p></i></a> 
-			<a href="#" id="toUG"><i class="fa fa-globe"><br>
-			<p style="font-size:16px;color:orange">Unfollow Group</p></i></a>
-			<a href="#" id="toCGU"><i class="fa fa-window-restore"><br>
-			<p style="font-size:16px;color:orange">Change Group URL</p></i></a> 
+			<a href="#" id="toHDM"><i class="fa fa-address-card" style="font-size:48px">
+			<p style="font-size:12px;color:orange;font:Calibri">Disaster Management</p></i></a> 
+			
+			<a href="#" id="toUFG"><i class="fa fa-tasks" style="font-size:48px"><br>
+			<p style="font-size:12px;color:orange;font:Calibri">Group Public</p></i></a> 
+			
+			<a href="#" id="toRGM"><i class="fa fa-users" style="font-size:48px"><br>
+			<p style="font-size:12px;color:orange;font:Calibri">Remove Membership</p></i></a> 
+			
+			<a href="#" id="toUG"><i class="fa fa-globe" style="font-size:48px"><br>
+			<p style="font-size:12px;color:orange;font:Calibri">Unfollow Group</p></i></a>
+			
+			<a href="#" id="toCGU"><i class="fa fa-window-restore" style="font-size:48px"><br>
+			<p style="font-size:12px;color:orange;font:Calibri">Change URL</p></i></a>
+			
+			<a href="#" id="toASG"><i class="fa fa-address-book-o" style="font-size:48px"><br>
+			<p style="font-size:12px;color:orange;font:Calibri">Security Group</p></i></a>
 		</div>
 		
 		<div class="container-fluid" id="hdm">
@@ -200,13 +207,29 @@
 				</div>
 			</div>
 		</div>
+		<div class="container-fluid" id="asg">
+			<div id="alertASG" class="alert-box success">Loading...</div>
+			<div class = "panel panel-default">
+				<div class = "panel-heading">
+				<h3 class = "panel-title">Add security group</h3>
+				</div>
+				<div class = "panel-body">
+				<button id="loadSGrp">Load Security Groups</button><p id="tab5a"></p>
+				<br><br>
+				Security Group Name:<br>
+				<input type="text" id="input5">
+				<br><br>
+				<input id="uploadHID" type="file" accept=".csv" name="Upload Hive ID"/>
+				<br><br>
+				<button id="addSGMem">Add Members</button><p id="tab5c"></p>
+				</div>
+			</div>
+		</div>
 		<script src="javascripts/jquery-3.1.1.min.js"></script>
 		<script src="javascripts/bootstrap.min.js"></script>
 		<script type="text/javascript" charset="utf-8" src="javascripts/app.js"></script>
 		<script type="text/javascript" charset="utf-8" src="javascripts/appe.js"></script>
-		<script type="text/javascript" charset="utf-8" src="javascripts/spin.js"></script>
 		<script type="text/javascript" charset="utf-8" src="javascripts/main.js"></script>
-		
 		<script type="text/javascript" src="http://ajax.aspnetcdn.com/ajax/jquery.ui/1.8.17/jquery-ui.min.js"></script>
 		<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 	</body>

@@ -21,7 +21,8 @@ var group=
 		objGroup:"",
 		objSGroup:"",
 		objID:"",
-		sGrpID:""
+		sGrpID:"",
+		sGrpObj:""
 	};
 var hiveArrays = 
 	{
@@ -30,7 +31,7 @@ var hiveArrays =
 		allPeople:[],
 		groupMem:[],
 		groupFol:[],
-		lines:[]
+		sGrpData:[]
 	};
 
 	
@@ -212,9 +213,10 @@ $(function()
 				$("input[id='input5']").css("color", "green");
 		  		group.sgroupName = value.name;
 				group.sGrpID = value.id;
+				group.sGrpObj = value;
 			}
 	    
-       });
+		});
 		
 	});
 	
@@ -625,6 +627,8 @@ $(function()
         var request = osapi.jive.corev3.securityGroups.get({fields:'placeID,name,displayName',count:100});
 	    nextSGroups(request);
 		hiveArrays.allSGroups.length=0;
+		$("#alertASG").text("Loading...");
+      $( "#alertASG.success" ).fadeIn();
     });
 });
 //end function get all groups
@@ -647,7 +651,9 @@ function nextSGroups(request)
 			$(response.list).each(function(index,group)
 			{
 			  hiveArrays.allSGroups.push(group);
-              document.getElementById("tab5a").innerHTML = "Loading: "+hiveArrays.allSGroups.indexOf(group);
+              //document.getElementById("tab5a").innerHTML = "Loading: "+hiveArrays.allSGroups.indexOf(group);
+			  $("#alertASG").text("Loading: "+hiveArrays.allSGroups.indexOf(group));
+			
             });
             if (response.getNextPage)
 			{
@@ -656,17 +662,19 @@ function nextSGroups(request)
             }
 			if(!response.getNextPage)
 			{
-			  document.getElementById("tab5a").innerHTML = "Loaded: "+hiveArrays.allSGroups.length;
+			  //document.getElementById("tab5a").innerHTML = "Loaded: "+hiveArrays.allSGroups.length;
+			  $("#alertASG").text("Loaded: "+hiveArrays.allSGroups.length);
+			  $( "#alertASG.success" ).fadeOut(3000);
 			}
 		}
 	});
 }
 //end get all security groups
 
-//Upload refrences
+//Upload Hive ID
 $(function()
 {
-	document.getElementById("upload").addEventListener('change', upload);
+	document.getElementById("uploadHID").addEventListener('change', upload);
 	function browserSupport()
 	{
 		var isCompatible = false;
@@ -684,7 +692,7 @@ $(function()
 		}
 		else
 		{
-			hiveArrays.lines.length=0;
+			hiveArrays.sGrpData.length=0;
 			var file = evt.target.files[0];
 			var reader = new FileReader();
 			var references="";
@@ -694,7 +702,7 @@ $(function()
 				var header = references.split(",");
 				for(i=0;i<header.length;i++)
 				{
-					hiveArrays.lines.push(header[i]);
+					hiveArrays.sGrpData.push(header[i]);
 				}
 			}
 			reader.readAsText(file);
@@ -713,35 +721,36 @@ $(function()
 {
 	$("#addSGMem").click(function()
 	{
-		$(hiveArrays.lines).each(function(index,id)
-		{			
-			osapi.jive.core.post(
-			{
-				"v":"v3",
-				"href":"/securityGroups/"+group.sGrpID+"/members",
-				"body":
-				{
-					"members":["/people/"+id]
-				}
-			}).execute(function(response)
-			{
-				if(response.error)
-				{
-					var code = response.error.code;
-					group.sg_message = response.error.message;
-					console.log("Error: "+group.sg_message);
-				}
-				else
-				{
-					console.log("Added to security group: "+JSON.stringify(response));
-				}
-			});
+		var batchRequests = osapi.newBatch();
+		$("#alertASG").text("Loading...");
+		$( "#alertASG.success" ).fadeIn();
+		$(hiveArrays.sGrpData).each(function(index,id)
+		{
+			batchRequests.add
+			(
+				id,group.sGrpObj.createMembers(["/people/"+id])
+			)
 		});
-		console.log("hiveArrays.lines: "+hiveArrays.lines);
-		console.log("id: "+group.sGrpID);
 		
+		batchRequests.execute(function(response)
+		{
+			if(response.error)
+			{
+				var code = response.error.code;
+				group.sg_message = response.error.message;
+				//console.log("Error: "+group.sg_message);
+				$("#alertASG").text("Error: "+group.sg_message);
+			}
+			else
+			{
+				//document.getElementById("tab5a").innerHTML = "All Members added: "+hiveArrays.sGrpData.length;
+				//console.log("Added to security group: "+JSON.stringify(response));
+				$("#alertASG").text("All Members added: "+hiveArrays.sGrpData.length);
+				$("#alertASG.success" ).fadeOut(3000);
+			}
+			
+		});
 		
 	});
 });
-
 //End add members to security group

@@ -14,8 +14,9 @@ span.actionContext,span.viewContext { padding: 0px 8px; }
 
 body {
     color: #5e5e5e;
-    font: 13px "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
+    font: 13px "Calibri";
     margin: 20px;
+		
 }
 
 .j-card .hidden {
@@ -75,7 +76,7 @@ input[type = 'text'] {
     transition: all .3s linear;
     width: 50%;
     outline: none;
-    font: 13px 'Helvetica Neue', Arial, Helvetica, sans-serif;
+    font: 13px 'Calibri';
     box-sizing: border-box;
 }
 
@@ -109,7 +110,7 @@ input[type = 'text'] {
 }
 
 .icon-bar a:hover {
-    background-color: #FFFACD;
+    background-color: #F0F8FF;
 }
 
 .active {
