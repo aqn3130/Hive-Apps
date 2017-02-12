@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" href="stylesheets/main.css" type="text/css" media="screen" />
+    <!--<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>-->
+    <!-- NOT NEEDED IF USING <Require feature="jive-core-v3-resolver"/> in app.xml -->
+    <!-- <script type="text/javascript" charset="utf-8" src="javascripts/coreapi-context-resolver-v3.js"></script> -->
+    <script type="text/javascript" charset="utf-8" src="javascripts/app.js"></script>
+    <script type="text/javascript" charset="utf-8" src="javascripts/spin.js"></script>
+    
+	<script type="text/javascript" src="http://ajax.aspnetcdn.com/ajax/jquery/jquery-1.9.1.min.js"></script>
+	<script type="text/javascript" src="http://ajax.aspnetcdn.com/ajax/jquery.ui/1.8.17/jquery-ui.min.js"></script>
+	<!--<script type="text/javascript" src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.1.1.min.js"></script>-->
+	
+	<link rel="stylesheet" type="text/css" href="http://ajax.aspnetcdn.com/ajax/jquery.ui/1.11.4/themes/start/jquery-ui.css"/>
+	<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+	<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+	<style>#validName{position: absolute;left: 360px;top:153px;}</style>
+	<!--<style>#loadG{position: absolute;left: 160px;top:45px;}</style>-->
+	<!--<link rel="stylesheet" href="stylesheets/hdm.css" type="text/css" media="screen" />-->
+		
+	<!-- NOTE: main.js SHOULD RUN LAST -->
+    <script type="text/javascript" charset="utf-8" src="javascripts/main.js"></script>
+	
+</head>
+
+<body>
+
+<div id="tabs">
+  <ul>
+    <li><a href="#tabs-1">Create Group</a></li>
+    <li><a href="#tabs-2">Add Members</a></li>
+    <li><a href="#tabs-3">Send Notification</a></li>
+	<li><a href="#tabs-4">Received Responses</a></li>
+  </ul>
+  
+  <div id="tabs-1">
+	<!--<button id="loadGroups">Load Groups</button><h6 id="loadG"></h6>
+	<br><br>-->
+	<p>Enter group name and URL</p><br>
+	
+	Group Name:<br>
+	<input type="text" id="name" value="" size="30" onkeyup="sync(this)"><h6 id="validName"></h6><br><br>
+	Group URL:<br>
+	<input type="text" id="dName" value="" size="30"><br><br>
+	
+	<p id="loader"></p>
+	<h4>Group Type</h4>
+
+	<form id="typeForm">
+		<input type="radio"  name="Formtype" id="open" value="OPEN"> Open<br>
+		<input type="radio"  name="Formtype" id="Restricted" value="MEMBER_ONLY"> OPEN_Restricted<br>
+		<input type="radio"  name="Formtype" id="private" value="PRIVATE"> PRIVATE<br>
+		<input type="radio"  name="Formtype" id="secret" value="UNLISTED"> SECRET<br>
+	</form>
+
+	<br><br>
+	<button id="addGroup" disabled>Create Group</button>
+  
+  </div>
+  
+  <div id="tabs-2">
+    <p>Select location, create group and then add members</p>
+	<br>
+		
+	<button id="getLocations"> Find Locations</button>
+	<br><br>
+	
+	<form>
+	<select id = "Locations">
+  		
+	</select>
+	</form>
+	
+	<br><br>
+	<button id="getPeople">Find people</button><br><br>
+	<p id="loader2"></p>
+	<button id="addMember" disabled>Add Member</button>
+  </div>
+  
+  <div id="tabs-3">
+	<button id="getGrps">Select Recipients</button>
+	<br><br>
+	<textarea id="message" rows="5" cols="50"></textarea>
+	<br><br>
+    <button id="sendNoti">Send Notification</button>
+  </div>
+  
+  <div id="tabs-4">
+	
+	<button id="retRes">Retrieve Responses</button>
+	<t><t>
+	<input id="upload" type="file" accept=".csv" name="Upload References"/>
+	<br><br>
+	<textarea id="res" rows="10" cols="50" readonly ></textarea>
+	<br><br>
+	<button id="downloadRes">Download Responses</button>
+	<t><t>
+	<button id="downloadRef">Download References</button>
+  </div>
+  
+</div>
+
+
+</body>
+
+</html>

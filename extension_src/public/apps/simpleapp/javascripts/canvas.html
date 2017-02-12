@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+	<html>
+		<head>
+			<meta name="viewport" content="width=device-width, initial-scale=1">
+			<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+			<!-- Latest compiled and minified CSS -->
+			<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+			<link rel="stylesheet" href="stylesheets/main.css" type="text/css" media="screen" />
+		</head>
+
+		<body>
+			
+			<div class="container-fluid" id="icons">
+				<a href="#"><i class="fa fa-reorder" style="font-size:24px;color:red" align="right"></i></a>
+			</div>
+			<br><br>
+				
+			<div class="icon-bar" id="menu">
+				<a href="#" id="toHDM"><i class="fa fa-address-card">
+				<p style="font-size:16px;color:orange">HDM</p></i></a> 
+				<a href="#" id="toUFG"><i class="fa fa-tasks"><br>
+				<p style="font-size:16px;color:orange">UFG</p></i></a> 
+				<a href="#"><i class="fa fa-users"><br>
+				<p style="font-size:16px;color:orange">AGM</p></i></a> 
+				<a href="#"><i class="fa fa-globe"><br>
+				<p style="font-size:16px;color:orange">CGU</p></i></a>
+				<a href="#"><i class="fa fa-window-restore"><br>
+				<p style="font-size:16px;color:orange">RGM</p></i></a> 
+			</div>
+			
+			<div id="hdm">
+				<ul class="nav nav-tabs" role="tablist">
+					<li role="presentation" class="active"><a role="tab" data-toggle="tab" href="#tabs-1">Create Group</a></li>
+					<li role="presentation" ><a role="tab" data-toggle="tab" href="#tabs-2">Add Members</a></li>
+					<li role="presentation" ><a role="tab" data-toggle="tab" href="#tabs-3">Send Notification</a></li>
+					<li role="presentation" ><a role="tab" data-toggle="tab" href="#tabs-4">Received Responses</a></li>
+					
+				</ul>
+				<div class="tab-content">
+					<div class="tab-pane active" id="tabs-1">
+						<button id="loadGroupsHDM">Load Groups</button><p id="loadG"></p>
+						<br><br>
+						<h4>Enter group name and URL</h4><br>
+							
+						<!--<div class="loader">
+							<div class="loader-text">Loading...</div>
+							<div class="progress">
+								<div class="progress-bar progress-bar-stripped" role="progressbar" style="width:100%"></div>
+							</div>
+						</div>-->
+							
+						Group Name:<br>
+						<input type="text" id="name" value="" size="30" onkeyup="sync(this)"><h6 id="validName"></h6><br><br>
+						Group URL:<br>
+						<input type="text" id="dName" value="" size="30"><br><br>
+							
+						<p id="loader"></p>
+						<h4>Group Type</h4>
+
+						<form id="typeForm">
+						<input type="radio"  name="Formtype" id="open" value="OPEN"> Open<br>
+						<input type="radio"  name="Formtype" id="Restricted" value="MEMBER_ONLY"> OPEN_Restricted<br>
+						<input type="radio"  name="Formtype" id="private" value="PRIVATE"> PRIVATE<br>
+						<input type="radio"  name="Formtype" id="secret" value="UNLISTED"> SECRET<br>
+						</form>
+
+						<br><br>
+						<button id="addGroup" disabled>Create Group</button>
+					  
+					</div>
+					  
+					<div role="tabpanel" class="tab-pane" id="tabs-2">
+							<p>Select location, create group and then add members</p>
+							<br>
+								
+							<button id="getLocations"> Find Locations</button>
+							<br><br>
+							
+							<form>
+							<select id = "Locations">
+								
+							</select>
+							</form>
+							
+							<br><br>
+							<button id="getPeople">Find people</button><br><br>
+							<p id="loader2"></p>
+							<button id="addMember" disabled>Add Member</button>
+					  </div>
+					  
+					  <div role="tabpanel" class="tab-pane" id="tabs-3">
+							<button id="getGrps">Select Recipients</button>
+							<br><br>
+							<textarea id="message" rows="5" cols="50"></textarea>
+							<br><br>
+							<button id="sendNoti">Send Notification</button>
+					  </div>
+					  
+					  <div role="tabpanel" class="tab-pane" id="tabs-4">
+						
+							<button id="retRes">Retrieve Responses</button>
+							<t><t>
+							<input id="upload" type="file" accept=".csv" name="Upload References"/>
+							<br><br>
+							<textarea id="res" rows="10" cols="50" readonly ></textarea>
+							<br><br>
+							<button id="downloadRes">Download Responses</button>
+							<t><t>
+							<button id="downloadRef">Download References</button>
+					  </div>
+					  
+					</div>
+				</div>
+			</div>
+			
+			<div class="container-fluid"  id="ufg">
+				<div class = "panel panel-default">
+					<div class = "panel-heading">
+					<h3 class = "panel-title">Make Group Public</h3>
+					</div>
+						<div class = "panel-body">
+							<button type="text" id="LoadGroups">Load Groups</button><p id="prog"></p>
+							<br><br>
+							<button type="text" id="lineUpUsers" disabled>Load Active Users</button><p id="lUsers"></p><br><br>
+							Group name:<br>
+							<input type="text" id="addAll">
+							<br><br>
+							<button id="addAllButton" >Create Membership</button><p id="memCreated"></p>
+						</div>
+				</div>
+			</div>
+		
+		<script type="text/javascript" charset="utf-8" src="javascripts/app.js"></script>
+		<script type="text/javascript" charset="utf-8" src="javascripts/appe.js"></script>
+		<script type="text/javascript" charset="utf-8" src="javascripts/spin.js"></script>
+		<script src="javascripts/jquery-3.1.1.min.js"></script>
+		<script src="javascripts/bootstrap.min.js"></script>
+		
+		<script type="text/javascript" charset="utf-8" src="javascripts/app.js"></script>
+    
+    
+	<script type="text/javascript" src="http://ajax.aspnetcdn.com/ajax/jquery/jquery-1.7.1.min.js"></script>
+	<script type="text/javascript" src="http://ajax.aspnetcdn.com/ajax/jquery.ui/1.8.17/jquery-ui.min.js"></script>
+	<link rel="stylesheet" type="text/css" href="http://ajax.aspnetcdn.com/ajax/jquery.ui/1.11.4/themes/start/jquery-ui.css"/>
+	<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+	<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+	
+	
+		<script type="text/javascript" charset="utf-8" src="javascripts/main.js"></script>	
+			
+		</body>
+
+	</html>

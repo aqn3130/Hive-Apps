@@ -1,0 +1,12 @@
+{
+  "jiveExtension": {
+    "id": "aa741bae-66f7-43cd-b073-60f5ac34628d",
+    "uuid": "aa741bae-66f7-43cd-b073-60f5ac34628d",
+    "name": "Hive Apps",
+    "description": "Applications for Hive",
+    "icon_16": "extension-16.png",
+    "icon_48": "extension-48.png",
+    "icon_128": "extension-128.png",
+    "releasedOn": "2016-11-06T14:53:05.502Z"
+  }
+}

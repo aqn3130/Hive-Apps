@@ -1,0 +1,214 @@
+<html>
+	<head>
+		<link rel="stylesheet" type="text/css" href="http://ajax.aspnetcdn.com/ajax/jquery.ui/1.11.4/themes/start/jquery-ui.css"/>
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+		<link rel="stylesheet" href="stylesheets/main.css" type="text/css" media="screen" />
+	</head>
+
+	<body>
+		
+		<div class="container-fluid" id="icons">
+			<a href="#"><i class="fa fa-reorder" style="font-size:24px;color:red" align="right"></i></a>
+		</div>
+		<br><br>
+				
+		<div class="icon-bar" id="menu">
+			<a href="#" id="toHDM"><i class="fa fa-address-card">
+			<p style="font-size:16px;color:orange">Hive Disaster Management</p></i></a> 
+			<a href="#" id="toUFG"><i class="fa fa-tasks"><br>
+			<p style="font-size:16px;color:orange">Make Group Public</p></i></a> 
+			<a href="#" id="toRGM"><i class="fa fa-users"><br>
+			<p style="font-size:16px;color:orange">Remove Group Membership</p></i></a> 
+			<a href="#" id="toUG"><i class="fa fa-globe"><br>
+			<p style="font-size:16px;color:orange">Unfollow Group</p></i></a>
+			<a href="#" id="toCGU"><i class="fa fa-window-restore"><br>
+			<p style="font-size:16px;color:orange">Change Group URL</p></i></a> 
+		</div>
+		
+		<div class="container-fluid" id="hdm">
+			<div id="tabs">
+				<ul>
+					<li><a href="#tabs-1">Create Group</a></li>
+					<li><a href="#tabs-2">Add Members</a></li>
+					<li><a href="#tabs-3">Send Notification</a></li>
+					<li><a href="#tabs-4">Received Responses</a></li>
+				</ul>
+			  
+				<div id="tabs-1">
+					<div id="alertHDM" class="alert-box success">Loading...</div>
+					<br>
+					<button id="loadGroupsHDM">Load Groups</button><p id="loadG"></p>
+					<br>
+					Group Name:<br>
+					<input type="text" id="name" value="" size="30" onkeyup="sync(this)"><h6 id="validName"></h6><br><br>
+					Group URL:<br>
+					<input type="text" id="dName" value="" size="30"><br><br>
+					<div id="guide">
+						<ol>
+							<li>Create Group: Create group, give it a name and URL</li><br>
+							<li>Add Members: Find locations and then add employees in that location to this group.</li><br>
+							<li>Send Notification: Select recepients then send your message.</li><br>
+							<li>Received Responses: View or downloaded replies, you must download references in order to be able to retrieve replies at a later time or if this App refereshed or closed.</li>
+						</ol>
+					</div>
+					<p id="loader"></p>
+					<h4>Group Type</h4>
+					<form id="typeForm">
+						<input type="radio"  name="Formtype" id="open" value="OPEN"> PUBLIC<br>
+						<input type="radio"  name="Formtype" id="Restricted" value="MEMBER_ONLY"> PUBLIC_Restricted<br>
+						<input type="radio"  name="Formtype" id="private" value="PRIVATE"> PRIVATE<br>
+						<input type="radio"  name="Formtype" id="secret" value="UNLISTED"> UNLISTED<br>
+					</form>
+					<br>
+					<button id="addGroup" disabled>Create Group</button>
+				</div>
+				<div id="tabs-2">
+					<div id="alertHDMT2" class="alert-box success">Loading...</div>
+					<button id="loadHDMLoc"> Load Locations</button>
+					<br><br>
+					<button id="getLocT2" disabled> Find Locations</button>
+					<br><br>
+					<div id="guide">
+						<ol>
+							<li>Finding Locations: Takes a few minutes before all locations found</li><br>
+							<li>Finding People: Takes about 1 minute to find all employees in this location</li><br>
+						</ol>
+					</div>
+					<form>
+						<select id = "Locations">
+						</select>
+					</form>
+					<br><br>
+					<button id="getPeople" disabled>Find people</button><br><br>
+					<p id="loader2"></p>
+					<button id="addMember" disabled>Add Member</button>
+				</div>
+			  
+				<div id="tabs-3">
+					<button id="getGrps">Select Recipients</button>
+					<br><br>
+					<textarea id="message" cols="50" rows="5"></textarea>
+					<br><br>
+					<button id="sendNoti">Send Notification</button>
+				</div>
+			  
+				<div id="tabs-4">
+					<button id="retRes">Retrieve Responses</button>
+					<t><t>
+					<input accept=".csv" id="upload" name="Upload References" type="file">
+					<br><br>
+					<textarea cols="50" id="res" readonly="" rows="10"></textarea>
+					<br><br>
+					<div id="guide">
+						<ol>
+							<li>Download References: In order to be able to retrieve replies, References must be downloaded</li><br>
+							<li>Download Responses: You can download all replies as a CSV file</li><br>
+							
+						</ol>
+					</div>
+					<button id="downloadRes">Download Responses</button>
+					<t><t>
+					<button id="downloadRef">Download References</button>
+				</div>
+			  
+			</div>
+		</div>
+		<div class="container-fluid" id="ufg">
+			<div id="alertUFG" class="alert-box success">Loading...</div>
+			<div class = "panel panel-default">
+				<div class = "panel-heading">
+					<h3 class = "panel-title">Make Group Public</h3>
+				</div>
+				<div class = "panel-body">
+					<button type="text" id="LoadGroups">Load Groups</button><p id="lGrps"></p>
+					<br>
+					<button type="text" id="lineUpUsers" disabled>Load Active Users</button><p id="lUsers"></p><br><br>
+					Group name:<br>
+					<input type="text" id="addAll">
+					<br><br>
+					<button id="addAllButton" >Create Membership</button><p id="memCreated"></p>
+				</div>
+			</div>
+		</div>
+		
+		<div class="container-fluid" id="rgm">
+			<div id="alertRGM" class="alert-box success">Loading...</div>
+			<div class = "panel panel-default">
+				<div class = "panel-heading">
+					<h3 class = "panel-title">Remove Group Membership</h3>
+				</div>
+				<div class = "panel-body">
+					<button type="text" id="LoadGroupsRGM">Load Groups</button><p id="lGrps"></p>
+					<br>
+					Group name:<br>
+					<input type="text" id="input2">
+					<br><br>
+					<button id="getMem">Get Members</button><p id="members"></p>
+					<br><br>
+					<button id="delMem">Delete Membership</button><p id="memDel"></p>
+				</div>
+			</div>
+		</div>
+		
+		<div class="container-fluid" id="ug">
+			<div id="alertUG" class="alert-box success">Loading...</div>
+			<div class = "panel panel-default">
+				<div class = "panel-heading">
+					<h3 class = "panel-title">Unfollow Group</h3>
+				</div>
+				<div class = "panel-body">
+					<button type="text" id="LoadGroupsUG">Load Groups</button><p id="lGrps"></p>
+					<br>
+					Group name:<br>
+					<input type="text" id="input3">
+					<br><br>
+					<button id="tab3Get">Get Followers</button><p id="tab3a"></p>
+					<br><br>
+					<button id="getStr">Load Streams</button><p id="tab3b"></p>
+					<br><br>
+					<button id="unFollow">Unfollow</button><p id="tab3c"></p>
+				</div>
+			</div>
+		</div>
+
+		<div class="container-fluid" id="cgu">
+			<div id="alertCGU" class="alert-box success">Loading...</div>
+			<div class = "panel panel-default">
+				<div class = "panel-heading">
+					<h3 class = "panel-title">Change Group URL</h3>
+				</div>
+				<div class = "panel-body">
+					<button type="text" id="LoadGroupsCGU">Load Groups</button><p id="lGrps"></p>
+					<br>
+					Group name:<br>
+
+					<input type="text" id="input4">
+					<br><br>
+					Group URL:<br>
+					<input type="text" id="grpURL">
+					<br><br>
+					Group Type:<br>
+					<form id="typeFormCGU">
+						<input type="radio"  name="Formtype" id="open" value="OPEN"> Public
+						<input type="radio"  name="Formtype" id="Restricted" value="MEMBER_ONLY"> OPEN_Restricted
+						<input type="radio"  name="Formtype" id="private" value="PRIVATE"> PRIVATE
+						<input type="radio"  name="Formtype" id="secret" value="UNLISTED"> Unlisted
+					</form>
+					<br>
+					<button id="chURL">Change Group URL</button><p id="tab4"></p>
+				</div>
+			</div>
+		</div>
+		<script src="javascripts/jquery-3.1.1.min.js"></script>
+		<script src="javascripts/bootstrap.min.js"></script>
+		<script type="text/javascript" charset="utf-8" src="javascripts/app.js"></script>
+		<script type="text/javascript" charset="utf-8" src="javascripts/appe.js"></script>
+		<script type="text/javascript" charset="utf-8" src="javascripts/spin.js"></script>
+		<script type="text/javascript" charset="utf-8" src="javascripts/main.js"></script>
+		
+		<script type="text/javascript" src="http://ajax.aspnetcdn.com/ajax/jquery.ui/1.8.17/jquery-ui.min.js"></script>
+		<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+	</body>
+
+</html>
