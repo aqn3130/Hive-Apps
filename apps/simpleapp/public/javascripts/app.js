@@ -36,6 +36,7 @@ function onReady(env) {
 	$("#ug").hide();
 	$("#cgu").hide();
 	$("#asg").hide();
+	
 	app.resize();
 } // end function
 
@@ -104,6 +105,7 @@ $(function()
 	$("#toHDM").click(function()
 	{
 		$("#menu").hide();
+		$("#info").hide();
 		$("#tabs").tabs({active:0});
 		$("#hdm").show();
 		app.resize();
@@ -119,6 +121,7 @@ $(function()
 		$("#cgu").hide();
 		$("#asg").hide();
 		$("#menu").show();
+		$("#info").show();
 		$("#input2").val("");
 		$("#addAll").val("");
 		$("#res").val("");
@@ -130,6 +133,7 @@ $(function()
 	$("#toUFG").click(function()
 	{
 		$("#menu").hide();
+		$("#info").hide();
 		$("#ufg").show();
 		app.resize();
 		
@@ -137,6 +141,7 @@ $(function()
 	$("#toRGM").click(function()
 	{
 		$("#menu").hide();
+		$("#info").hide();
 		$("#rgm").show();
 		app.resize();
 		
@@ -144,6 +149,7 @@ $(function()
 	$("#toUG").click(function()
 	{
 		$("#menu").hide();
+		$("#info").hide();
 		$("#ug").show();
 		app.resize();
 		
@@ -151,6 +157,7 @@ $(function()
 	$("#toCGU").click(function()
 	{
 		$("#menu").hide();
+		$("#info").hide();
 		$("#cgu").show();
 		app.resize();
 		
@@ -158,10 +165,19 @@ $(function()
 	$("#toASG").click(function()
 	{
 		$("#menu").hide();
+		$("#info").hide();
 		$("#asg").show();
 		app.resize();
 		
 	});
+	
+	$("#toHDM").mouseenter(function(){$("#info").text("Disaster Management");});
+	$("#toUFG").mouseenter(function(){$("#info").text("Make a group public by adding all active users as members");});
+	$("#toRGM").mouseenter(function(){$("#info").text("Remove group membership");});
+	$("#toUG").mouseenter(function(){$("#info").text("Unfollow a group");});
+	$("#toCGU").mouseenter(function(){$("#info").text("Change group URL");});
+	$("#toASG").mouseenter(function(){$("#info").text("Add members to a security group");});
+	$("#toHDM,#toUFG,#toRGM,#toUG,#toCGU,#toASG").mouseleave(function(){$("#info").text("Hover over an App for more information");});
 });
 
 //Get all groups
@@ -170,8 +186,6 @@ $(function()
 	$("#loadGroupsHDM").click(function()
 	{
 		allGroupsHDM.length=0;
-		//var target = document.getElementById('loader');
-		//var spinner = new Spinner(opts).spin(target);
 		var request = osapi.jive.corev3.groups.get({fields:'placeID,name,displayName',count:100});
 		nextGroupsHDM(request);
 		$("#tabs-1:input").attr("disabled",true);
@@ -301,7 +315,6 @@ $(function()
 				"groupType":groupHDM.groupType
 			}).execute(function(response)
 			{
-				//console.log("Response is: " + JSON.stringify(response));
 				groupHDM.groupObj = response;
 			});
 			$("#tabs").tabs("enable",1);
@@ -328,10 +341,7 @@ $(function()
 {
 	$("#loadHDMLoc").click(function()
 	{
-		//var target2 = document.getElementById('loader2');
-		//var spinner2 = new Spinner(opts).spin(target2);
 		var request = osapi.jive.corev3.people.getAll({fields:'@all',count:100});
-		
 		locs(request);
 		$( "#alertHDMT2.success" ).fadeIn();
 	});
@@ -368,12 +378,9 @@ function locs(request)
 			}
             if(!response.getNextPage)
             {
-              //document.getElementById("loader2").style.display = "none";
-              //spinner.stop(target);
-			  document.getElementById("getLocT2").disabled = false;
+				document.getElementById("getLocT2").disabled = false;
 			  //$("#tabs").tabs("enable",1);
-			  
-			  $( "#alertHDMT2.success" ).fadeOut();
+			    $( "#alertHDMT2.success" ).fadeOut();
             }
 		}
 	});
@@ -414,10 +421,8 @@ $(function()
 {
 	$("#getPeople").click(function()
 	{
-		//document.getElementById("loader2").style.display = "block";
 		var request = osapi.jive.corev3.people.getAll({fields:'@all',count:100});
 	    peopleInThisLocation.length=0;
-		//document.getElementById("infoT2").value = "Finding employees in this location...";
 		$( "#alertHDMT2.success" ).fadeIn();
 		nextPagePIL(request);
 		
@@ -452,13 +457,8 @@ function nextPagePIL(request)
 			}
 			if(!response.getNextPage)
             {
-              document.getElementById("addMember").disabled = false;
-			  //document.getElementById("loader2").style.display = "none";
-			  //document.getElementById("infoT2").value = "Employees found: "+peopleInThisLocation.length;
-			  
-			  //alert("People found: "+peopleInThisLocation.length);
-			  //document.getElementById("infoT2").value = "Loading...";
-			  $( "#alertHDMT2.success" ).fadeOut();
+				document.getElementById("addMember").disabled = false;
+				$( "#alertHDMT2.success" ).fadeOut();
             }
         }
 	});
@@ -485,11 +485,11 @@ $(function()
 		});
 		batchRequests.execute(function(response)
 		{
-			//console.log(JSON.stringify(response));
+			
 		});
-		$( "#alertHDM.success" ).fadeOut();
-		window.alert("A total of "+peopleInThisLocation.length+" added to group "+groupHDM.groupName);
-    	$("#tabs").tabs("enable",2);
+		$("#alertHDM").text("A total of "+peopleInThisLocation.length+" added to group "+groupHDM.groupName)
+		$( "#alertHDM.success" ).fadeOut(3000);
+		$("#tabs").tabs("enable",2);
 		$("#tabs").tabs({active:2});
 		
 	});
@@ -535,7 +535,7 @@ function getGroups(request)
 			if(!response.getNextPage)
 			{
 				window.alert("All group followers for group: "+groupHDM.groupObj.name+" selected! \n Followers Found: "+groupMembers.length);
-				//console.log("groupFollowers: "+JSON.stringify(groupMembers));
+				
 			}
 		}
 	});
