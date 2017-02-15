@@ -1,10 +1,10 @@
 
 /***************************************************************************************************************************
-- Make group public 
-- Remove group members 
-- Unfollow group 
-- Change group URL 
-- Add to security group
+												- Make group public 
+												- Remove group members 
+												- Unfollow group 
+												- Change group URL 
+												- Add to security group
 ****************************************************************************************************************************/
 var group=
 	{
@@ -41,8 +41,8 @@ $(function()
 	$("#LoadGroups,#LoadGroupsRGM,#LoadGroupsUG,#LoadGroupsCGU").click(function()
 	{
         var request = osapi.jive.corev3.groups.get({fields:'placeID,name,displayName',count:100});
-	    nextGroups(request);
-		hiveArrays.allGroups.length=0;
+	    hiveArrays.allGroups.length=0;
+		nextGroups(request);
 		$( "#alertUFG.success,#alertRGM.success,#alertUG.success,#alertCGU.success" ).fadeIn();
 		
 	});
@@ -67,37 +67,27 @@ function nextGroups(request)
 			$(response.list).each(function(index,group)
 			{
 			  hiveArrays.allGroups.push(group);
-              
-              //document.getElementById("lGrps").innerHTML = "Loading: "+hiveArrays.allGroups.indexOf(group);
-              //document.getElementById("progress").value = hiveArrays.allGroups.indexOf(group);
-              //document.getElementById("progress").max = response.list.length;
               $("#alertUFG,#alertRGM,#alertUG,#alertCGU").text("Loading all groups : "+hiveArrays.allGroups.indexOf(group));
             });
-            
-			if (response.getNextPage)
+            if (response.getNextPage)
 			{
                 var requestNextPage = response.getNextPage();
 				nextGroups(requestNextPage);
-                
-			}
+            }
 			if(!response.getNextPage)
 			{
-				//document.getElementById("lGrps").innerHTML = "Loaded: "+hiveArrays.allGroups.length;
-				$("#alertUFG,#alertRGM").text("Total Groups Loaded: "+hiveArrays.allGroups.length);
-				document.getElementById("lineUpUsers").disabled = false;
+				$("#alertUFG,#alertRGM,#alertUG,#alertCGU").text("Total Groups Loaded: "+hiveArrays.allGroups.length);
 				$( "#alertUFG.success,#alertRGM.success,#alertUG.success,#alertCGU.success" ).fadeOut(2000);
-
-				
+				//document.getElementById("lineUpUsers").disabled = false;
+				$("#lineUpUsers,#getMem,#tab3Get,#chURL").prop("disabled",false);
 			}
 		}
-		
-    });
-	
+	});
 }
 //end get all groups
 
 /***************************************************************************************************************************
-Group validations
+													Group validations
 ****************************************************************************************************************************/
 
 //Validate group name
@@ -221,7 +211,9 @@ $(function()
 	});
 	
 });//End validate input5
-
+/***************************************************************************************************************************
+												- Make group public
+****************************************************************************************************************************/
 //Get all people
 $(function()
 {
@@ -252,11 +244,10 @@ function nextPage(request)
 			$(response.list).each(function(index,person)
 			{
 			  hiveArrays.allPeople.push(person);
-              //document.getElementById("lUsers").innerHTML = "Loading: "+hiveArrays.allPeople.indexOf(person);
-              $("#alertUFG").text("Loading all groups : "+hiveArrays.allPeople.indexOf(person));
+              $("#alertUFG").text("Loading active users : "+hiveArrays.allPeople.indexOf(person));
 			  $( "#alertUFG.success" ).fadeOut();
             });
-            /*
+            
 			if (response.getNextPage)
 			{
 				var requestNextPage = response.getNextPage();
@@ -264,14 +255,12 @@ function nextPage(request)
 			}
 			if(!response.getNextPage)
 			{
-				//document.getElementById("lUsers").innerHTML = "Loaded: "+hiveArrays.allPeople.length;
+				$("#alertUFG").text("Loaded all active users : "+hiveArrays.allPeople.length);
+				$( "#alertUFG.success" ).fadeOut(3000);
 				document.getElementById("addAllButton").disabled = false;
-				
-			}*/
+			}
         }
-		//console.log("hiveArrays.allPeople is now " + JSON.stringify(hiveArrays.allPeople));
-    });
-	
+	});
 }
 //end function get all people
 
@@ -322,26 +311,33 @@ $(function()
   });
 });
 //end of add member
-
+/***************************************************************************************************************************
+												- Remove group members
+****************************************************************************************************************************/
 //Get all members
 $(function()
 {
 	$("#getMem").click(function()
 	{
-		for(i=0;i<hiveArrays.allGroups.length;i++)
+		if(group.groupName == "" || group.groupName == null)
+		{window.alert("Please enter a valid group name!");}
+		else
 		{
-			if(group.groupName == hiveArrays.allGroups[i].name)
+			for(i=0;i<hiveArrays.allGroups.length;i++)
 			{
-				group.objGroup = hiveArrays.allGroups[i];
-				break;
-				//console.log(JSON.stringify(group.objGroup));
+				if(group.groupName == hiveArrays.allGroups[i].name)
+				{
+					group.objGroup = hiveArrays.allGroups[i];
+					break;
+					
+				}
 			}
+			var request = group.objGroup.getMembers({count:100});
+			nextMem(request);
+			hiveArrays.groupMem.length=0;
+			$("#alertRGM").text("Loading...");
+			$( "#alertRGM.success" ).fadeIn();
 		}
-		var request = group.objGroup.getMembers({count:100});
-		nextMem(request);
-		hiveArrays.groupMem.length=0;
-		$("#alertRGM").text("Loading...");
-		$( "#alertRGM.success" ).fadeIn();
 	});
 });
 
@@ -363,8 +359,6 @@ function nextMem(request)
 			$(response.list).each(function(index,member)
 			{
 				hiveArrays.groupMem.push(member);
-				//document.getElementById("members").innerHTML = "Loading: "+hiveArrays.groupMem.indexOf(member);
-				//document.getElementById("tab3a").innerHTML = "Loading: "+hiveArrays.groupMem.indexOf(member);
 				$("#alertRGM").text("Loading all members : "+hiveArrays.groupMem.indexOf(member));
 			});
 			if (response.getNextPage)
@@ -374,14 +368,12 @@ function nextMem(request)
 			}
 			if(!response.getNextPage)
 			{
-				//document.getElementById("members").innerHTML = "Loaded: "+hiveArrays.groupMem.length;
-				//document.getElementById("tab3a").innerHTML = "Loading: "+hiveArrays.groupMem.length;
-				//document.getElementById("memDel").innerHTML = "";
 				$("#alertRGM").text("All members loaded : "+hiveArrays.groupMem.length);
 				$( "#alertRGM.success" ).fadeOut(4000);
+				document.getElementById("delMem").disabled = false;
 			}
         }
-		//console.log("hiveArrays.allPeople is now " + JSON.stringify(hiveArrays.allPeople));
+		
     });
 }
 //End of get all members
@@ -391,26 +383,31 @@ $(function()
 {
 	$("#delMem").click(function()
 	{
-		var batchRequests = osapi.newBatch();
-		$("#alertRGM").text("Loading...");
-		$( "#alertRGM.success" ).fadeIn();
-		$(hiveArrays.groupMem).each(function(index,member)
+		if(hiveArrays.groupMem.length==0)
 		{
-			batchRequests.add
-			(
-				member,member.destroy()
-			)
-			//document.getElementById("memDel").innerHTML = "Deleting members...";
-			hiveArrays.groupMem = hiveArrays.groupMem.splice(hiveArrays.groupMem.indexOf(member),1);
-			
-		});
-		batchRequests.execute(function(response)
+			window.alert("No members found!");
+		}
+		else
 		{
-			//console.log(JSON.stringify(response));
-			//document.getElementById("memDel").innerHTML = "Members remaining: "+hiveArrays.groupMem.length;
-		});
-		$("#alertRGM").text("Members remaining : "+hiveArrays.groupMem.length);
-		$( "#alertRGM.success" ).fadeOut(4000);
+			var batchRequests = osapi.newBatch();
+			$("#alertRGM").text("Loading...");
+			$( "#alertRGM.success" ).fadeIn();
+			$(hiveArrays.groupMem).each(function(index,member)
+			{
+				batchRequests.add
+				(
+					member,member.destroy()
+				)
+				hiveArrays.groupMem = hiveArrays.groupMem.splice(hiveArrays.groupMem.indexOf(member),1);
+				
+			});
+			batchRequests.execute(function(response)
+			{
+				
+			});
+			$("#alertRGM").text("Members remaining : "+hiveArrays.groupMem.length);
+			$( "#alertRGM.success" ).fadeOut(4000);
+		}
 	});
 });
 //End of Delete memberships
@@ -424,20 +421,28 @@ $(function()
 {
 	$("#tab3Get").click(function()
 	{
-		for(i=0;i<=hiveArrays.allGroups.length;i++)
+		if(group.groupName == "" || group.groupName == null)
 		{
-			if(group.groupName == hiveArrays.allGroups[i].name)
-			{
-				group.objGroup = hiveArrays.allGroups[i];
-				break;
-			}
+			window.alert("Please enter a valid group name!");
 		}
-		var request = group.objGroup.getFollowers({fields:"@all",count:100});
-		nextFol(request);
-        hiveArrays.groupFol.length=0;
-        $("#alertUG").text("Loading...");
-        $( "#alertUG.success" ).fadeIn();
+		else
+		{	
+			for(i=0;i<=hiveArrays.allGroups.length;i++)
+			{
+				if(group.groupName == hiveArrays.allGroups[i].name)
+				{
+					group.objGroup = hiveArrays.allGroups[i];
+					break;
+				}
+			}
+			var request = group.objGroup.getFollowers({fields:"@all",count:100});
+			nextFol(request);
+			hiveArrays.groupFol.length=0;
+			$("#alertUG").text("Loading...");
+			$( "#alertUG.success" ).fadeIn();
+		}
 	});
+	
 });
 
 function nextFol(request)
@@ -468,13 +473,11 @@ function nextFol(request)
 			}
 			if(!response.getNextPage)
 			{
-				//document.getElementById("tab3a").innerHTML = "Followers Loaded: "+hiveArrays.groupFol.length;
 				$("#alertUG").text("Followers loaded : "+hiveArrays.groupFol.length);
 				$( "#alertUG.success" ).fadeOut(4000);
+				document.getElementById("getStr").disabled = false;
 			}
         }
-		//console.log("hiveArrays.allPeople is now " + JSON.stringify(hiveArrays.groupFol));
-		
 		
     });
 }
@@ -486,7 +489,6 @@ $(function()
 	
     $("#getStr").click(function()
 	{
-		//document.getElementById("tab3b").innerHTML = "";
 		$("#alertUG").text("Loading...");
         $( "#alertUG.success" ).fadeIn();
         if(hiveArrays.groupFol != null&&hiveArrays.groupFol.length>0)
@@ -508,19 +510,10 @@ $(function()
 						if(association.name == group.groupName || association.placeID == group.placeID)
 						{
 							group.objID = association.id;
-							//document.getElementById("tab3b").innerHTML = "Group ID Found: "+association.id;
 							$("#alertUG").text("Association found  : "+association.id);
 							$( "#alertUG.success" ).fadeOut(4000);
                             return false;
-							
 						}
-						/*
-						else
-						{
-							//document.getElementById("tab3b").innerHTML = "Group ID Not Found:";
-							$("#alertUG").text("Group ID Not Found!");
-							//return;
-						}*/
 					});
 				});
 			});
@@ -529,58 +522,62 @@ $(function()
 		}//End if
 		else
 		{
-			//document.getElementById("tab3b").innerHTML = "There are no followers in this group:";
 			$("#alertUG").text("There are no followers in this group!");
 			$( "#alertUG.success" ).fadeOut(4000);
 
 		}
-		
+		document.getElementById("unFollow").disabled=false;
 	});	
 });
+//End get streams
 
 //Unfollow members
 $(function()
 {
 	$("#unFollow").click(function()
 	{
-		$("#alertUG").text("Loading...");
-        $( "#alertUG.success" ).fadeIn();
-		//document.getElementById("tab3c").innerHTML = "";
-		$(hiveArrays.groupFol).each(function(index,member)
+		if(group.objID == null || group.objID == "")
 		{
-			osapi.jive.core.get(
-			{  
-				v:"v3",  
-				href:"/people/"+member.id+"/streams"
-			}).execute(function(response)
-			{  
-				$(response.list).each(function(index,stream)
-				{
-					if(stream.source == "connections")
+			window.alert("Group association not found! Load Followers again");
+		}
+		else
+		{
+			$("#alertUG").text("Loading...");
+			$( "#alertUG.success" ).fadeIn();
+			
+			$(hiveArrays.groupFol).each(function(index,member)
+			{
+				osapi.jive.core.get(
+				{  
+					v:"v3",  
+					href:"/people/"+member.id+"/streams"
+				}).execute(function(response)
+				{  
+					$(response.list).each(function(index,stream)
 					{
-                        var conType = stream.id;
-						osapi.jive.core.delete(
+						if(stream.source == "connections")
 						{
-							v:"v3",
-							href:"/streams/"+conType+"/associations/groups/"+group.objID
-						}).execute(function(response)
+							var conType = stream.id;
+							osapi.jive.core.delete(
+							{
+								v:"v3",
+								href:"/streams/"+conType+"/associations/groups/"+group.objID
+							}).execute(function(response)
+							{
+								$("#alertUG").text("Members Unfollowed!");
+								$( "#alertUG.success" ).fadeOut(4000);
+							});
+						}
+						else
 						{
-							//console.log(JSON.stringify(response));
-							//document.getElementById("tab3c").innerHTML = "Members Unfollowed!";
-							$("#alertUG").text("Members Unfollowed!");
+							$("#alertUG").text("No members unfollowed!");
 							$( "#alertUG.success" ).fadeOut(4000);
-						});
-					}
-					else
-					{
-						//document.getElementById("tab3c").innerHTML = "No members unfollowed!";
-						$("#alertUG").text("No members unfollowed!");
-						$( "#alertUG.success" ).fadeOut(4000);
-					}
-					
-				});
-			}); 
-		});
+						}
+						
+					});
+				}); 
+			});
+		}//end else
 	});
 });
 //End unFollow members
@@ -710,7 +707,7 @@ $(function()
 			{
 				alert("Unable to read"+file.fileName);
 			}
-			
+		$("#addSGMem").prop("disabled",false);
 		}
 	}
 });

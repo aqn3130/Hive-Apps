@@ -117,13 +117,13 @@
 					<h3 class = "panel-title">Make Group Public</h3>
 				</div>
 				<div class = "panel-body">
-					<button type="text" id="LoadGroups">Load Groups</button><p id="lGrps"></p>
+					<button type="button" id="LoadGroups">Load Groups</button><p id="lGrps"></p>
 					<br>
 					<button type="text" id="lineUpUsers" disabled>Load Active Users</button><p id="lUsers"></p><br><br>
 					Group name:<br>
 					<input type="text" id="addAll">
 					<br><br>
-					<button id="addAllButton" >Create Membership</button><p id="memCreated"></p>
+					<button type="button" id="addAllButton" disabled>Create Membership</button><p id="memCreated"></p>
 				</div>
 			</div>
 		</div>
@@ -135,14 +135,14 @@
 					<h3 class = "panel-title">Remove Group Membership</h3>
 				</div>
 				<div class = "panel-body">
-					<button type="text" id="LoadGroupsRGM">Load Groups</button><p id="lGrps"></p>
+					<button type="button" id="LoadGroupsRGM">Load Groups</button><p id="lGrps"></p>
 					<br>
 					Group name:<br>
 					<input type="text" id="input2">
 					<br><br>
-					<button id="getMem">Get Members</button><p id="members"></p>
+					<button type="button" id="getMem" disabled>Get Members</button><p id="members"></p>
 					<br><br>
-					<button id="delMem">Delete Membership</button><p id="memDel"></p>
+					<button type="button" id="delMem" disabled>Delete Membership</button><p id="memDel"></p>
 				</div>
 			</div>
 		</div>
@@ -154,16 +154,16 @@
 					<h3 class = "panel-title">Unfollow Group</h3>
 				</div>
 				<div class = "panel-body">
-					<button type="text" id="LoadGroupsUG">Load Groups</button><p id="lGrps"></p>
+					<button type="button" id="LoadGroupsUG">Load Groups</button><p id="lGrps"></p>
 					<br>
 					Group name:<br>
 					<input type="text" id="input3">
 					<br><br>
-					<button id="tab3Get">Get Followers</button><p id="tab3a"></p>
+					<button type="button" id="tab3Get" disabled>Get Followers</button><p id="tab3a"></p>
 					<br><br>
-					<button id="getStr">Load Streams</button><p id="tab3b"></p>
+					<button type="button" id="getStr" disabled>Load Streams</button><p id="tab3b"></p>
 					<br><br>
-					<button id="unFollow">Unfollow</button><p id="tab3c"></p>
+					<button type="button" id="unFollow" disabled>Unfollow</button><p id="tab3c"></p>
 				</div>
 			</div>
 		</div>
@@ -192,7 +192,7 @@
 						<input type="radio"  name="Formtype" id="secret" value="UNLISTED"> Unlisted
 					</form>
 					<br>
-					<button id="chURL">Change Group URL</button><p id="tab4"></p>
+					<button type="button" id="chURL" disabled>Change Group URL</button><p id="tab4"></p>
 				</div>
 			</div>
 		</div>
@@ -210,7 +210,7 @@
 				<br><br>
 				<input id="uploadHID" type="file" accept=".csv" name="Upload Hive ID"/>
 				<br><br>
-				<button id="addSGMem">Add Members</button><p id="tab5c"></p>
+				<button type="button" id="addSGMem" disabled>Add Members</button><p id="tab5c"></p>
 				</div>
 			</div>
 		</div>

@@ -105,6 +105,7 @@ $(function()
 	$("#toHDM").click(function()
 	{
 		$("#menu").hide();
+		$("#info").hide();
 		$("#tabs").tabs({active:0});
 		$("#hdm").show();
 		app.resize();
@@ -211,7 +212,6 @@ function nextGroupsHDM(request)
 			$(response.list).each(function(index,group)
 			{
 				allGroupsHDM.push(group);
-				//document.getElementById("loadG").innerHTML = "Loading: "+allGroupsHDM.indexOf(group);
 				$("#alertHDM").text("Loading all groups : "+allGroupsHDM.indexOf(group));
             });
             if (response.getNextPage)
@@ -221,7 +221,6 @@ function nextGroupsHDM(request)
 			}
 			if(!response.getNextPage)
 			{
-				//document.getElementById("loader").style.display = "none";	
 				document.getElementById("addGroup").disabled = false;
 				//$("#tabs").tabs("enable",0);
 				$("#alertHDM").text("Loaded all groups : "+allGroupsHDM.length);
@@ -378,7 +377,7 @@ function locs(request)
             if(!response.getNextPage)
             {
 				document.getElementById("getLocT2").disabled = false;
-			  //$("#tabs").tabs("enable",1);
+				//$("#tabs").tabs("enable",1);
 			    $( "#alertHDMT2.success" ).fadeOut();
             }
 		}
