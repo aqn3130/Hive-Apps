@@ -1,0 +1,305 @@
+<html>
+	<head>
+		<link rel="stylesheet" type="text/css" href="http://ajax.aspnetcdn.com/ajax/jquery.ui/1.11.4/themes/start/jquery-ui.css"/>
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+		<link rel="stylesheet" href="stylesheets/main.css" type="text/css" media="screen" />
+	</head>
+
+	<body>
+
+		<div class="container-fluid" id="icons">
+			<a href="#"><i class="glyphicon glyphicon-th" style="font-size:24px;color:#2F4F4F" align="right"></i></a>
+		</div>
+		<br><br><br>
+
+		<div class="icon-bar" id="menu">
+			<a href="#" id="toHDM"><i class="fa fa-address-card" style="font-size:48px"></i></a>
+			<a href="#" id="toUFG"><i class="fa fa-tasks" style="font-size:48px"></i></a>
+			<a href="#" id="toRGM"><i class="fa fa-users" style="font-size:48px"></i></a>
+			<a href="#" id="toUG"><i class="fa fa-user-times" style="font-size:48px"></i></a>
+			<a href="#" id="toCGU"><i class="fa fa-window-restore" style="font-size:48px"></i></a>
+			<a href="#" id="toASG"><i class="fa fa-address-book-o" style="font-size:48px"></i></a>
+			<a href="#" id="toGD"><i class="fa fa-hdd-o" style="font-size:48px"></i></a>
+			<a href="#" id="toFG"><i class="fa fa-user-plus" style="font-size:48px"></i></a>
+			<a href="#" id="toFS"><i class="fa fa-map-signs" style="font-size:48px"></i></a>
+		</div><br><br>
+		<div id="info" align="center"><p>Hover over an App for more information</p></div>
+		<div class="container-fluid" id="hdm">
+			<div id="tabs">
+				<ul>
+					<li><a href="#tabs-1">Create Group</a></li>
+					<li><a href="#tabs-2">Add Members</a></li>
+					<li><a href="#tabs-3">Send Notification</a></li>
+					<li><a href="#tabs-4">Received Responses</a></li>
+				</ul>
+
+				<div id="tabs-1">
+					<div id="alertHDM" class="alert-box success">Loading...</div>
+					<br>
+					<button id="loadGroupsHDM">Load Groups</button><p id="loadG"></p>
+					<br>
+					Group Name:<br>
+					<input type="text" id="name" value="" size="30" onkeyup="sync(this)"><h6 id="validName"></h6><br><br>
+					Group URL:<br>
+					<input type="text" id="dName" value="" size="30"><br><br>
+					<div id="guide">
+						<ol>
+							<li>Create Group: Create group, give it a name and URL</li><br>
+							<li>Add Members: Find locations and then add employees in that location to this group.</li><br>
+							<li>Send Notification: Select recepients then send your message.</li><br>
+							<li>Received Responses: View or downloaded replies, you must download references in order to be able to retrieve replies at a later time or if this App refereshed or closed.</li>
+						</ol>
+					</div>
+					<p id="loader"></p>
+					<h4>Group Type</h4>
+					<form id="typeForm">
+						<input type="radio"  name="Formtype" id="open" value="OPEN"> PUBLIC<br>
+						<input type="radio"  name="Formtype" id="Restricted" value="MEMBER_ONLY"> PUBLIC_Restricted<br>
+						<input type="radio"  name="Formtype" id="private" value="PRIVATE"> PRIVATE<br>
+						<input type="radio"  name="Formtype" id="secret" value="UNLISTED"> UNLISTED<br>
+					</form>
+					<br>
+					<button id="addGroup" disabled>Create Group</button>
+				</div>
+				<div id="tabs-2">
+					<div id="alertHDMT2" class="alert-box success">Loading...</div>
+					<button id="loadHDMLoc"> Load Locations</button>
+					<br><br>
+					<button id="getLocT2" disabled> Find Locations</button>
+					<br><br>
+					<div id="guide">
+						<ol>
+							<li>Finding Locations: Takes a few minutes before all locations found</li><br>
+							<li>Finding People: Takes about 1 minute to find all employees in this location</li><br>
+						</ol>
+					</div>
+					<form>
+						<select id = "Locations">
+						</select>
+					</form>
+					<br><br>
+					<button id="getPeople" disabled>Find people</button><br><br>
+					<p id="loader2"></p>
+					<button id="addMember" disabled>Add Member</button>
+				</div>
+
+				<div id="tabs-3">
+					<button id="getGrps">Select Recipients</button>
+					<br><br>
+					<textarea id="message" cols="50" rows="5"></textarea>
+					<br><br>
+					<button id="sendNoti">Send Notification</button>
+				</div>
+
+				<div id="tabs-4">
+					<button style="display: inline" class="inlineButtons" id="retRes">Retrieve Responses</button> OR
+					<input style="display: inline" accept=".csv" id="upload" name="Upload References" type="file">
+					<br><br>
+					<textarea cols="50" id="res" readonly="" rows="10"></textarea>
+					<br><br>
+					<div id="guide">
+						<ol>
+							<li>Download References: In order to be able to retrieve replies, References must be downloaded</li><br>
+							<li>Download Responses: You can download all replies as a CSV file</li><br>
+
+						</ol>
+					</div>
+					<button id="downloadRes">Download Responses</button>
+					<t><t>
+					<button id="downloadRef">Download References</button>
+				</div>
+
+			</div>
+		</div>
+		<div class="container-fluid" id="ufg">
+			<div id="alertUFG" class="alert-box success">Loading...</div>
+			<div class = "panel panel-default">
+				<div class = "panel-heading">
+					<h3 class = "panel-title">Make Group Public</h3>
+				</div>
+				<div class = "panel-body">
+					<button type="button" id="LoadGroups">Load Groups</button>
+
+					<button type="button" id="getInActives" style="float:right">Sync Users</button>
+
+					<br><br>
+					<button type="text" id="lineUpUsers" disabled>Load Active Users</button><p id="lUsers"></p><br><br>
+					Group name:<br>
+					<input type="text" id="addAll">
+					<br><br>
+					<button type="button" id="addAllButton" disabled>Create Membership</button><p id="memCreated"></p>
+				</div>
+			</div>
+		</div>
+
+		<div class="container-fluid" id="rgm">
+			<div id="alertRGM" class="alert-box success">Loading...</div>
+			<div class = "panel panel-default">
+				<div class = "panel-heading">
+					<h3 class = "panel-title">Remove Group Membership</h3>
+				</div>
+				<div class = "panel-body">
+					<button type="button" id="LoadGroupsRGM">Load Groups</button><p id="lGrps"></p>
+					<br>
+					Group name:<br>
+					<input type="text" id="input2">
+					<br><br>
+					<button type="button" id="getMem" disabled>Get Members</button><p id="members"></p>
+					<br><br>
+					<button type="button" id="delMem" disabled>Delete Membership</button><p id="memDel"></p>
+				</div>
+			</div>
+		</div>
+
+		<div class="container-fluid" id="ug">
+			<div id="alertUG" class="alert-box success">Loading...</div>
+			<div class = "panel panel-default">
+				<div class = "panel-heading">
+					<h3 class = "panel-title">Unfollow Group</h3>
+				</div>
+				<div class = "panel-body">
+					<button type="button" id="LoadGroupsUG">Load Groups</button><p id="lGrps"></p>
+					<br>
+					Group name:<br>
+					<input type="text" id="input3">
+					<br><br>
+					<button type="button" id="tab3Get" disabled>Get Followers</button>
+
+					<button type="button" id="getStr" disabled>Load Streams</button>
+
+					<button type="button" id="unFollow" disabled>Unfollow Group</button>
+					<br><br>
+					<button type="button" id="downFol" disabled>Download Followers</button>
+				</div>
+			</div>
+		</div>
+
+		<div class="container-fluid" id="cgu">
+			<div id="alertCGU" class="alert-box success">Loading...</div>
+			<div class = "panel panel-default">
+				<div class = "panel-heading">
+					<h3 class = "panel-title">Change Group URL</h3>
+				</div>
+				<div class = "panel-body">
+					<button type="text" id="LoadGroupsCGU">Load Groups</button><p id="lGrps"></p>
+					<br>
+					Group name:<br>
+
+					<input type="text" id="input4">
+					<br><br>
+					Group URL:<br>
+					<input type="text" id="grpURL">
+					<br><br>
+					Group Type:<br>
+					<form id="typeFormCGU">
+						<input type="radio"  name="Formtype" id="open" value="OPEN"> Public
+						<input type="radio"  name="Formtype" id="Restricted" value="MEMBER_ONLY"> OPEN_Restricted
+						<input type="radio"  name="Formtype" id="private" value="PRIVATE"> PRIVATE
+						<input type="radio"  name="Formtype" id="secret" value="UNLISTED"> Unlisted
+					</form>
+					<br>
+					<button type="button" id="chURL" disabled>Change Group URL</button><p id="tab4"></p>
+				</div>
+			</div>
+		</div>
+
+		<div class="container-fluid" id="asg">
+			<div id="alertASG" class="alert-box success">Loading...</div>
+			<div class = "panel panel-default">
+				<div class = "panel-heading">
+				<h3 class = "panel-title">Add security group</h3>
+				</div>
+				<div class = "panel-body">
+				<button id="loadSGrp">Load Security Groups</button><p id="tab5a"></p>
+				<br><br>
+				Security Group Name:<br>
+				<input type="text" id="sGrpname" disabled>
+				<br><br>
+				<input id="uploadHID" type="file" accept=".csv" name="Upload Hive ID" disabled/>
+				<br><br>
+				<button type="button" id="addSGMem" disabled>Add Members</button><p id="tab5c"></p>
+				</div>
+			</div>
+		</div>
+
+		<div class="container-fluid" id="gDri">
+			<div id="alertGoogleDri" class="alert-box success">Loading...</div>
+			<div class = "panel panel-default">
+				<div class = "panel-heading">
+				<h3 class = "panel-title">Add google drive</h3>
+				</div>
+				<div class = "panel-body">
+				<button type="button" id="getGoogleUsers">Add google drive</button>
+				<br><br>
+				<input id="uploadJIDs" type="file" accept=".csv" name="Upload Jive ID" disabled/>
+				<br><br>
+				<button type="button" id="downJidDiff" disabled>Download Jive ID</button>
+				</div>
+			</div>
+		</div>
+
+		<div class="container-fluid" id="fGrp">
+			<div id="alertFG" class="alert-box success">Loading...</div>
+			<div class = "panel panel-default">
+				<div class = "panel-heading">
+					<h3 class = "panel-title">Follow Group</h3>
+				</div>
+				<div class = "panel-body">
+					<button type="button" id="LoadGroupsFG">Load Groups</button>
+					<br><br>
+					Group name:<br>
+					<input type="text" id="inputFG" disabled>
+					<br><br>
+					<span>
+					<button style="display: inline" type="button" id="memFG" disabled>Get Members</button> OR
+					<input style="display: inline" id="uploadFG" type="file" accept=".csv" name="Upload Followers" disabled/>
+					</span>
+					<br><br>
+					<button type="button" id="follow" disabled>Follow Group</button>
+				</div>
+			</div>
+		</div>
+
+		<div class="container-fluid" id="fSpc">
+			<div id="alertFS" class="alert-box success">Loading...</div>
+			<div class = "panel panel-default">
+				<div class = "panel-heading">
+					<h3 class = "panel-title">Follow Space</h3>
+				</div>
+				<div class = "panel-body">
+					<button type="button" id="getAllspaces">Load Spaces</button>
+					<br><br>
+					Space name:<br>
+					<input type="text" id="inputFS" disabled>
+					<br><br>
+					<input style="display: inline" id="uploadSpc" type="file" accept=".csv" name="Upload sFollowers" disabled/>
+					<br><br>
+					<button type="button" id="followSpace" disabled>Follow Space</button>
+
+					<br><br>
+					<input style="display: inline" id="upFile" type="file" accept=".csv,.doc,.xlsx,image/*" name="Upload Files"/>
+
+					<br><br>
+					<button type="button" id="getSharepoint" >Get Sharepoint</button>
+
+					<br><br>
+					<button type="button" id="uploadFile" >Post File</button>
+
+				</div>
+			</div>
+		</div>
+
+		<script src="javascripts/jquery-3.1.1.min.js"></script>
+		<script src="javascripts/bootstrap.min.js"></script>
+		<script type="text/javascript" charset="utf-8" src="javascripts/app.js"></script>
+		<script type="text/javascript" charset="utf-8" src="javascripts/appe.js"></script>
+		<script type="text/javascript" charset="utf-8" src="javascripts/main.js"></script>
+		<script type="text/javascript" charset="utf-8" src="javascripts/space-auto-follow.js"></script>
+		<script type="text/javascript" charset="utf-8" src="javascripts/hive-users.js"></script>
+		<script type="text/javascript" charset="utf-8" src="javascripts/Upload_Files.js"></script>
+		<script type="text/javascript" src="http://ajax.aspnetcdn.com/ajax/jquery.ui/1.8.17/jquery-ui.min.js"></script>
+		<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+	</body>
+
+</html>

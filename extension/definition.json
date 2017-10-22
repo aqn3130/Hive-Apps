@@ -1,0 +1,14 @@
+{
+    "integrationUser": {
+        "systemAdmin": true,
+        "jiveServiceSignature": "32zA8yONLKI7y1V5ZZmh1rGvtjA="
+    },
+    "osapps": [
+        {
+            "id": "65f2a7f0-33da-4cf4-aa32-feb7a931cbf3",
+            "name": " Reference App",
+            "appPath": "65f2a7f033da4cf4aa32feb7a931cbf3",
+            "url": "/public/apps/simpleapp/app.xml"
+        }
+    ]
+}

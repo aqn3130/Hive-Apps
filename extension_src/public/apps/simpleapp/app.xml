@@ -51,7 +51,7 @@
    <Require feature="selection"/>
    <Require feature="embedded-experiences"/>
 	 <Require feature="actions">
-		    <Param name="action-contributions">
+        <Param name="action-contributions">
    			<![CDATA[
            <!--
            #### UNCOMMENT THIS TO HIDE THE APP FROM THE APPS MENU IN THE NAV BAR ####
@@ -76,9 +76,9 @@
 
            <action id="example.app.places.group.tab"
                    path="jive/tabs/places/group"
-                   label="Example (Group)"
+                   label="Hive Apps"
                    view="place-group-tab"/>
-			-->
+       -->
            <action id="example.app.actions.tab"
                    path="jive/tabs/actions"
                    label="Hive Apps"
@@ -138,12 +138,12 @@
                    path="jive/actions/content/event"
                    label="Example (Event)"
                    view="content-action-event"/>
-			
+
            <action id="example.app.createmenu.action"
                    path="jive/actions/navmenu"
                    label="HDM"
                    view="createmenu-action"/>
-			
+
            <action id="example.app.places.all.action"
                    path="jive/actions/places/*"
                    label="Example (All Places)"

@@ -29,25 +29,27 @@ function onReady(env) {
   var jiveURL = env["jiveUrl"];
 
   //TODO: ADD IN UI INIT STUFF
-	
+
 	$("#hdm").hide();
 	$("#ufg").hide();
 	$("#rgm").hide();
 	$("#ug").hide();
 	$("#cgu").hide();
 	$("#asg").hide();
-	
+  $("#gDri").hide();
+  $("#fGrp").hide();
+  $("#fSpc").hide();
 	app.resize();
 } // end function
 
 function onViewer(viewer) {
-	console.log("onViewer",viewer);
+	//console.log("onViewer",viewer);
 	$("#currentUser").html("<pre>"+JSON.stringify(viewer,null,2)+"</pre>");
-	
+
 } // end function
 
 function onView(context) {
-  console.log("onView",context);
+  //console.log("onView",context);
 
   if (context["currentView"]) {
     $('span.viewContext').append('<em>'+context["currentView"]+"</em>");
@@ -68,12 +70,13 @@ function onView(context) {
   });
 
 } // end function
+
 /**********************************************************************
 								HDM
 ***********************************************************************/
-var groupHDM = 
+var groupHDM =
 {
-	groupObj:"",
+	grp_hdm:"",
 	groupID:"",
 	groupName:"",
 	groupURI:"",
@@ -82,53 +85,99 @@ var groupHDM =
 	location:"",
 	groupTab4:"",
 	groupReps:"",
-	groupData:""
+	groupData:"",
+  data:"",
+  authName:"",
+  reply:"",
+  grp_id_cancel:""
+
 };
 
-var allGroupsHDM=[],
-	peopleInLocation=[],
-	peopleInThisLocation=[],
-	allLocs=[],
-	uniqueLocs=[],
-	replies=[],
-	groupMembers=[],
-	dmsArray=[],
-	dmIDArray=[],
-	uniqueReplies=[],
-	replyArray=[],
-	lines = [];
-
+var hdm_Arrays=
+{
+  allGroupsHDM:[],
+	peopleInThisLocation:[],
+	allLocs:[],
+	uniqueLocs:[],
+	replies:[],
+	groupMembers:[],
+	dmsArray:[],
+	replyArray:[],
+	lines:[]
+};
 
 $(function()
 {
-		
+
 	$("#toHDM").click(function()
 	{
 		$("#menu").hide();
 		$("#info").hide();
 		$("#tabs").tabs({active:0});
 		$("#hdm").show();
-		app.resize();
-		
+    $("#guide_text1, #guide_text2, #guide_text3").hide();
+    $("#guide1,#guide2,#guide3").hover(function ()
+    {
+        $("#guide_text1,#guide_text2,#guide_text3").show();
+        },
+        function () {
+          $("#guide_text1,#guide_text2,#guide_text3").hide();
+    });
+
+    app.resize();
+
 	});
 	$("#icons").click(function()
 	{
-		
+    $("#tabs").tabs({disabled:[1,2,3,4]});
+
 		$("#hdm").hide();
 		$("#ufg").hide();
 		$("#rgm").hide();
 		$("#ug").hide();
 		$("#cgu").hide();
 		$("#asg").hide();
-		$("#menu").show();
-		$("#info").show();
-		$("#input2").val("");
-		$("#addAll").val("");
-		$("#res").val("");
-		$("#alertUFG,#alertRGM").text("Loading...");
-		
+    $("#gDri").hide();
+    $("#fGrp").hide();
+    $("#fSpc").hide();
+
+        for(var key in group)
+        {
+            group[key]="";
+        }
+        for(var key in groupHDM)
+        {
+            groupHDM[key]="";
+        }
+        for(var key in hiveArrays)
+        {
+            if(hiveArrays[key]!=hiveArrays.allGroups){
+                hiveArrays[key].length=0;
+            }
+
+        }
+        for(var key in hdm_Arrays)
+        {
+              hdm_Arrays[key].length=0;
+        }
+
+        for(var key in spaceVar)
+        {
+              spaceVar[key]="";
+        }
+        for(var key in spaceArrays)
+        {
+              spaceArrays[key].length=0;
+        }
+
+        $("#lineUpUsers,#getMem,#tab3Get,#chURL").prop("disabled",true);
+
+        $("#input2,#input5,#addAll,#res,#uploadHID,#input4,#grpURL,#input3,#uploadFG,#inputFG,#uploadSpc,#inputFS").val("");
+        $( "#alertGoogleDri.success,#alertUFG.success,#alertRGM.success,#alertUG.success,#alertCGU.success,#alertFG.success,#alertASG.success,#alertFS.success" ).fadeOut();
+        $("#menu").show();
+        $("#info").show();
 		app.resize();
-		
+
 	});
 	$("#toUFG").click(function()
 	{
@@ -136,7 +185,7 @@ $(function()
 		$("#info").hide();
 		$("#ufg").show();
 		app.resize();
-		
+
 	});
 	$("#toRGM").click(function()
 	{
@@ -144,7 +193,7 @@ $(function()
 		$("#info").hide();
 		$("#rgm").show();
 		app.resize();
-		
+
 	});
 	$("#toUG").click(function()
 	{
@@ -152,7 +201,7 @@ $(function()
 		$("#info").hide();
 		$("#ug").show();
 		app.resize();
-		
+
 	});
 	$("#toCGU").click(function()
 	{
@@ -160,7 +209,7 @@ $(function()
 		$("#info").hide();
 		$("#cgu").show();
 		app.resize();
-		
+
 	});
 	$("#toASG").click(function()
 	{
@@ -168,16 +217,45 @@ $(function()
 		$("#info").hide();
 		$("#asg").show();
 		app.resize();
-		
+
 	});
-	
+
+  $("#toGD").click(function()
+	{
+		$("#menu").hide();
+		$("#info").hide();
+		$("#gDri").show();
+		app.resize();
+
+	});
+
+  $("#toFG").click(function()
+	{
+		$("#menu").hide();
+		$("#info").hide();
+		$("#fGrp").show();
+		app.resize();
+
+	});
+  $("#toFS").click(function()
+	{
+		$("#menu").hide();
+		$("#info").hide();
+		$("#fSpc").show();
+		app.resize();
+
+	});
+
 	$("#toHDM").mouseenter(function(){$("#info").text("Disaster Management");});
 	$("#toUFG").mouseenter(function(){$("#info").text("Make a group public by adding all active users as members");});
 	$("#toRGM").mouseenter(function(){$("#info").text("Remove group membership");});
 	$("#toUG").mouseenter(function(){$("#info").text("Unfollow a group");});
 	$("#toCGU").mouseenter(function(){$("#info").text("Change group URL");});
 	$("#toASG").mouseenter(function(){$("#info").text("Add members to a security group");});
-	$("#toHDM,#toUFG,#toRGM,#toUG,#toCGU,#toASG").mouseleave(function(){$("#info").text("Hover over an App for more information");});
+  $("#toGD").mouseenter(function(){$("#info").text("Add google drive as external storage");});
+  $("#toFG").mouseenter(function(){$("#info").text("Follow a social group");});
+  $("#toFS").mouseenter(function(){$("#info").text("Follow a Space");});
+	$("#toHDM,#toUFG,#toRGM,#toUG,#toCGU,#toASG,#toGD,#toFG,#toFS").mouseleave(function(){$("#info").text("Hover over an App for more information");});
 });
 
 //Get all groups
@@ -185,7 +263,7 @@ $(function()
 {
 	$("#loadGroupsHDM").click(function()
 	{
-		allGroupsHDM.length=0;
+		hdm_Arrays.allGroupsHDM.length=0;
 		var request = osapi.jive.corev3.groups.get({fields:'placeID,name,displayName',count:100});
 		nextGroupsHDM(request);
 		$("#tabs-1:input").attr("disabled",true);
@@ -211,8 +289,8 @@ function nextGroupsHDM(request)
 		{
 			$(response.list).each(function(index,group)
 			{
-				allGroupsHDM.push(group);
-				$("#alertHDM").text("Loading all groups : "+allGroupsHDM.indexOf(group));
+				hdm_Arrays.allGroupsHDM.push(group);
+				$("#alertHDM").text("Loading all groups : "+hdm_Arrays.allGroupsHDM.indexOf(group));
             });
             if (response.getNextPage)
 			{
@@ -223,8 +301,8 @@ function nextGroupsHDM(request)
 			{
 				document.getElementById("addGroup").disabled = false;
 				//$("#tabs").tabs("enable",0);
-				$("#alertHDM").text("Loaded all groups : "+allGroupsHDM.length);
-				$( "#alertHDM.success" ).fadeOut(2000);
+				$("#alertHDM").text("Loaded all groups : "+hdm_Arrays.allGroupsHDM.length);
+				//$( "#alertHDM.success" ).fadeOut(2000);
 			}
 		}
 		//console.log("All Groups are" + JSON.stringify(group.objGroup));
@@ -234,8 +312,28 @@ function nextGroupsHDM(request)
 
 //Tabs function
 $(function(){
-	$("#tabs").tabs();
-    //$("#tabs").tabs({disabled:[0,1,2,3]});
+  	$("#tabs").tabs();
+
+    $("#tabs").tabs({disabled:[1,2,3,4]});
+    $("#new_Request").click(function()
+    {
+        $("#tabs").tabs({disabled:[0,2,3,4]});
+        $("#tabs").tabs({active:1});
+        app.resize();
+    });
+    $("#existing_Req").click(function()
+    {
+        $("#tabs").tabs({disabled:[0,1,2,3]});
+        $("#tabs").tabs({active:4});
+        app.resize();
+    });
+    $("#home").click(function()
+    {
+        $("#tabs").tabs({disabled:[1,2,3,4]});
+        $("#tabs").tabs({active:0});
+        app.resize();
+    });
+
 });
 
 //Sync text fields function
@@ -256,27 +354,27 @@ $(function()
 		groupHDM.groupURL = $("#dName").val();
 		$("input[id='name']").css("color", "black");
 		$("input[id='dName']").css("color", "black");
-		document.getElementById("validName").innerHTML = "";	
-	  
-        $.each(allGroupsHDM, function(index, value)
+		document.getElementById("validName").innerHTML = "";
+
+        $.each(hdm_Arrays.allGroupsHDM, function(index, value)
         {
 			if(value.name == groupHDM.groupName)
 			{
 				$("input[id='name']").css("color", "red");
 				groupHDM.groupName = null;
 				document.getElementById("validName").innerHTML = "This name is taken";
-				return;  
+				return;
 			}
 			return groupHDM.groupName;
 		});
 	});
-	
+
     $("#dName").on('input',function()
     {
 		groupHDM.groupURL = $("#dName").val();
 		$("input[id='dName']").css("color", "black");
-	  	
-        $.each(allGroupsHDM, function(index, value)
+
+        $.each(hdm_Arrays.allGroupsHDM, function(index, value)
         {
 			if(value.displayName == groupHDM.groupURL)
 			{
@@ -293,41 +391,74 @@ $(function()
 //Create Group function
 $(function()
 {
-	$("#typeForm input").on("change", function()
-	{
-		groupHDM.groupType=$("input[name=Formtype]:checked", "#typeForm").val();
-	});
 	$("#addGroup").click(function()
     {
-	  	if(	groupHDM.groupType =="" || groupHDM.groupURL=="" || groupHDM.groupName=="" || groupHDM.groupName==null || groupHDM.groupURL==null)
-		{
-			alert(" Please provide valid group name, URL and Type");
-			return false;	
-		}
-		else
-		{
+      groupHDM.groupType=$("input[name=Formtype]:checked", "#typeForm").val();
+
+      if(	groupHDM.groupType =="" || groupHDM.groupURL=="" || groupHDM.groupName=="" || groupHDM.groupName==null || groupHDM.groupURL==null)
+  		{
+  			alert(" Please provide valid group name, URL and Type");
+  			return false;
+  		}
+  		else
+  		{
 			osapi.jive.corev3.groups.create(
 			{
-				"displayName":groupHDM.groupURL,
+        "displayName":groupHDM.groupURL,
 				"name":groupHDM.groupName,
 				"groupType":groupHDM.groupType
+
 			}).execute(function(response)
 			{
-				groupHDM.groupObj = response;
+				groupHDM.grp_hdm = response;
+        groupHDM.grp_id_cancel = response.placeID;
+        //$("#alertHDM").text("Group: "+groupHDM.groupName+" created");
+
 			});
-			$("#tabs").tabs("enable",1);
-			$("#tabs").tabs({active:1});
+			$("#tabs").tabs("enable",2);
+			$("#tabs").tabs({active:2});
+      $("#tabs").tabs("disable",1);
 		}
     });
 });
 //End of Create Group function
-	
+
+//Cancel
+$(function()
+{
+    $("#cancel").click(function()
+    {
+        osapi.jive.core.delete(
+          {
+            "v":"v3",
+            "href":"/places/"+groupHDM.grp_id_cancel
+          }
+        ).execute(function(response){});
+        $("#tabs").tabs({disabled:[1,2,3,4]});
+        $("#tabs").tabs({active:0});
+
+        for(var key in groupHDM)
+        {
+            groupHDM[key]="";
+        }
+
+        for(var key in hdm_Arrays)
+        {
+              hdm_Arrays[key].length=0;
+        }
+        $("#alertHDMT2, #alertHDM, #name, #dName, #typeForm").val("");
+        $( "#alertHDMT2.success, #alertHDM.success" ).fadeOut();
+        app.resize();
+    });
+});
+//End Cancel
+
 //Get Location
 $(function()
 {
     $("#Locations").on("change", function()
     {
-		groupHDM.location = $("#Locations").val(); 
+		groupHDM.location = $("#Locations").val();
 		window.alert("You have selected location: "+groupHDM.location);
 		document.getElementById("addMember").disabled = false;
     });
@@ -360,13 +491,13 @@ function locs(request)
 		}
 		else
 		{
-			
+
 			$(response.list).each(function(index,person)
 			{
 			  if(person.location != null)
 				{
-					allLocs.push(person.location);
-					
+					hdm_Arrays.allLocs.push(person.location);
+          $("#alertHDMT2").text("Loading location: "+person.location);
 				}
 			});
             if (response.getNextPage)
@@ -378,7 +509,7 @@ function locs(request)
             {
 				document.getElementById("getLocT2").disabled = false;
 				//$("#tabs").tabs("enable",1);
-			    $( "#alertHDMT2.success" ).fadeOut();
+			    $("#alertHDMT2").text("Successfuly Loaded All Locations");
             }
 		}
 	});
@@ -387,31 +518,31 @@ function locs(request)
 
 $(function()
 {
-	$("#getLocT2").click(function()
-	{
-		
-		$.each(allLocs, function(i, el)
-		{
-			if($.inArray(el, uniqueLocs) === -1) uniqueLocs.push(el);
-		});
-      	for(i=0;i<uniqueLocs.length;i++)
-		{
+  	$("#getLocT2").click(function()
+  	{
+
+    		$.each(hdm_Arrays.allLocs, function(i, el)
+    		{
+    			if($.inArray(el, hdm_Arrays.uniqueLocs) === -1) hdm_Arrays.uniqueLocs.push(el);
+    		});
+      	for(i=0;i<hdm_Arrays.uniqueLocs.length;i++)
+    		{
             var selections = document.getElementById("Locations");
-		    var option = document.createElement("option");
-            if(uniqueLocs[i]!=null&&uniqueLocs[i]!="Test"&&uniqueLocs[i]!="")
-		    { 
-                option.text = uniqueLocs[i];
-				selections.add(option);
-				
+    		    var option = document.createElement("option");
+            if(hdm_Arrays.uniqueLocs[i]!=null&&hdm_Arrays.uniqueLocs[i]!="Test"&&hdm_Arrays.uniqueLocs[i]!="")
+    		    {
+                option.text = hdm_Arrays.uniqueLocs[i];
+        				selections.add(option);
+
             }
-		}
-		var txtVal = document.getElementById("Locations");
-		option.text = "";
-		option.selected=true;
-		txtVal.add(option,0);
-		document.getElementById("getPeople").disabled = false;
-		
-	});
+    		}
+    		var txtVal = document.getElementById("Locations");
+    		option.text = "";
+    		option.selected=true;
+    		txtVal.add(option,0);
+    		document.getElementById("getPeople").disabled = false;
+
+  	});
 });
 
 //Get all people by location
@@ -420,11 +551,11 @@ $(function()
 	$("#getPeople").click(function()
 	{
 		var request = osapi.jive.corev3.people.getAll({fields:'@all',count:100});
-	    peopleInThisLocation.length=0;
-		$( "#alertHDMT2.success" ).fadeIn();
+	    hdm_Arrays.peopleInThisLocation.length=0;
+		$("#alertHDMT2").text("Loading people in this location...");
 		nextPagePIL(request);
-		
-	});	
+
+	});
 });
 function nextPagePIL(request)
 {
@@ -441,24 +572,25 @@ function nextPagePIL(request)
 		}
 		else
 		{
-			$(response.list).each(function(index,person)
-			{
-			  if(person.location == groupHDM.location)
-              {
-                peopleInThisLocation.push(person);
-              }
-            });
-            if (response.getNextPage)
-			{
-				var requestNextPage = response.getNextPage();
-				nextPagePIL(requestNextPage);
-			}
-			if(!response.getNextPage)
+  			$(response.list).each(function(index,person)
+  			{
+    			  if(person.location == groupHDM.location)
             {
-				document.getElementById("addMember").disabled = false;
-				$( "#alertHDMT2.success" ).fadeOut();
+                hdm_Arrays.peopleInThisLocation.push(person);
+                $("#alertHDMT2").text("Loading: "+person.displayName);
             }
+        });
+        if (response.getNextPage)
+  			{
+    				var requestNextPage = response.getNextPage();
+    				nextPagePIL(requestNextPage);
+  			}
+  			if(!response.getNextPage)
+        {
+    				document.getElementById("addMember").disabled = false;
+    				$("#alertHDMT2").text("People Successfuly Loaded: "+hdm_Arrays.peopleInThisLocation.length);
         }
+    }
 	});
 }
 //end function get all people by location
@@ -468,13 +600,13 @@ $(function()
 {
 	$("#addMember").click(function()
 	{
-		$( "#alertHDM.success" ).fadeIn();
+
 		var batchRequests = osapi.newBatch();
-		$(peopleInThisLocation).each(function(index,person)
+		$(hdm_Arrays.peopleInThisLocation).each(function(index,person)
 		{
 			batchRequests.add
 			(
-				person,groupHDM.groupObj.createMember(
+				person,groupHDM.grp_hdm.createMember(
 				{
 					person:person.toURI(),
 					state:"member"
@@ -483,24 +615,25 @@ $(function()
 		});
 		batchRequests.execute(function(response)
 		{
-			
+
 		});
-		$("#alertHDM").text("A total of "+peopleInThisLocation.length+" added to group "+groupHDM.groupName)
-		$( "#alertHDM.success" ).fadeOut(3000);
-		$("#tabs").tabs("enable",2);
-		$("#tabs").tabs({active:2});
-		
+		$("#alertHDMT2").text("A total of "+hdm_Arrays.peopleInThisLocation.length+" added to group "+groupHDM.groupName)
+		//$( "#alertHDMT2.success" ).fadeOut(3000);
+		$("#tabs").tabs("enable",3);
+		$("#tabs").tabs({active:3});
+    $("#tabs").tabs("disable",2);
+
 	});
 });
 //end of add member
 
 //Get group followers
 $(function()
-{	
+{
 	$("#getGrps").click(function()
 	{
-		groupMembers.length=0;
-		var request = groupHDM.groupObj.getFollowers({count:100});
+		hdm_Arrays.groupMembers.length=0;
+		var request = groupHDM.grp_hdm.getFollowers({count:100});
 		getGroups(request);
 	});
 });
@@ -523,7 +656,7 @@ function getGroups(request)
 		{
 			$(response.list).each(function(index,member)
 			{
-				groupMembers.push(member);
+				hdm_Arrays.groupMembers.push(member);
 			});
 			if(response.getNextPage)
 			{
@@ -532,8 +665,7 @@ function getGroups(request)
 			}
 			if(!response.getNextPage)
 			{
-				window.alert("All group followers for group: "+groupHDM.groupObj.name+" selected! \n Followers Found: "+groupMembers.length);
-				
+				window.alert("All group followers for group: "+groupHDM.grp_hdm.name+" selected! \n Followers Found: "+hdm_Arrays.groupMembers.length);
 			}
 		}
 	});
@@ -547,12 +679,15 @@ $(function()
     {
 		var notification = $("#message").val();
 		var confirmation = confirm("Please confirm to send notification");
-		
-		if(confirmation == true)
+    if(notification == "")
+    {
+        alert("Message box cannot be blank!")
+    }
+    else if(confirmation === true)
 		{
-			$(groupMembers).each(function(index,member)
-			{	
-				
+			$(hdm_Arrays.groupMembers).each(function(index,member)
+			{
+
 				if(member != null)
 				{
 					osapi.jive.corev3.dms.create(
@@ -563,7 +698,7 @@ $(function()
 							text:notification
 						},
 						participants:[member.toURI()]
-					
+
 					}).execute(function(response)
 					{
 						if(response.error)
@@ -577,13 +712,14 @@ $(function()
 							groupHDM.groupReps = response;
 							var responseID = groupHDM.groupReps.id;
 							//alert(responseID);
-							dmsArray.push(responseID);
+							hdm_Arrays.dmsArray.push(responseID);
 						}
 					});
 				}
 			});
-			$("#tabs").tabs("enable",3);
-			$("#tabs").tabs({active:3});
+			$("#tabs").tabs("enable",4);
+			$("#tabs").tabs({active:4});
+      $("#tabs").tabs("disable",3);
 		}
 		else
 		{
@@ -598,18 +734,23 @@ $(function()
 {
 	$("#retRes").click(function()
 	{
-		replies.length=0;
+		hdm_Arrays.replies.length=0;
+        groupHDM.data="";
+        groupHDM.reply="";
+        groupHDM.authName="";
+        $("#res").val("");
+        hdm_Arrays.replyArray.length=0;
 
-		if(dmsArray == null || dmsArray == "")
+		if(hdm_Arrays.dmsArray == null || hdm_Arrays.dmsArray == "")
 		{
-			if(lines =="" || lines == null)
+			if(hdm_Arrays.lines =="" || hdm_Arrays.lines == null)
 			{
 				alert("No reference data found, please import references first!")
 				return false;
 			}
 			else{
-			
-				$(lines).each(function(index,id)
+
+				$(hdm_Arrays.lines).each(function(index,id)
 				{
 					var request = osapi.jive.core.get(
 					{
@@ -620,7 +761,7 @@ $(function()
 						excludeReplies:true,
 						fields:"@all",
 						href:"/dms/"+id+"/comments/"
-			
+
 					});
 					nextComments(request);
 				});
@@ -628,7 +769,7 @@ $(function()
 		}
 		else
 		{
-			$(dmsArray).each(function(index,id)
+			$(hdm_Arrays.dmsArray).each(function(index,id)
 			{
 				var request = osapi.jive.core.get(
 				{
@@ -639,7 +780,7 @@ $(function()
 					excludeReplies:true,
 					fields:"@all",
 					href:"/dms/"+id+"/comments/"
-        
+
 				});
 				nextComments(request);
 			});
@@ -665,7 +806,7 @@ function nextComments(response)
 		{
 			$(response.list).each(function(index,comment)
 			{
-				replies.push(comment);
+				hdm_Arrays.replies.push(comment);
 			});
 			if(response.nextPage)
 			{
@@ -674,28 +815,24 @@ function nextComments(response)
 			}
 			if(!response.nextPage)
 			{
-				var data="";
-				var reply="";
-				var authName="";
-				$("#res").val("");
-				replyArray.length=0;
-				$(replies).each(function(index,response)
+
+				$(hdm_Arrays.replies).each(function(index,response)
 				{
 					if(response.author.displayName != response.parentPlace.name && $("#res").val().search(response.author.displayName) == -1 )
 					{
-						reply = $(response.content.text).text();
-						authName = response.author.displayName;
-						
-						data += authName+" : "+reply+"\n";
+						groupHDM.reply = $(response.content.text).text();
+						groupHDM.authName = response.author.displayName;
+
+						groupHDM.data += groupHDM.authName+" : "+groupHDM.reply+"\n";
 						//reply += $(response.content.text).text()+"\n";
 
-						$("#res").val(data);
+						$("#res").val(groupHDM.data);
 						//$("#res").val(response.author.displayName+" : "+reply+"\n");
-						var comments = response.author.displayName+" : "+reply;
-						replyArray.push(comments);
+						var comments = response.author.displayName+" : "+groupHDM.reply;
+						hdm_Arrays.replyArray.push(comments);
 					}
 				});
-				//console.log("all replies: "+JSON.stringify(replyArray));
+				//console.log("all hdm_Arrays.replies: "+JSON.stringify(hdm_Arrays.replyArray));
 			}
 		}
 	});
@@ -708,13 +845,13 @@ $(function()
 	$("#downloadRes").click(function()
 	{
 		var csvCont = "data:text/csv;charset=utf-8,";
-		dataString = replyArray.join(",");
-		dataString = replyArray.join("\n");
+		dataString = hdm_Arrays.replyArray.join(",");
+		dataString = hdm_Arrays.replyArray.join("\n");
 		csvCont += dataString;
-		
+
 		var encodedUri = encodeURI(csvCont);
 		var link = document.createElement("a");
-		
+
 		link.setAttribute("href", encodedUri);
 		link.setAttribute("download", "Responses.csv");
 		document.body.appendChild(link);
@@ -729,12 +866,12 @@ $(function()
 	$("#downloadRef").click(function()
 	{
 		var csvCont = "data:text/csv;charset=utf-8,";
-		dataString = dmsArray.join(",");
+		dataString = hdm_Arrays.dmsArray.join(",");
 		csvCont += dataString;
-		
+
 		var encodedUri = encodeURI(csvCont);
 		var link = document.createElement("a");
-		
+
 		link.setAttribute("href", encodedUri);
 		link.setAttribute("download", "References.csv");
 		document.body.appendChild(link);
@@ -758,7 +895,8 @@ $(function()
 	}
 	function upload(evt)
 	{
-		if(!browserSupport())
+		hdm_Arrays.lines.length=0;
+        if(!browserSupport())
 		{
 			alert("File upload is not supported by your browser!")
 		}
@@ -773,10 +911,10 @@ $(function()
 				var header = references.split(",");
 				for(i=0;i<header.length;i++)
 				{
-					lines.push(header[i]);
+					hdm_Arrays.lines.push(header[i]);
 				}
 			}
-			console.log("uploaded file: "+lines);
+
 			reader.readAsText(file);
 			reader.onerror = function()
 			{
