@@ -111,22 +111,23 @@ $(function()
 
 	$("#toHDM").click(function()
 	{
-		$("#menu").hide();
-		$("#info").hide();
+		// $("#menu").hide();
+		// $("#info").hide();
 		$("#tabs").tabs({active:0});
-		$("#hdm").show();
-    $("#guide_text1, #guide_text2, #guide_text3").hide();
+		// $("#hdm").show();
+	window.open("hdm.html","_blank", "toolbar=yes,scrollbars=yes,resizable=yes,top=100,left=500,width=800,height=500");
+    app.resize();
+
+	});
+	$("#guide_text1, #guide_text2, #guide_text3").hide();
     $("#guide1,#guide2,#guide3").hover(function ()
     {
         $("#guide_text1,#guide_text2,#guide_text3").show();
         },
         function () {
           $("#guide_text1,#guide_text2,#guide_text3").hide();
-    });
-
-    app.resize();
-
 	});
+	
 	$("#icons").click(function()
 	{
     $("#tabs").tabs({disabled:[1,2,3,4]});
