@@ -87,12 +87,13 @@ input[type = 'text'] {
 
 #guide1,#guide2,#guide3{
     position: absolute;
-    left:900px;
+    left:600px;
     top:60px;
+    
 }
 #guide_text1,#guide_text2,#guide_text3{
     position: absolute;
-    left:600px;
+    left:400px;
     top:150px;
     font-family: inherit;
     font-size: 11px;

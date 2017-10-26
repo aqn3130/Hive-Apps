@@ -65,7 +65,7 @@ function getActive(request)
         }
         else if (!response.list)
         {
-            alert("Response is not a list!")
+            alert("Response is not a list!");
         }
         else
         {

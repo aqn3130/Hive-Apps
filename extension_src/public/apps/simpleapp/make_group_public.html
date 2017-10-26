@@ -1,0 +1,46 @@
+<html>
+        <head>
+            <link rel="stylesheet" type="text/css" href="http://ajax.aspnetcdn.com/ajax/jquery.ui/1.11.4/themes/start/jquery-ui.css"/>
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+            <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+            <link rel="stylesheet" href="stylesheets/main.css" type="text/css" media="screen" />
+        </head>
+    
+        <body>
+            <div class="container-fluid" id="ufg">
+                    <div id="alertUFG" class="alert-box success">Loading...</div>
+                    <div class = "panel panel-default">
+                        <div class = "panel-heading">
+                            <h3 class = "panel-title">Make Group Public</h3>
+                        </div>
+                        <div class = "panel-body">
+                            <button type="button" id="LoadGroups">Load Groups</button>
+        
+                            <button type="button" id="getInActives" style="float:right">Sync Users</button>
+        
+                            <br><br>
+                            <button type="text" id="lineUpUsers" disabled>Load Active Users</button><p id="lUsers"></p><br><br>
+                            Group name:<br>
+                            <input type="text" id="addAll">
+                            <br><br>
+                            <button type="button" id="addAllButton" disabled>Create Membership</button><p id="memCreated"></p>
+                        </div>
+                    </div>
+                </div>
+
+            <script src="javascripts/jquery-3.1.1.min.js"></script>
+            <script src="javascripts/bootstrap.min.js"></script>
+            
+            <script type="text/javascript" charset="utf-8" src="javascripts/hdm.js"></script>
+            <!-- <script type="text/javascript" charset="utf-8" src="javascripts/appe.js"></script> -->
+            <script type="text/javascript" charset="utf-8" src="javascripts/main.js"></script>
+            <!-- <script type="text/javascript" charset="utf-8" src="javascripts/space-auto-follow.js"></script> -->
+            <!-- <script type="text/javascript" charset="utf-8" src="javascripts/hive-users.js"></script> -->
+            <!-- <script type="text/javascript" charset="utf-8" src="javascripts/Upload_Files.js"></script> -->
+            <script type="text/javascript" charset="utf-8" src="javascripts/make_group_public.js"></script>
+            <!--<script type="text/javascript" charset="utf-8" src="javascripts/Jive_ID.js"></script>-->
+            <script type="text/javascript" src="http://ajax.aspnetcdn.com/ajax/jquery.ui/1.8.17/jquery-ui.min.js"></script>
+            <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+        </body>
+    
+    </html>
