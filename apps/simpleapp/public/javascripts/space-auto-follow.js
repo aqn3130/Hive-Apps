@@ -102,58 +102,58 @@ $("#uploadSpc").change(function(evt)
 					spaceArrays.folSpace.push(header[i]);
 				}
 
-        for(i=0;i<spaceArrays.folSpace.length;i+=spaceVar.emailBatch)
-        {
-            spaceArrays.arrEmailBatch.push(spaceArrays.folSpace.slice(i,i+spaceVar.emailBatch));
-            //return hiveArrays.arrBatch;
-        }
-        if(spaceArrays.arrEmailBatch.length==0)
-        {
-            $("#alertFS").text("List is empty...");
-        }
-        else {
-
-            for(i=0;i<spaceArrays.arrEmailBatch.length;i++)
-            {
-                (function(x)
+                for(i=0;i<spaceArrays.folSpace.length;i+=spaceVar.emailBatch)
                 {
-                      setTimeout(function()
-                      {
-                          $(spaceArrays.arrEmailBatch[x]).each(function(index,email)
-                          {
-                                osapi.jive.core.get(
-                                {
-                                    "v":"v3",
-                                    "href":"/people/email/"+email,
-                                    "fields":"id,displayName"
-                                }).execute(function(response)
-                                {
-                                    if(response.error)
-                                    {
-                                        var message = response.error.message;
-                                        $("#alertFS").text(message);
-                                    }
-                                    else
-                                    {
-                                        spaceArrays.jiveId.push(response.id);
-                                        $("#alertFS").text("Email identified: "+response.displayName);
-                                        $("#alertFS").text("Completed Batch: "+x+" of "+spaceArrays.arrEmailBatch.length);
+                    spaceArrays.arrEmailBatch.push(spaceArrays.folSpace.slice(i,i+spaceVar.emailBatch));
+                    //return hiveArrays.arrBatch;
+                }
+                if(spaceArrays.arrEmailBatch.length==0)
+                {
+                    $("#alertFS").text("List is empty...");
+                }
+                else {
 
-                                        if(spaceArrays.arrEmailBatch.length-1 == x)
+                    for(i=0;i<spaceArrays.arrEmailBatch.length;i++)
+                    {
+                        (function(x)
+                        {
+                            setTimeout(function()
+                            {
+                                $(spaceArrays.arrEmailBatch[x]).each(function(index,email)
+                                {
+                                        osapi.jive.core.get(
                                         {
-                                            $("#alertFS").text("All Batches Completed!");
-                                            $("#alertFS").text("Total identified: "+spaceArrays.jiveId.length);
-                                        }
-                                        //console.log(response);
-                                        //console.log(spaceArrays.jiveId);
-                                    }
-                                });
-                          });
+                                            "v":"v3",
+                                            "href":"/people/email/"+email,
+                                            "fields":"id,displayName"
+                                        }).execute(function(response)
+                                        {
+                                            if(response.error)
+                                            {
+                                                var message = response.error.message;
+                                                $("#alertFS").text(message);
+                                            }
+                                            else
+                                            {
+                                                spaceArrays.jiveId.push(response.id);
+                                                $("#alertFS").text("Email identified: "+response.displayName);
+                                                $("#alertFS").text("Completed Batch: "+x+" of "+spaceArrays.arrEmailBatch.length);
 
-                      },60000*x);
-                })(i);
-            }//End for loop
-        }//End else
+                                                if(spaceArrays.arrEmailBatch.length-1 == x)
+                                                {
+                                                    $("#alertFS").text("All Batches Completed!");
+                                                    $("#alertFS").text("Total identified: "+spaceArrays.jiveId.length);
+                                                }
+                                                //console.log(response);
+                                                //console.log(spaceArrays.jiveId);
+                                            }
+                                        });
+                                });
+
+                            },60000*x);
+                        })(i);
+                    }//End for loop
+                }//End else
 
 			}
 			reader.readAsText(file);
