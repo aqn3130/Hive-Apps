@@ -916,29 +916,76 @@ Follow group
 ****************************************************************************************************************************/
 $("#uploadFG").change(function(evt)
 {
-	if(group.objectGroup==null){
-		alert("Please pick a group first");
-	}
-	else{
-		var file = evt.target.files[0];
-		var reader = new FileReader();
-		var references="";
-		reader.onload = function(e)
+	var file = evt.target.files[0];
+	var reader = new FileReader();
+	var references="";
+	reader.onload = function(e)
+	{
+		references = e.target.result;
+		var header = references.split(",");
+		for(i=0;i<header.length;i++)
 		{
-			references = e.target.result;
-			var header = references.split(",");
-			for(i=0;i<header.length;i++)
+			hiveArrays.folGrp.push(header[i]);
+		}
+		for(i=0;i<hiveArrays.folGrp.length;i+=group.batch)
+		{
+			hiveArrays.folGrpBatch.push(hiveArrays.folGrp.slice(i,i+group.batch));
+			//return hiveArrays.arrBatch;
+		}
+		if(hiveArrays.folGrpBatch.length==0)
+		{
+			$("#alertFG").text("List is empty...");
+		}
+		else {
+
+			for(i=0;i<hiveArrays.folGrpBatch.length;i++)
 			{
-				hiveArrays.folGrp.push(header[i]);
-			}
-		}
-		reader.readAsText(file);
-		reader.onerror = function()
-		{
-			alert("Unable to read"+file.fileName);
-		}
-		document.getElementById("follow").disabled=false;
+				(function(x)
+				{
+					setTimeout(function()
+					{
+						$(hiveArrays.folGrpBatch[x]).each(function(index,email)
+						{
+								osapi.jive.core.get(
+								{
+									"v":"v3",
+									"href":"/people/email/"+email,
+									"fields":"id,displayName"
+								}).execute(function(response)
+								{
+									if(response.error)
+									{
+										var message = response.error.message;
+										$("#alertFG").text(message);
+									}
+									else
+									{
+										hiveArrays.folGrpId.push(response.id);
+										$("#alertFG").text("Email identified: "+response.displayName);
+										$("#alertFG").text("Completed Batch: "+x+" of "+hiveArrays.folGrpBatch.length);
+
+										if(hiveArrays.folGrpBatch.length-1 == x)
+										{
+											$("#alertFG").text("All Batches Completed!");
+											$("#alertFG").text("Total identified: "+hiveArrays.folGrpId.length);
+										}
+										//console.log(response);
+										//console.log(spaceArrays.jiveId);
+									}
+								});
+						});
+
+					},60000*x);
+				})(i);
+			}//End for loop
+		}//End else
 	}
+	reader.readAsText(file);
+	reader.onerror = function()
+	{
+		alert("Unable to read"+file.fileName);
+	}
+	document.getElementById("follow").disabled=false;
 });
 
 //Get all members
@@ -950,6 +997,7 @@ $(function()
 			alert("Please pick a group first");
 		}
 		else{
+			hiveArrays.grpMembers.length=0;
 			$("#alertFG").text("Loading...");
 			$( "#alertFG.success" ).fadeIn();
 			var grpMem = osapi.jive.core.get(
@@ -965,31 +1013,35 @@ function getGrpMem(request)
 {
 	request.execute(function(response)
 	{
-		if(response.error)
-		{
-			var message = response.error.message;
-			$("#alertFG").text(message);
-		}
-		else if (!response.list) {
-			$("#alertFG").text("Response is not a list!");
-
-		}
-		else {
-			$(response.list).each(function(index,member)
+			if(response.error)
 			{
-				hiveArrays.grpMembers.push(member);
+					var message = response.error.message;
+					$("#alertFG").text(message);
+			}
+			else if (!response.list) {
+					$("#alertFG").text("Response is not a list!");
 
-				if(response.nextPage)
+			}
+			else {
+				$(response.list).each(function(index,member)
 				{
-					var nextRes = response.getNextPage();
-					getGrpMem(nextRes);
-				}
-				else {
-					$("#alertFG").text("Members found: "+hiveArrays.grpMembers.length);
-					hiveArrays.folGrp = hiveArrays.grpMembers;
-				}
-			});
-		}
+						hiveArrays.grpMembers.push(member.person.id);
+
+						if(response.getNextPage)
+						{
+								var nextRes = response.getNextPage();
+								getGrpMem(nextRes);
+						}
+						else {
+								$("#alertFG").text("Members found: "+hiveArrays.grpMembers.length);
+								// hiveArrays.folGrp = hiveArrays.grpMembers;
+								if(document.getElementById("follow").disabled==true){
+									document.getElementById("follow").disabled=false;
+								}
+								// console.log(hiveArrays.grpMembers);
+						}
+				});
+			}
 	});
 }
 
@@ -997,12 +1049,15 @@ $(function()
 {
 	$("#follow").click(function()
 	{
+		if(hiveArrays.grpMembers.length>0){
+			hiveArrays.folGrpId = hiveArrays.grpMembers;
+		}
 		$("#alertFG").text("Loading...");
 		$( "#alertFG.success" ).fadeIn();
-
-		for(i=0;i<hiveArrays.folGrp.length;i+=group.batch)
+	
+		for(i=0;i<hiveArrays.folGrpId.length;i+=group.batch)
 		{
-				hiveArrays.arrBatch.push(hiveArrays.folGrp.slice(i,i+group.batch));
+				hiveArrays.arrBatch.push(hiveArrays.folGrpId.slice(i,i+group.batch));
 				//return hiveArrays.arrBatch;
 		}
 		for(i=0;i<hiveArrays.arrBatch.length;i++)
@@ -1015,8 +1070,8 @@ $(function()
 					{
 						osapi.jive.core.get(
 						{
-							v:"v3",
-							href:"/people/"+member+"/streams"
+								v:"v3",
+								href:"/people/"+member+"/streams"
 						}).execute(function(response)
 						{
 							$(response.list).each(function(index,stream)
@@ -1029,7 +1084,7 @@ $(function()
 										"v":"v3",
 										"href":"/streams/"+conType+"/associations",
 										"body":["/places/"+group.objectGroup.placeID]
-
+	
 									}).execute(function(response)
 									{
 										if(response.error)
@@ -1040,10 +1095,10 @@ $(function()
 										else {
 											$("#alertFG").text(JSON.stringify(response));
 											$("#alertFG").text("Completed Batch: "+x+" of "+hiveArrays.arrBatch.length);
-
+	
 											if(hiveArrays.arrBatch.length-1 == x)
 											{
-												$("#alertFG").text("Completed!");
+													$("#alertFG").text("Completed!");
 											}
 										}
 									});
@@ -1053,9 +1108,10 @@ $(function()
 									var conTypeComms = stream.id;
 									osapi.jive.core.post(
 									{
-										"v":"v3",
-										"href":"/streams/"+conTypeComms+"/associations",
-										"body":["/places/"+group.objectGroup.placeID]
+											"v":"v3",
+											"href":"/streams/"+conTypeComms+"/associations",
+											"body":["/places/"+group.objectGroup.placeID]
+	
 									}).execute(function(response)
 									{
 										if(response.error)
@@ -1067,11 +1123,12 @@ $(function()
 										{
 											$("#alertFG").text(JSON.stringify(response));
 											$("#alertFG").text("Completed Batch: "+x+" of: "+hiveArrays.arrBatch.length);
-
+	
 											if(hiveArrays.arrBatch.length-1 == x)
 											{
 												$("#alertFG").text("Completed!");
 											}
+	
 										}
 									});
 								}
@@ -1087,3 +1144,4 @@ $(function()
 		}
 	});
 });
+	

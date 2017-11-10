@@ -25,6 +25,8 @@ $(function()
 
 $("#uploadSpc").change(function(evt)
 {
+    $("#alertFS").text("Loading...");
+    $( "#alertFS.success" ).fadeIn();
     var file = evt.target.files[0];
     var reader = new FileReader();
     var references="";
