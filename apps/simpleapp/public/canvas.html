@@ -25,7 +25,7 @@
 			<a href="#" id="toFS"><i class="fa fa-map-signs" style="font-size:48px"></i></a>
 		</div><br><br>
 		<div id="info" align="center"><p>Hover over an App for more information</p></div>
-		<!-- <div class="container-fluid" id="hdm">
+		<div class="container-fluid" id="hdm">
 			<div id="tabs">
 				<ul>
 					<li><a href="#tabs-0">Home</a></li>
@@ -152,7 +152,7 @@
 					<button type="button" id="addAllButton" disabled>Create Membership</button><p id="memCreated"></p>
 				</div>
 			</div>
-		</div> -->
+		</div>
 
 		<div class="container-fluid" id="rgm">
 			<div id="alertRGM" class="alert-box success">Loading...</div>
@@ -161,11 +161,8 @@
 					<h3 class = "panel-title">Remove Group Membership</h3>
 				</div>
 				<div class = "panel-body">
-					<button type="button" id="LoadGroupsRGM">Load Groups</button><p id="lGrps"></p>
+					<button type="button" id="LoadGroupsRGM">Pick Group</button><p id="lGrps"></p>
 					<br>
-					Group name:<br>
-					<input type="text" id="input2">
-					<br><br>
 					<button type="button" id="getMem" disabled>Get Members</button><p id="members"></p>
 					<br><br>
 					<button type="button" id="delMem" disabled>Delete Membership</button><p id="memDel"></p>
@@ -180,17 +177,10 @@
 					<h3 class = "panel-title">Unfollow Group</h3>
 				</div>
 				<div class = "panel-body">
-					<button type="button" id="LoadGroupsUG">Load Groups</button><p id="lGrps"></p>
+					<button type="button" id="LoadGroupsUG">Pick Group</button><p id="lGrps"></p>
 					<br>
-					Group name:<br>
-					<input type="text" id="input3">
-					<br><br>
-					<button type="button" id="tab3Get" disabled>Get Followers</button>
-
-					<button type="button" id="getStr" disabled>Load Streams</button>
-
-					<button type="button" id="unFollow" disabled>Unfollow Group</button>
-					<br><br>
+					<button type="button" id="tab3Get">Unfollow Group</button>
+					<br /><br />
 					<button type="button" id="downFol" disabled>Download Followers</button>
 				</div>
 			</div>
@@ -203,23 +193,11 @@
 					<h3 class = "panel-title">Change Group URL</h3>
 				</div>
 				<div class = "panel-body">
-					<button type="text" id="LoadGroupsCGU">Load Groups</button><p id="lGrps"></p>
-					<br>
-					Group name:<br>
-
-					<input type="text" id="input4">
-					<br><br>
+					<button type="text" id="LoadGroupsCGU">Pick Group</button><p id="lGrps"></p>
+					<br />
 					Group URL:<br>
 					<input type="text" id="grpURL">
 					<br><br>
-					Group Type:<br>
-					<form id="typeFormCGU">
-						<input type="radio"  name="Formtype" id="open" value="OPEN"> Public
-						<input type="radio"  name="Formtype" id="Restricted" value="MEMBER_ONLY"> OPEN_Restricted
-						<input type="radio"  name="Formtype" id="private" value="PRIVATE"> PRIVATE
-						<input type="radio"  name="Formtype" id="secret" value="UNLISTED"> Unlisted
-					</form>
-					<br>
 					<button type="button" id="chURL" disabled>Change Group URL</button><p id="tab4"></p>
 				</div>
 			</div>

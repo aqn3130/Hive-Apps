@@ -146,52 +146,14 @@ var app = {
     }, // end handleViewer
 
     getSocialGroups : function(){
-      
-      var request = osapi.jive.corev3.groups.get({fields:'placeID,name,displayName',count:100});
-      nextGroups(request);
-      $("#tabs-1:input").attr("disabled",true);
-      $( "#alertHDM.success" ).fadeIn();
+      osapi.jive.corev3.places.requestPicker({  
+        type : "group",  
+        success : function(data) {  
+          // "data" will be the Space object (in this case) selected by the user 
+        group.objectGroup=data;
+        $("#lineUpUsers,#getMem,#tab3Get,#chURL,#inputFG").prop("disabled",false);
+        }  
+        });
     }
 };
-
-function nextGroups(request)
-{
-  var allGroups=[];
-	request.execute(function(response)
-	{
-		if(response.error)
-		{
-			var code = response.error.code;
-			var message = response.error.message;
-		}
-		else if (!response.list)
-		{
-			alert("Error: response is not a list");
-		}
-		else
-		{
-			$(response.list).each(function(index,group)
-			{
-				allGroups.push(group);
-				$("#alertHDM").text("Loading all groups : "+allGroups.indexOf(group));
-      });
-      if (response.getNextPage)
-			{
-				var requestNextPage = response.getNextPage();
-				nextGroups(requestNextPage);
-			}
-			if(!response.getNextPage)
-			{
-				document.getElementById("addGroup").disabled = false;
-				//$("#tabs").tabs("enable",0);
-				$("#alertHDM").text("Loaded all groups : "+allGroups.length);
-        //$( "#alertHDM.success" ).fadeOut(2000);
-        return allGroups;
-			}
-		}
-		
-    });
-}
-//end get all groups
-
 gadgets.util.registerOnLoadHandler(gadgets.util.makeClosure(app, app.init));
