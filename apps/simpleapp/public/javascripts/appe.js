@@ -47,7 +47,9 @@ $(function()
 {
 	$("#LoadGroups,#LoadGroupsRGM,#LoadGroupsUG,#LoadGroupsCGU,#LoadGroupsFG").click(function()
 	{
-		group.objectGroup=app.getSocialGroups();
+		group.objectGroup=app.getPlace("group");
+		$("#uploadFG").prop("disabled",false);
+		$("#memFG").prop("disabled",false);
 	});
 });
 //end function get all groups
@@ -914,174 +916,174 @@ Follow group
 ****************************************************************************************************************************/
 $("#uploadFG").change(function(evt)
 {
-			var file = evt.target.files[0];
-			var reader = new FileReader();
-			var references="";
-			reader.onload = function(e)
+	if(group.objectGroup==null){
+		alert("Please pick a group first");
+	}
+	else{
+		var file = evt.target.files[0];
+		var reader = new FileReader();
+		var references="";
+		reader.onload = function(e)
+		{
+			references = e.target.result;
+			var header = references.split(",");
+			for(i=0;i<header.length;i++)
 			{
-				references = e.target.result;
-				var header = references.split(",");
-				for(i=0;i<header.length;i++)
-				{
-					hiveArrays.folGrp.push(header[i]);
-				}
+				hiveArrays.folGrp.push(header[i]);
 			}
-			reader.readAsText(file);
-			reader.onerror = function()
-			{
-				alert("Unable to read"+file.fileName);
-			}
-			document.getElementById("follow").disabled=false;
-
+		}
+		reader.readAsText(file);
+		reader.onerror = function()
+		{
+			alert("Unable to read"+file.fileName);
+		}
+		document.getElementById("follow").disabled=false;
+	}
 });
 
 //Get all members
 $(function()
 {
-
-		$("#memFG").click(function()
-		{
-				$("#alertFG").text("Loading...");
-				$( "#alertFG.success" ).fadeIn();
-				var grpMem = osapi.jive.core.get(
-					{
-						"v":"v3",
-						"href":"/members/places/"+group.objectGroup.placeID
-					});
-					getGrpMem(grpMem);
-		});
-
+	$("#memFG").click(function()
+	{
+		if(group.objectGroup==null){
+			alert("Please pick a group first");
+		}
+		else{
+			$("#alertFG").text("Loading...");
+			$( "#alertFG.success" ).fadeIn();
+			var grpMem = osapi.jive.core.get(
+			{
+				"v":"v3",
+				"href":"/members/places/"+group.objectGroup.placeID
+			});
+			getGrpMem(grpMem);
+		}	
+	});
 });
 function getGrpMem(request)
 {
-		request.execute(function(response)
+	request.execute(function(response)
+	{
+		if(response.error)
 		{
-				if(response.error)
-				{
-						var message = response.error.message;
-						$("#alertFG").text(message);
-				}
-				else if (!response.list) {
-						$("#alertFG").text("Response is not a list!");
+			var message = response.error.message;
+			$("#alertFG").text(message);
+		}
+		else if (!response.list) {
+			$("#alertFG").text("Response is not a list!");
 
+		}
+		else {
+			$(response.list).each(function(index,member)
+			{
+				hiveArrays.grpMembers.push(member);
+
+				if(response.nextPage)
+				{
+					var nextRes = response.getNextPage();
+					getGrpMem(nextRes);
 				}
 				else {
-					$(response.list).each(function(index,member)
-					{
-							hiveArrays.grpMembers.push(member);
-
-							if(response.nextPage)
-							{
-									var nextRes = response.getNextPage();
-									getGrpMem(nextRes);
-							}
-							else {
-									$("#alertFG").text("Members found: "+hiveArrays.grpMembers.length);
-									hiveArrays.folGrp = hiveArrays.grpMembers;
-									document.getElementById("lStrFG").disabled=false;
-							}
-					});
+					$("#alertFG").text("Members found: "+hiveArrays.grpMembers.length);
+					hiveArrays.folGrp = hiveArrays.grpMembers;
 				}
-		});
+			});
+		}
+	});
 }
 
 $(function()
 {
-		$("#follow").click(function()
+	$("#follow").click(function()
+	{
+		$("#alertFG").text("Loading...");
+		$( "#alertFG.success" ).fadeIn();
+
+		for(i=0;i<hiveArrays.folGrp.length;i+=group.batch)
 		{
-
-					$("#alertFG").text("Loading...");
-					$( "#alertFG.success" ).fadeIn();
-
-					for(i=0;i<hiveArrays.folGrp.length;i+=group.batch)
+				hiveArrays.arrBatch.push(hiveArrays.folGrp.slice(i,i+group.batch));
+				//return hiveArrays.arrBatch;
+		}
+		for(i=0;i<hiveArrays.arrBatch.length;i++)
+		{
+			(function(x)
+			{
+				setTimeout(function()
+				{
+					$(hiveArrays.arrBatch[x]).each(function(index,member)
 					{
-							hiveArrays.arrBatch.push(hiveArrays.folGrp.slice(i,i+group.batch));
-							//return hiveArrays.arrBatch;
-					}
-
-					for(i=0;i<hiveArrays.arrBatch.length;i++)
-					{
-							(function(x)
+						osapi.jive.core.get(
+						{
+							v:"v3",
+							href:"/people/"+member+"/streams"
+						}).execute(function(response)
+						{
+							$(response.list).each(function(index,stream)
 							{
-									setTimeout(function()
+								if(stream.source == "connections")
+								{
+									var conType = stream.id;
+									osapi.jive.core.post(
 									{
-										$(hiveArrays.arrBatch[x]).each(function(index,member)
+										"v":"v3",
+										"href":"/streams/"+conType+"/associations",
+										"body":["/places/"+group.objectGroup.placeID]
+
+									}).execute(function(response)
+									{
+										if(response.error)
 										{
-												osapi.jive.core.get(
-												{
-														v:"v3",
-														href:"/people/"+member+"/streams"
-												}).execute(function(response)
-												{
-														$(response.list).each(function(index,stream)
-														{
-																	if(stream.source == "connections")
-																	{
-																			var conType = stream.id;
-																			osapi.jive.core.post(
-																			{
-																					"v":"v3",
-																					"href":"/streams/"+conType+"/associations",
-																					"body":["/places/"+group.objectGroup.placeID]
+											var message = response.error.message;
+											$("#alertFG").text("Error: "+message);
+										}
+										else {
+											$("#alertFG").text(JSON.stringify(response));
+											$("#alertFG").text("Completed Batch: "+x+" of "+hiveArrays.arrBatch.length);
 
-																			}).execute(function(response)
-																			{
-																					if(response.error)
-																					{
-																							var message = response.error.message;
-																							$("#alertFG").text("Error: "+message);
-																					}
-																					else {
-																							$("#alertFG").text(JSON.stringify(response));
-																							$("#alertFG").text("Completed Batch: "+x+" of "+hiveArrays.arrBatch.length);
+											if(hiveArrays.arrBatch.length-1 == x)
+											{
+												$("#alertFG").text("Completed!");
+											}
+										}
+									});
+								}
+								else if(stream.source == "communications")
+								{
+									var conTypeComms = stream.id;
+									osapi.jive.core.post(
+									{
+										"v":"v3",
+										"href":"/streams/"+conTypeComms+"/associations",
+										"body":["/places/"+group.objectGroup.placeID]
+									}).execute(function(response)
+									{
+										if(response.error)
+										{
+											var message = response.error.message;
+											$("#alertFG").text("Error: "+message);
+										}
+										else
+										{
+											$("#alertFG").text(JSON.stringify(response));
+											$("#alertFG").text("Completed Batch: "+x+" of: "+hiveArrays.arrBatch.length);
 
-																							if(hiveArrays.arrBatch.length-1 == x)
-																							{
-																									$("#alertFG").text("Completed!");
-																							}
-																					}
-																			});
-																	}
-																	else if(stream.source == "communications")
-																	{
-																			var conTypeComms = stream.id;
-																			osapi.jive.core.post(
-																			{
-																					"v":"v3",
-																					"href":"/streams/"+conTypeComms+"/associations",
-																					"body":["/places/"+group.objectGroup.placeID]
-
-																			}).execute(function(response)
-																			{
-																					if(response.error)
-																					{
-																							var message = response.error.message;
-																							$("#alertFG").text("Error: "+message);
-																					}
-																					else
-																					{
-																							$("#alertFG").text(JSON.stringify(response));
-																							$("#alertFG").text("Completed Batch: "+x+" of: "+hiveArrays.arrBatch.length);
-
-																							if(hiveArrays.arrBatch.length-1 == x)
-																							{
-																									$("#alertFG").text("Completed!");
-																							}
-
-																					}
-																			});
-																	}
-																	else
-																	{
-																			$("#alertFG").text("Stream not found!");
-
-																	}
-														});
-												});
-										});
-									},60000*x);
-							})(i);
-
-					}
-		});
+											if(hiveArrays.arrBatch.length-1 == x)
+											{
+												$("#alertFG").text("Completed!");
+											}
+										}
+									});
+								}
+								else
+								{
+									$("#alertFG").text("Stream not found!");
+								}
+							});
+						});
+					});
+				},60000*x);
+			})(i);
+		}
+	});
 });
