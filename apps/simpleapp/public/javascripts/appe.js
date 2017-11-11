@@ -39,7 +39,8 @@ var hiveArrays =
 	arrBatch:[],
 	unfolArrBatch:[],
 	mkGrpPubBatch:[],
-	delMemBatch:[]
+	delMemBatch:[],
+	folGrpBatch:[]
 };
 
 //Get all groups

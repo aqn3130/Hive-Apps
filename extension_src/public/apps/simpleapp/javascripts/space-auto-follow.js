@@ -104,11 +104,11 @@ $(function()
 {
 		$("#followSpace").click(function()
 		{
-          for(i=0;i<spaceArrays.jiveId.length;i+=spaceVar.batch)
-					{
-							spaceArrays.arrBatch.push(spaceArrays.jiveId.slice(i,i+spaceVar.batch));
-							//return hiveArrays.arrBatch;
-					}
+        for(i=0;i<spaceArrays.jiveId.length;i+=spaceVar.batch)
+        {
+            spaceArrays.arrBatch.push(spaceArrays.jiveId.slice(i,i+spaceVar.batch));
+            //return hiveArrays.arrBatch;
+        }
 
           if(spaceArrays.jiveId.length==0)
           {
