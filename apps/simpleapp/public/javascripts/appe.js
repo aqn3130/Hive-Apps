@@ -1044,7 +1044,7 @@ function getGrpMem(request)
 				});
 			}
 	});
-}
+}//End get group members
 
 $(function()
 {
@@ -1052,96 +1052,99 @@ $(function()
 	{
 		if(hiveArrays.grpMembers.length>0){
 			hiveArrays.folGrpId = hiveArrays.grpMembers;
-		}
-		$("#alertFG").text("Loading...");
-		$( "#alertFG.success" ).fadeIn();
-	
-		for(i=0;i<hiveArrays.folGrpId.length;i+=group.batch)
-		{
-				hiveArrays.arrBatch.push(hiveArrays.folGrpId.slice(i,i+group.batch));
-				//return hiveArrays.arrBatch;
-		}
-		for(i=0;i<hiveArrays.arrBatch.length;i++)
-		{
-			(function(x)
+			$("#alertFG").text("Loading...");
+			$( "#alertFG.success" ).fadeIn();
+		
+			for(i=0;i<hiveArrays.folGrpId.length;i+=group.batch)
 			{
-				setTimeout(function()
+					hiveArrays.arrBatch.push(hiveArrays.folGrpId.slice(i,i+group.batch));
+					//return hiveArrays.arrBatch;
+			}
+			for(i=0;i<hiveArrays.arrBatch.length;i++)
+			{
+				(function(x)
 				{
-					$(hiveArrays.arrBatch[x]).each(function(index,member)
+					setTimeout(function()
 					{
-						osapi.jive.core.get(
+						$(hiveArrays.arrBatch[x]).each(function(index,member)
 						{
-								v:"v3",
-								href:"/people/"+member+"/streams"
-						}).execute(function(response)
-						{
-							$(response.list).each(function(index,stream)
+							osapi.jive.core.get(
 							{
-								if(stream.source == "connections")
+									v:"v3",
+									href:"/people/"+member+"/streams"
+							}).execute(function(response)
+							{
+								$(response.list).each(function(index,stream)
 								{
-									var conType = stream.id;
-									osapi.jive.core.post(
+									if(stream.source == "connections")
 									{
-										"v":"v3",
-										"href":"/streams/"+conType+"/associations",
-										"body":["/places/"+group.objectGroup.placeID]
-	
-									}).execute(function(response)
-									{
-										if(response.error)
+										var conType = stream.id;
+										osapi.jive.core.post(
 										{
-											var message = response.error.message;
-											$("#alertFG").text("Error: "+message);
-										}
-										else {
-											$("#alertFG").text(JSON.stringify(response));
-											$("#alertFG").text("Completed Batch: "+x+" of "+hiveArrays.arrBatch.length);
-	
-											if(hiveArrays.arrBatch.length-1 == x)
-											{
-													$("#alertFG").text("Completed!");
-											}
-										}
-									});
-								}
-								else if(stream.source == "communications")
-								{
-									var conTypeComms = stream.id;
-									osapi.jive.core.post(
-									{
 											"v":"v3",
-											"href":"/streams/"+conTypeComms+"/associations",
+											"href":"/streams/"+conType+"/associations",
 											"body":["/places/"+group.objectGroup.placeID]
-	
-									}).execute(function(response)
-									{
-										if(response.error)
+		
+										}).execute(function(response)
 										{
-											var message = response.error.message;
-											$("#alertFG").text("Error: "+message);
-										}
-										else
-										{
-											$("#alertFG").text(JSON.stringify(response));
-											$("#alertFG").text("Completed Batch: "+x+" of: "+hiveArrays.arrBatch.length);
-	
-											if(hiveArrays.arrBatch.length-1 == x)
+											if(response.error)
 											{
-												$("#alertFG").text("Completed!");
+												var message = response.error.message;
+												$("#alertFG").text("Error: "+message);
 											}
-	
-										}
-									});
-								}
-								else
-								{
-									$("#alertFG").text("Stream not found!");
-								}
+											else {
+												$("#alertFG").text(JSON.stringify(response));
+												$("#alertFG").text("Completed Batch: "+x+" of "+hiveArrays.arrBatch.length);
+		
+												if(hiveArrays.arrBatch.length-1 == x)
+												{
+														$("#alertFG").text("Completed!");
+												}
+											}
+										});
+									}
+									else if(stream.source == "communications")
+									{
+										var conTypeComms = stream.id;
+										osapi.jive.core.post(
+										{
+												"v":"v3",
+												"href":"/streams/"+conTypeComms+"/associations",
+												"body":["/places/"+group.objectGroup.placeID]
+		
+										}).execute(function(response)
+										{
+											if(response.error)
+											{
+												var message = response.error.message;
+												$("#alertFG").text("Error: "+message);
+											}
+											else
+											{
+												$("#alertFG").text(JSON.stringify(response));
+												$("#alertFG").text("Completed Batch: "+x+" of: "+hiveArrays.arrBatch.length);
+		
+												if(hiveArrays.arrBatch.length-1 == x)
+												{
+													$("#alertFG").text("Completed!");
+												}
+		
+											}
+										});
+									}
+									else
+									{
+										$("#alertFG").text("Stream not found!");
+									}
+								});
 							});
 						});
-					});
-				},60000*x);
-			})(i);
+					},60000*x);
+				})(i);
+			}
+		}
+		else{
+			alert("Members not found");
 		}
 	});
 });
