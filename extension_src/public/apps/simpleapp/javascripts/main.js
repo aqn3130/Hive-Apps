@@ -145,15 +145,16 @@ var app = {
     app.fireOnViewer();
   }, // end handleViewer
 
-  getPlace : function(plc){
-    osapi.jive.corev3.places.requestPicker({  
-      type : plc,  
-      success : function(data) {  
-        // "data" will be the Space object (in this case) selected by the user 
-      group.objectGroup=data;
-      $("#lineUpUsers,#getMem,#tab3Get,#chURL,#inputFG").prop("disabled",false);
-      }  
-      });
-  }
+  // getPlace : function(plc){
+  //   osapi.jive.corev3.places.requestPicker({  
+  //     type : plc,  
+  //     success : function(data) {  
+  //       // "data" will be the Space object (in this case) selected by the user 
+  //     // group.objectGroup=data;
+  //     var place = data;
+  //     return place;
+  //     }  
+  //     });
+  // }
 };
 gadgets.util.registerOnLoadHandler(gadgets.util.makeClosure(app, app.init));

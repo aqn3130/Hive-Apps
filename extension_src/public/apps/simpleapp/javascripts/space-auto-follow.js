@@ -18,7 +18,13 @@ $(function()
 {
     $("#getAllspaces").click(function()
     {  
-        spaceVar.objectSpace=app.getPlace("space");
+        osapi.jive.corev3.places.requestPicker({  
+			type : "space",  
+			success : function(data) {  
+            // "data" will be the Space object (in this case) selected by the user 
+            spaceVar.objectSpace=data;
+			}  
+        });
         $("#uploadSpc").prop("disabled",false);
     });
 });

@@ -40,7 +40,8 @@ var hiveArrays =
 	unfolArrBatch:[],
 	mkGrpPubBatch:[],
 	delMemBatch:[],
-	folGrpBatch:[]
+	folGrpBatch:[],
+	folGrpId:[]
 };
 
 //Get all groups
@@ -48,9 +49,15 @@ $(function()
 {
 	$("#LoadGroups,#LoadGroupsRGM,#LoadGroupsUG,#LoadGroupsCGU,#LoadGroupsFG").click(function()
 	{
-		group.objectGroup=app.getPlace("group");
-		$("#uploadFG").prop("disabled",false);
-		$("#memFG").prop("disabled",false);
+		osapi.jive.corev3.places.requestPicker({  
+			type : "group",  
+			success : function(data) {  
+		// "data" will be the Space object (in this case) selected by the user 
+			group.objectGroup=data;
+			}  
+		});
+		// group.objectGroup = app.getPlace("group");
+		$("#lineUpUsers,#getMem,#tab3Get,#chURL,#inputFG,#uploadFG,#memFG").prop("disabled",false);
 	});
 });
 //end function get all groups
@@ -333,15 +340,15 @@ $(function()
 {
 	$("#tab3Get").click(function()
 	{
-		if(group.objectGroup==null)
+		if(group.objectGroup == null)
 		{
-			window.alert("Please pick a group first!");
+			alert("Please pick a group first!");
 		}
 		else
 		{
+			hiveArrays.groupFol.length=0;
 			var request = group.objectGroup.getFollowers({fields:"@all",count:100});
 			nextFol(request);
-			hiveArrays.groupFol.length=0;
 			$("#alertUG").text("Loading followers...");
 			$( "#alertUG.success" ).fadeIn();
 		}
@@ -379,146 +386,151 @@ function nextFol(request)
 				//$( "#alertUG.success" ).fadeOut(4000);
 				// document.getElementById("getStr").disabled = false;
 				// document.getElementById("downFol").disabled = false;
-				getStream();
+				// getStream();
 			}
 		}
     });
 }
 //End of get all followers
-
-function getStream()
-{
-	$("#alertUG").text("Loading streams...");
-	if(hiveArrays.groupFol.length>0)
+$(function(){
+	$("#getStr").click(function()
 	{
-		osapi.jive.core.get(
+		$("#alertUG").text("Loading streams...");
+		if(hiveArrays.groupFol.length>0)
 		{
-			v:"v3",
-			href:"/people/"+hiveArrays.groupFol[0].id+"/streams"
-		}).execute(function(response)
-		{
-			$(response.list).each(function(index,stream)
+			osapi.jive.core.get(
 			{
-				stream.getAssociations({type:"group",fields:"@all"}).execute(function(response)
+				v:"v3",
+				href:"/people/"+hiveArrays.groupFol[0].id+"/streams"
+			}).execute(function(response)
+			{
+				$(response.list).each(function(index,stream)
 				{
-					$(response.list).each(function(index, association)
+					stream.getAssociations({type:"group",fields:"@all"}).execute(function(response)
 					{
-						if(association.name == group.objectGroup.name || association.placeID == group.objectGroup.placeID)
+						$(response.list).each(function(index, association)
 						{
-							group.objID = association.id;
-							$("#alertUG").text("Association found  : "+association.id);
-							unfollow();
-						}
+							if(association.name == group.objectGroup.name || association.placeID == group.objectGroup.placeID)
+							{
+								group.objID = association.id;
+								$("#alertUG").text("Association found  : "+association.id);
+								// unfollow();
+							}
+						});
 					});
 				});
 			});
-		});
-	}//End if
-	else
-	{
-		$("#alertUG").text("There are no followers in this group!");
+		}//End if
+		else
+		{
+			$("#alertUG").text("There are no followers in this group!");
+	
+		}
+	});
+});
 
-	}
-};
 
 //End get streams
 
 //Unfollow members
-function unfollow()
-{
-	$("#alertUG").text("Unfollowing...");
-	for(i=0;i<hiveArrays.groupFol.length;i+=group.unfolBatch)
+$(function(){
+	$("#unFollow").click(function()
 	{
-		hiveArrays.unfolArrBatch.push(hiveArrays.groupFol.slice(i,i+group.unfolBatch));
-	}
-	for(j=0;j<hiveArrays.unfolArrBatch.length;j++)
-	{
-		(function(y)
+		$("#alertUG").text("Unfollowing...");
+		for(i=0;i<hiveArrays.groupFol.length;i+=group.unfolBatch)
 		{
-			setTimeout(function()
+			hiveArrays.unfolArrBatch.push(hiveArrays.groupFol.slice(i,i+group.unfolBatch));
+		}
+		for(j=0;j<hiveArrays.unfolArrBatch.length;j++)
+		{
+			(function(y)
 			{
-				if(group.objID == null || group.objID == "")
+				setTimeout(function()
 				{
-					window.alert("Group association not found! Load Followers again");
-				}
-				else
-				{
-					$(hiveArrays.unfolArrBatch[y]).each(function(index,member)
+					if(group.objID == null || group.objID == "")
 					{
-						osapi.jive.core.get(
+						window.alert("Group association not found! Load Followers again");
+					}
+					else
+					{
+						$(hiveArrays.unfolArrBatch[y]).each(function(index,member)
 						{
-							v:"v3",
-							href:"/people/"+member.id+"/streams"
-						}).execute(function(response)
-						{
-							$(response.list).each(function(index,stream)
+							osapi.jive.core.get(
 							{
-								if(stream.source == "connections")
+								v:"v3",
+								href:"/people/"+member.id+"/streams"
+							}).execute(function(response)
+							{
+								$(response.list).each(function(index,stream)
 								{
-									var connStream = stream.id;
-									osapi.jive.core.delete(
+									if(stream.source == "connections")
 									{
-										v:"v3",
-										href:"/streams/"+connStream+"/associations/groups/"+group.objID
-									}).execute(function(response)
+										var connStream = stream.id;
+										osapi.jive.core.delete(
+										{
+											v:"v3",
+											href:"/streams/"+connStream+"/associations/groups/"+group.objID
+										}).execute(function(response)
+										{
+	
+											if(response.error)
+											{
+												var message = response.error.message;
+												$("#alertUG").text(message);
+											}
+											else if(hiveArrays.unfolArrBatch.length-1 == y)
+											{
+												$("#alertUG").text("Unfollow Completed!");
+											}
+											else
+											{
+												$("#alertUG").text("Unfollowed Batch : "+y+" of: "+hiveArrays.unfolArrBatch.length);
+											}
+	
+										});
+									}
+									else if(stream.source == "communications")
 									{
-
-										if(response.error)
+										var commStream = stream.id;
+										osapi.jive.core.delete(
 										{
-											var message = response.error.message;
-											$("#alertUG").text(message);
-										}
-										else if(hiveArrays.unfolArrBatch.length-1 == y)
+											v:"v3",
+											href:"/streams/"+commStream+"/associations/groups/"+group.objID
+										}).execute(function(response)
 										{
-											$("#alertUG").text("Unfollow Completed!");
-										}
-										else
-										{
-											$("#alertUG").text("Unfollowed Batch : "+y+" of: "+hiveArrays.unfolArrBatch.length);
-										}
-
-									});
-								}
-								else if(stream.source == "communications")
-								{
-									var commStream = stream.id;
-									osapi.jive.core.delete(
+	
+											if(response.error)
+											{
+												var message = response.error.message;
+												$("#alertUG").text(message);
+											}
+											else if(hiveArrays.unfolArrBatch.length-1 == y)
+											{
+												$("#alertUG").text("Unfollow Completed!");
+											}
+											else
+											{
+												$("#alertUG").text("Unfollowed Batch: "+y+" of: "+hiveArrays.unfolArrBatch.length);
+	
+											}
+	
+										});
+									}
+									else
 									{
-										v:"v3",
-										href:"/streams/"+commStream+"/associations/groups/"+group.objID
-									}).execute(function(response)
-									{
-
-										if(response.error)
-										{
-											var message = response.error.message;
-											$("#alertUG").text(message);
-										}
-										else if(hiveArrays.unfolArrBatch.length-1 == y)
-										{
-											$("#alertUG").text("Unfollow Completed!");
-										}
-										else
-										{
-											$("#alertUG").text("Unfollowed Batch: "+y+" of: "+hiveArrays.unfolArrBatch.length);
-
-										}
-
-									});
-								}
-								else
-								{
-									$("#alertUG").text("No Streams found!");
-
-								}
+										$("#alertUG").text("No Streams found!");
+	
+									}
+								});
 							});
 						});
-					});
-				}//end else
-			},30000*y);
-		})(j);
-	}
-};
+					}//end else
+				},30000*y);
+			})(j);
+		}
+	});
+});
+
 
 //End unFollow members
 
@@ -917,76 +929,79 @@ Follow group
 ****************************************************************************************************************************/
 $("#uploadFG").change(function(evt)
 {
-	var file = evt.target.files[0];
-	var reader = new FileReader();
-	var references="";
-	reader.onload = function(e)
-	{
-		references = e.target.result;
-		var header = references.split(",");
-		for(i=0;i<header.length;i++)
+	$("#alertFG").text("Reading from email list...");
+    $( "#alertFG.success" ).fadeIn();
+		var file = evt.target.files[0];
+		var reader = new FileReader();
+		var references="";
+		reader.onload = function(e)
 		{
-			hiveArrays.folGrp.push(header[i]);
-		}
-		for(i=0;i<hiveArrays.folGrp.length;i+=group.batch)
-		{
-			hiveArrays.folGrpBatch.push(hiveArrays.folGrp.slice(i,i+group.batch));
-			//return hiveArrays.arrBatch;
-		}
-		if(hiveArrays.folGrpBatch.length==0)
-		{
-			$("#alertFG").text("List is empty...");
-		}
-		else {
-
-			for(i=0;i<hiveArrays.folGrpBatch.length;i++)
+			references = e.target.result;
+			var header = references.split(",");
+			for(i=0;i<header.length;i++)
 			{
-				(function(x)
+				hiveArrays.folGrp.push(header[i]);
+			}
+			for(i=0;i<hiveArrays.folGrp.length;i+=group.batch)
+			{
+				hiveArrays.folGrpBatch.push(hiveArrays.folGrp.slice(i,i+group.batch));
+				//return hiveArrays.arrBatch;
+			}
+			if(hiveArrays.folGrpBatch.length==0)
+			{
+				$("#alertFG").text("List is empty...");
+			}
+			else {
+
+				for(i=0;i<hiveArrays.folGrpBatch.length;i++)
 				{
-					setTimeout(function()
+					(function(x)
 					{
-						$(hiveArrays.folGrpBatch[x]).each(function(index,email)
+						setTimeout(function()
 						{
-								osapi.jive.core.get(
-								{
-									"v":"v3",
-									"href":"/people/email/"+email,
-									"fields":"id,displayName"
-								}).execute(function(response)
-								{
-									if(response.error)
+							$(hiveArrays.folGrpBatch[x]).each(function(index,email)
+							{
+									osapi.jive.core.get(
 									{
-										var message = response.error.message;
-										$("#alertFG").text(message);
-									}
-									else
+										"v":"v3",
+										"href":"/people/email/"+email,
+										"fields":"id,displayName"
+									}).execute(function(response)
 									{
-										hiveArrays.folGrpId.push(response.id);
-										$("#alertFG").text("Email identified: "+response.displayName);
-										$("#alertFG").text("Completed Batch: "+x+" of "+hiveArrays.folGrpBatch.length);
-
-										if(hiveArrays.folGrpBatch.length-1 == x)
+										if(response.error)
 										{
-											$("#alertFG").text("All Batches Completed!");
-											$("#alertFG").text("Total identified: "+hiveArrays.folGrpId.length);
+											var message = response.error.message;
+											$("#alertFG").text(message);
 										}
-										//console.log(response);
-										//console.log(spaceArrays.jiveId);
-									}
-								});
-						});
+										else
+										{
+											hiveArrays.folGrpId.push(response.id);
+											$("#alertFG").text("Email identified: "+response.displayName);
+											$("#alertFG").text("Completed Batch: "+x+" of "+hiveArrays.folGrpBatch.length);
 
-					},60000*x);
-				})(i);
-			}//End for loop
-		}//End else
-	}
-	reader.readAsText(file);
-	reader.onerror = function()
-	{
-		alert("Unable to read"+file.fileName);
-	}
-	document.getElementById("follow").disabled=false;
+											if(hiveArrays.folGrpBatch.length-1 == x)
+											{
+												$("#alertFG").text("All Batches Completed!");
+												$("#alertFG").text("Total identified: "+hiveArrays.folGrpId.length);
+											}
+											//console.log(response);
+											//console.log(spaceArrays.jiveId);
+										}
+									});
+							});
+
+						},60000*x);
+					})(i);
+				}//End for loop
+			}//End else
+		}
+		reader.readAsText(file);
+		reader.onerror = function()
+		{
+			alert("Unable to read"+file.fileName);
+		}
+		document.getElementById("follow").disabled=false;
+
 });
 
 //Get all members
@@ -1052,99 +1067,96 @@ $(function()
 	{
 		if(hiveArrays.grpMembers.length>0){
 			hiveArrays.folGrpId = hiveArrays.grpMembers;
-			$("#alertFG").text("Loading...");
-			$( "#alertFG.success" ).fadeIn();
-		
-			for(i=0;i<hiveArrays.folGrpId.length;i+=group.batch)
+		}
+		$("#alertFG").text("Loading...");
+		$( "#alertFG.success" ).fadeIn();
+	
+		for(i=0;i<hiveArrays.folGrpId.length;i+=group.batch)
+		{
+				hiveArrays.arrBatch.push(hiveArrays.folGrpId.slice(i,i+group.batch));
+				//return hiveArrays.arrBatch;
+		}
+		for(i=0;i<hiveArrays.arrBatch.length;i++)
+		{
+			(function(x)
 			{
-					hiveArrays.arrBatch.push(hiveArrays.folGrpId.slice(i,i+group.batch));
-					//return hiveArrays.arrBatch;
-			}
-			for(i=0;i<hiveArrays.arrBatch.length;i++)
-			{
-				(function(x)
+				setTimeout(function()
 				{
-					setTimeout(function()
+					$(hiveArrays.arrBatch[x]).each(function(index,member)
 					{
-						$(hiveArrays.arrBatch[x]).each(function(index,member)
+						osapi.jive.core.get(
 						{
-							osapi.jive.core.get(
+								v:"v3",
+								href:"/people/"+member+"/streams"
+						}).execute(function(response)
+						{
+							$(response.list).each(function(index,stream)
 							{
-									v:"v3",
-									href:"/people/"+member+"/streams"
-							}).execute(function(response)
-							{
-								$(response.list).each(function(index,stream)
+								if(stream.source == "connections")
 								{
-									if(stream.source == "connections")
+									var conType = stream.id;
+									osapi.jive.core.post(
 									{
-										var conType = stream.id;
-										osapi.jive.core.post(
-										{
-											"v":"v3",
-											"href":"/streams/"+conType+"/associations",
-											"body":["/places/"+group.objectGroup.placeID]
-		
-										}).execute(function(response)
-										{
-											if(response.error)
-											{
-												var message = response.error.message;
-												$("#alertFG").text("Error: "+message);
-											}
-											else {
-												$("#alertFG").text(JSON.stringify(response));
-												$("#alertFG").text("Completed Batch: "+x+" of "+hiveArrays.arrBatch.length);
-		
-												if(hiveArrays.arrBatch.length-1 == x)
-												{
-														$("#alertFG").text("Completed!");
-												}
-											}
-										});
-									}
-									else if(stream.source == "communications")
+										"v":"v3",
+										"href":"/streams/"+conType+"/associations",
+										"body":["/places/"+group.objectGroup.placeID]
+	
+									}).execute(function(response)
 									{
-										var conTypeComms = stream.id;
-										osapi.jive.core.post(
+										if(response.error)
 										{
-												"v":"v3",
-												"href":"/streams/"+conTypeComms+"/associations",
-												"body":["/places/"+group.objectGroup.placeID]
-		
-										}).execute(function(response)
-										{
-											if(response.error)
+											var message = response.error.message;
+											$("#alertFG").text("Error: "+message);
+										}
+										else {
+											$("#alertFG").text(JSON.stringify(response));
+											$("#alertFG").text("Completed Batch: "+x+" of "+hiveArrays.arrBatch.length);
+	
+											if(hiveArrays.arrBatch.length-1 == x)
 											{
-												var message = response.error.message;
-												$("#alertFG").text("Error: "+message);
-											}
-											else
-											{
-												$("#alertFG").text(JSON.stringify(response));
-												$("#alertFG").text("Completed Batch: "+x+" of: "+hiveArrays.arrBatch.length);
-		
-												if(hiveArrays.arrBatch.length-1 == x)
-												{
 													$("#alertFG").text("Completed!");
-												}
-		
 											}
-										});
-									}
-									else
+										}
+									});
+								}
+								else if(stream.source == "communications")
+								{
+									var conTypeComms = stream.id;
+									osapi.jive.core.post(
 									{
-										$("#alertFG").text("Stream not found!");
-									}
-								});
+											"v":"v3",
+											"href":"/streams/"+conTypeComms+"/associations",
+											"body":["/places/"+group.objectGroup.placeID]
+	
+									}).execute(function(response)
+									{
+										if(response.error)
+										{
+											var message = response.error.message;
+											$("#alertFG").text("Error: "+message);
+										}
+										else
+										{
+											$("#alertFG").text(JSON.stringify(response));
+											$("#alertFG").text("Completed Batch: "+x+" of: "+hiveArrays.arrBatch.length);
+	
+											if(hiveArrays.arrBatch.length-1 == x)
+											{
+												$("#alertFG").text("Completed!");
+											}
+	
+										}
+									});
+								}
+								else
+								{
+									$("#alertFG").text("Stream not found!");
+								}
 							});
 						});
-					},60000*x);
-				})(i);
-			}
-		}
-		else{
-			alert("Members not found");
+					});
+				},60000*x);
+			})(i);
 		}
 	});
 });
