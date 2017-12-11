@@ -270,9 +270,23 @@
 
 					<button type="button" id="getAllspaces">Pick Space</button>
 					<br><br>
+					<input id="checkBoxInbox" type="checkbox">
+					<label for="checkBoxInbox">Follow in Activity Streams</label>
+					<br />
+					<input id="checkBoxActivity" type="checkbox">
+					<label for="checkBoxActivity">Follow in Inbox</label>
+					<br /><br />
 					<input style="display: inline" id="uploadSpc" type="file" accept=".csv" name="Upload sFollowers" disabled/>
 					<br><br>
 					<button type="button" id="followSpace" disabled>Follow Space</button>
+					<hr>
+					<h4>Unfollow Space</h4>
+					<br>
+					<button type="button" id="getSpaceFollowers" style="display:inline">Get Followers</button>
+					<button type="button" id="getSpaceStream" style="display:inline">Get Stream</button>
+					<button type="button" id="unfollowSpace" style="display:inline">Unfollow</button>
+					<br><br>
+					<button type="button" id="downloadSpaceFollowers" style="display:block">Download Followers</button>
 
 				</div>
 			</div>
