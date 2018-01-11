@@ -26,6 +26,13 @@ $(function()
 {
     $("#getInActives").click(function()
     {
+        for(var e in staff){
+            staff[e].length=0;
+        }
+        hUsers.jiveActive="";
+        hUsers.jiveInactive="";
+        hUsers.count=0;
+
           $.getJSON("https://sidm.springernature.com/api/v2.0/users?filter[where][and][0][services]=605&filter[where][and][1][userstate]=0&fields=email",function(data)
           {
                 $(data.info).each(function(index,id)

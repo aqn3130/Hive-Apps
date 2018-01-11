@@ -595,13 +595,13 @@ Add to security group
 //Get all security groups
 $(function()
 {
-	$("#loadSGrp,#loadSGrpGD").click(function()
+	$("#loadSGrp").click(function()
     {
         var request = osapi.jive.corev3.securityGroups.get({fields:'placeID,name,displayName',count:100});
 		nextSGroups(request);
 		hiveArrays.allSGroups.length=0;
-		$("#alertASG,#alertGoogleDri").text("Loading...");
-		$( "#alertASG.success,#alertGoogleDri" ).fadeIn();
+		$("#alertASG").text("Loading...");
+		$( "#alertASG.success" ).fadeIn();
     });
 });
 
@@ -624,7 +624,7 @@ function nextSGroups(request)
 			{
 				hiveArrays.allSGroups.push(group);
 				//document.getElementById("tab5a").innerHTML = "Loading: "+hiveArrays.allSGroups.indexOf(group);
-				$("#alertASG,#alertGoogleDri").text("Loading: "+hiveArrays.allSGroups.indexOf(group));
+				$("#alertASG").text("Loading: "+hiveArrays.allSGroups.indexOf(group));
 			});
 			if (response.getNextPage)
 			{
@@ -634,7 +634,7 @@ function nextSGroups(request)
 			if(!response.getNextPage)
 			{
 				//document.getElementById("tab5a").innerHTML = "Loaded: "+hiveArrays.allSGroups.length;
-				$("#alertASG,#alertGoogleDri").text("Loaded: "+hiveArrays.allSGroups.length);
+				$("#alertASG").text("Loaded: "+hiveArrays.allSGroups.length);
 				$("#sGrpname").prop("disabled",false);
 			}
 		}
@@ -698,16 +698,16 @@ $(function()
 				}
 				else
 				{
-							var batchRequests = osapi.newBatch();
-		 	       $("#alertASG").text("Loading...");
-		 	       $( "#alertASG.success" ).fadeIn();
-		 	       $(hiveArrays.sGrpData).each(function(index,id)
-		 	       {
-			 	       batchRequests.add
-			 	        (
-			 	            id,group.sGrpObj.createMembers(["/people/"+id])
-			 	        )
-		 	       });
+					var batchRequests = osapi.newBatch();
+					$("#alertASG").text("Loading...");
+					$( "#alertASG.success" ).fadeIn();
+					$(hiveArrays.sGrpData).each(function(index,id)
+					{
+						batchRequests.add
+							(
+								id,group.sGrpObj.createMembers(["/people/"+id])
+							)
+					});
 		 		    batchRequests.execute(function(response)
 	 		     {
 	 		         if(response.error)
@@ -731,197 +731,197 @@ $(function()
 Add google drive
 ****************************************************************************************************************************/
 //Get all Google Drive group members
-$(function()
-{
-		$("#getGoogleUsers").click(function()
-		{
-				var sGrpRes = osapi.jive.core.get(
-				{
-						"v":"v3",
-						"href":"/securityGroups/1059/members",
-						"count":100
-				});
-				getGDMem(sGrpRes);
-				$("#alertGoogleDri").text("Loading...");
-				$( "#alertGoogleDri.success" ).fadeIn();
-		});
-});
+// $(function()
+// {
+// 		$("#getGoogleUsers").click(function()
+// 		{
+// 				var sGrpRes = osapi.jive.core.get(
+// 				{
+// 						"v":"v3",
+// 						"href":"/securityGroups/1059/members",
+// 						"count":100
+// 				});
+// 				getGDMem(sGrpRes);
+// 				$("#alertGoogleDri").text("Loading...");
+// 				$( "#alertGoogleDri.success" ).fadeIn();
+// 		});
+// });
 
-function getGDMem(request)
-{
-		request.execute(function(response)
-		{
-				if(response.error)
-				{
-						var code = response.error.code;
-						var message = response.error.message;
-				}
-				else if (!response.list)
-				{
-						alert("Error: response is not a list");
-				}
-				else
-				{
-						$(response.list).each(function(index,member)
-						{
-								hiveArrays.allsGrpMem.push(member.id);
-								$("#alertGoogleDri").text("Identifying member: "+response.list.indexOf(member));
-						});
-						if (response.getNextPage)
-						{
-								var NextPage = response.getNextPage();
-								getGDMem(NextPage);
-						}
-						if(!response.getNextPage)
-						{
-								$("#alertGoogleDri").text("Identified : "+hiveArrays.allsGrpMem.length);
-								//$( "#alertGoogleDri.success" ).fadeOut(3000);
-								getSgroup();
-						}
-				}
-		});
-}
+// function getGDMem(request)
+// {
+// 		request.execute(function(response)
+// 		{
+// 				if(response.error)
+// 				{
+// 						var code = response.error.code;
+// 						var message = response.error.message;
+// 				}
+// 				else if (!response.list)
+// 				{
+// 						alert("Error: response is not a list");
+// 				}
+// 				else
+// 				{
+// 						$(response.list).each(function(index,member)
+// 						{
+// 								hiveArrays.allsGrpMem.push(member.id);
+// 								$("#alertGoogleDri").text("Identifying member: "+response.list.indexOf(member));
+// 						});
+// 						if (response.getNextPage)
+// 						{
+// 								var NextPage = response.getNextPage();
+// 								getGDMem(NextPage);
+// 						}
+// 						if(!response.getNextPage)
+// 						{
+// 								$("#alertGoogleDri").text("Identified : "+hiveArrays.allsGrpMem.length);
+// 								//$( "#alertGoogleDri.success" ).fadeOut(3000);
+// 								getSgroup();
+// 						}
+// 				}
+// 		});
+// }
 //End get all Google Drive group members
-function getSgroup()
-{
-			$("#alertGoogleDri").text("Loading Google Drive security group...");
-			//$( "#alertGoogleDri.success" ).fadeIn();
-			osapi.jive.core.get(
-			{
-					"v":"v3",
-					"href":"/securityGroups/1059"
-			}).execute(function(response)
-			{
-					if(response.error)
-					{
-							var code = response.error.code;
-							group.sg_message = response.error.message;
-							$("#alertGoogleDri").text("Error: "+group.sg_message);
-					}
-					else
-					{
-							group.googleDSgroup = response;
-							$("#alertGoogleDri").text("Loaded: "+response.name);
-							//console.log(response.name);
-							//$( "#alertGoogleDri.success" ).fadeOut();
-							getJiD();
-					}
-			});
-}
+// function getSgroup()
+// {
+// 			$("#alertGoogleDri").text("Loading Google Drive security group...");
+// 			//$( "#alertGoogleDri.success" ).fadeIn();
+// 			osapi.jive.core.get(
+// 			{
+// 					"v":"v3",
+// 					"href":"/securityGroups/1059"
+// 			}).execute(function(response)
+// 			{
+// 					if(response.error)
+// 					{
+// 							var code = response.error.code;
+// 							group.sg_message = response.error.message;
+// 							$("#alertGoogleDri").text("Error: "+group.sg_message);
+// 					}
+// 					else
+// 					{
+// 							group.googleDSgroup = response;
+// 							$("#alertGoogleDri").text("Loaded: "+response.name);
+// 							//console.log(response.name);
+// 							//$( "#alertGoogleDri.success" ).fadeOut();
+// 							getJiD();
+// 					}
+// 			});
+// }
 
-function getJiD()
-{
-			$("#alertGoogleDri").text("Loading from UDE...");
-			$.getJSON('https://sidm.springernature.com/api/v2.0/users?filter[where][services]=946?fields=empid',function(data)
-			{
-					if(data.info.length < 4)
-					{
-							$("#uploadJIDs").prop("disabled",false);
+// function getJiD()
+// {
+// 			$("#alertGoogleDri").text("Loading from UDE...");
+// 			$.getJSON('https://sidm.springernature.com/api/v2.0/users?filter[where][services]=946?fields=empid',function(data)
+// 			{
+// 					if(data.info.length < 4)
+// 					{
+// 							$("#uploadJIDs").prop("disabled",false);
 
-							$("#uploadJIDs").change(function(evt)
-							{
-										var file = evt.target.files[0];
-										var reader = new FileReader();
-										var references="";
-										reader.onload = function(e)
-										{
-												references = e.target.result;
-												var header = references.split(",");
-												for(i=0;i<header.length;i++)
-												{
-													hiveArrays.sGrpData.push(header[i]);
-												}
-										}
-										reader.readAsText(file);
-										reader.onerror = function()
-										{
-												alert("Unable to read"+file.fileName);
-										}
-										hiveArrays.allJID = hiveArrays.sGrpData;
-										getDiff();
-							});
-					}
-					else
-					{
-							$(data.info).each(function(index,id)
-							{
-									hiveArrays.allGID.push(id.empid);
-									$.getJSON('https://sidm.springernature.com/api/v2.0/modules/jive/external/jive/search/'+id.empid,function(data)
-									{
-											hiveArrays.allJID.push(data.id);
-											$("#alertGoogleDri").text("Identifying Jive ID: "+data.id);
-									});
-							});
-							$("#alertGoogleDri").text("Identified IDs: "+hiveArrays.allJID.length);
-							$("#alertGoogleDri").text("Identifying new members...");
-							setTimeout(function(){ getDiff(); }, 420000);
-					}
+// 							$("#uploadJIDs").change(function(evt)
+// 							{
+// 										var file = evt.target.files[0];
+// 										var reader = new FileReader();
+// 										var references="";
+// 										reader.onload = function(e)
+// 										{
+// 												references = e.target.result;
+// 												var header = references.split(",");
+// 												for(i=0;i<header.length;i++)
+// 												{
+// 													hiveArrays.sGrpData.push(header[i]);
+// 												}
+// 										}
+// 										reader.readAsText(file);
+// 										reader.onerror = function()
+// 										{
+// 												alert("Unable to read"+file.fileName);
+// 										}
+// 										hiveArrays.allJID = hiveArrays.sGrpData;
+// 										getDiff();
+// 							});
+// 					}
+// 					else
+// 					{
+// 							$(data.info).each(function(index,id)
+// 							{
+// 									hiveArrays.allGID.push(id.empid);
+// 									$.getJSON('https://sidm.springernature.com/api/v2.0/modules/jive/external/jive/search/'+id.empid,function(data)
+// 									{
+// 											hiveArrays.allJID.push(data.id);
+// 											$("#alertGoogleDri").text("Identifying Jive ID: "+data.id);
+// 									});
+// 							});
+// 							$("#alertGoogleDri").text("Identified IDs: "+hiveArrays.allJID.length);
+// 							$("#alertGoogleDri").text("Identifying new members...");
+// 							setTimeout(function(){ getDiff(); }, 420000);
+// 					}
 
-			}).fail(function(data)
-			{
-					alert("Error occured reading from UDE: "+data);
-			});
-}
-function getDiff()
-{
-		hiveArrays.sGrpDif = hiveArrays.allJID.filter(function(el)
-		{
-				return !hiveArrays.allsGrpMem.includes(el);
-		});
-		$("#alertGoogleDri").text("Identified members: "+hiveArrays.sGrpDif.length);
-		$("#downJidDiff").prop("disabled",false);
+// 			}).fail(function(data)
+// 			{
+// 					alert("Error occured reading from UDE: "+data);
+// 			});
+// }
+// function getDiff()
+// {
+// 		hiveArrays.sGrpDif = hiveArrays.allJID.filter(function(el)
+// 		{
+// 				return !hiveArrays.allsGrpMem.includes(el);
+// 		});
+// 		$("#alertGoogleDri").text("Identified members: "+hiveArrays.sGrpDif.length);
+// 		$("#downJidDiff").prop("disabled",false);
 
-		if(hiveArrays.sGrpDif.length == 0)
-		{
-			alert("The list is empty!")
-		}
-		else
-		{
-				 var batchRequests = osapi.newBatch();
-				 $("#alertGoogleDri").text("Adding new members...");
-				 $( "#alertGoogleDri.success" ).fadeIn();
-				 $(hiveArrays.sGrpDif).each(function(index,id)
-				 {
-					 batchRequests.add
-						(
-								id,group.googleDSgroup.createMembers(["/people/"+id])
-						)
-				 });
-				batchRequests.execute(function(response)
-				 {
-						 if(response.error)
-						 {
-								 var code = response.error.code;
-								 group.sg_message = response.error.message;
-								 $("#alertGoogleDri").text("Error: "+group.sg_message);
-						 }
-						 else
-						 {
-								 $("#alertGoogleDri").text("New Added Members: "+hiveArrays.sGrpDif.length);
-								 //$("#alertGoogleDri.success" ).fadeOut(3000);
-						 }
-				 });
-		}//End else
-}
+// 		if(hiveArrays.sGrpDif.length == 0)
+// 		{
+// 			alert("The list is empty!")
+// 		}
+// 		else
+// 		{
+// 				 var batchRequests = osapi.newBatch();
+// 				 $("#alertGoogleDri").text("Adding new members...");
+// 				 $( "#alertGoogleDri.success" ).fadeIn();
+// 				 $(hiveArrays.sGrpDif).each(function(index,id)
+// 				 {
+// 					 batchRequests.add
+// 						(
+// 								id,group.googleDSgroup.createMembers(["/people/"+id])
+// 						)
+// 				 });
+// 				batchRequests.execute(function(response)
+// 				 {
+// 						 if(response.error)
+// 						 {
+// 								 var code = response.error.code;
+// 								 group.sg_message = response.error.message;
+// 								 $("#alertGoogleDri").text("Error: "+group.sg_message);
+// 						 }
+// 						 else
+// 						 {
+// 								 $("#alertGoogleDri").text("New Added Members: "+hiveArrays.sGrpDif.length);
+// 								 //$("#alertGoogleDri.success" ).fadeOut(3000);
+// 						 }
+// 				 });
+// 		}//End else
+// }
 
-//Download Jive ID
-$(function()
-{
-	$("#downJidDiff").click(function()
-	{
-		var csvCont = "data:text/csv;charset=utf-8,";
-		dataString = hiveArrays.sGrpDif.join(",");
-		csvCont += dataString;
+// //Download Jive ID
+// $(function()
+// {
+// 	$("#downJidDiff").click(function()
+// 	{
+// 		var csvCont = "data:text/csv;charset=utf-8,";
+// 		dataString = hiveArrays.sGrpDif.join(",");
+// 		csvCont += dataString;
 
-		var encodedUri = encodeURI(csvCont);
-		var link = document.createElement("a");
+// 		var encodedUri = encodeURI(csvCont);
+// 		var link = document.createElement("a");
 
-		link.setAttribute("href", encodedUri);
-		link.setAttribute("download", "Jive ID Difference.csv");
-		document.body.appendChild(link);
-		link.click();
-	});
-});
+// 		link.setAttribute("href", encodedUri);
+// 		link.setAttribute("download", "Jive ID Difference.csv");
+// 		document.body.appendChild(link);
+// 		link.click();
+// 	});
+// });
 //End download Jive ID
 
 /***************************************************************************************************************************

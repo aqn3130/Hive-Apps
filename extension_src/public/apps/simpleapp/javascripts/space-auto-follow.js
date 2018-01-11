@@ -16,11 +16,18 @@ var spaceArrays =
     unfolSpaceBatch:[]
 };
 
-//Get all spaces
+//Pick a space
 $(function()
 {
     $("#getAllspaces").click(function()
     {  
+        spaceVar.objectSpace=null;
+        spaceVar.spaceAssociationID=null;
+        
+		for(var key in spaceArrays)
+		{
+			spaceArrays[key].length=0;
+		}
         osapi.jive.corev3.places.requestPicker({  
 			type : "space",  
 			success : function(data) {  
@@ -32,6 +39,7 @@ $(function()
     });
 });
 
+//Upload csv file
 $("#uploadSpc").change(function(evt)
 {
     $("#alertFS").text("Loading...");
@@ -109,6 +117,7 @@ $("#uploadSpc").change(function(evt)
     $("#alertFS").text("Upload successful!");
 });
 
+//Follow space
 $(function()
 {
     $("#followSpace").click(function()
@@ -254,7 +263,6 @@ $(function()
                 })(i);
             }//end for loop
         }//end else
-
     });
 });
 

@@ -23,8 +23,8 @@ var ACTION_IDS = [
 	"example.app.places.settings.project.action",
 	"example.app.places.settings.group.action",
 	"example.app.rte.action"
-  ];
-  function onReady(env) {
+];
+function onReady(env) {
 	//console.log('onReady',env);
 	var jiveURL = env["jiveUrl"];
 	//TODO: ADD IN UI INIT STUFF
@@ -34,45 +34,44 @@ var ACTION_IDS = [
 	$("#ug").hide();
 	$("#cgu").hide();
 	$("#asg").hide();
-	$("#gDri").hide();
+	// $("#gDri").hide();
 	$("#fGrp").hide();
 	$("#fSpc").hide();
 	app.resize();
-  } // end function
+} // end function
   
-  function onViewer(viewer) {
-	  //console.log("onViewer",viewer);
-	  $("#currentUser").html("<pre>"+JSON.stringify(viewer,null,2)+"</pre>");
-  } // end function
+function onViewer(viewer) {
+	//console.log("onViewer",viewer);
+	$("#currentUser").html("<pre>"+JSON.stringify(viewer,null,2)+"</pre>");
+} // end function
+
+function onView(context) {
+//console.log("onView",context);
+
+if (context["currentView"]) {
+	$('span.viewContext').append('<em>'+context["currentView"]+"</em>");
+} // end if
+
+if (context["params"]) {
+	$('#paramsContext').html('<pre>'+JSON.stringify(context["params"],null,2)+"</pre>");
+} else {
+	$('#paramsContext').html('No Params Found');
+} // end if
+
+if (context["object"]) {
+	$("#currentViewContext").append("<pre>"+JSON.stringify(context["object"],null,2)+"</pre>");
+} // end if
+
+$('#paramsSampleLink').click(function() {
+	gadgets.views.requestNavigateTo(context["currentView"], { timestamp: new Date().toString() });
+});
+
+} // end function
   
-  function onView(context) {
-	//console.log("onView",context);
-  
-	if (context["currentView"]) {
-	  $('span.viewContext').append('<em>'+context["currentView"]+"</em>");
-	} // end if
-  
-	if (context["params"]) {
-	  $('#paramsContext').html('<pre>'+JSON.stringify(context["params"],null,2)+"</pre>");
-	} else {
-	  $('#paramsContext').html('No Params Found');
-	} // end if
-  
-	if (context["object"]) {
-	  $("#currentViewContext").append("<pre>"+JSON.stringify(context["object"],null,2)+"</pre>");
-	} // end if
-  
-	$('#paramsSampleLink').click(function() {
-	  gadgets.views.requestNavigateTo(context["currentView"], { timestamp: new Date().toString() });
-	});
-  
-  } // end function
-  
-  /**********************************************************************
-								  HDM
-  ***********************************************************************/
-  var groupHDM =
-  {
+/**********************************************************************
+								 HDM
+***********************************************************************/
+var groupHDM ={
 	grp_hdm:"",
 	groupName:"",
 	groupURL:"",
@@ -83,10 +82,9 @@ var ACTION_IDS = [
 	authName:"",
 	reply:"",
 	grp_id_cancel:""
-  };
+};
   
-  var hdm_Arrays=
-  {
+var hdm_Arrays={
 	allGroupsHDM:[],
 	peopleInThisLocation:[],
 	allLocs:[],
@@ -96,26 +94,26 @@ var ACTION_IDS = [
 	dmsArray:[],
 	replyArray:[],
 	lines:[]
-  };
+};
   
-  $(function()
-  {
+$(function()
+{
   
 	$("#toHDM").click(function()
 	{
-	$("#menu").hide();
-	$("#info").hide();
-	$("#tabs").tabs({active:0});
-	$("#hdm").show();
-	$("#guide_text1, #guide_text2, #guide_text3").hide();
-	$("#guide1,#guide2,#guide3").hover(function ()
-	{
-		$("#guide_text1,#guide_text2,#guide_text3").show();
-		},
-		function () {
-		$("#guide_text1,#guide_text2,#guide_text3").hide();
-	});
-	app.resize();
+		$("#menu").hide();
+		$("#info").hide();
+		$("#tabs").tabs({active:0});
+		$("#hdm").show();
+		$("#guide_text1, #guide_text2, #guide_text3").hide();
+		$("#guide1,#guide2,#guide3").hover(function ()
+		{
+			$("#guide_text1,#guide_text2,#guide_text3").show();
+			},
+			function () {
+			$("#guide_text1,#guide_text2,#guide_text3").hide();
+		});
+		app.resize();
 	});
 	$("#icons").click(function()
 	{
@@ -126,42 +124,46 @@ var ACTION_IDS = [
 		$("#ug").hide();
 		$("#cgu").hide();
 		$("#asg").hide();
-		$("#gDri").hide();
+		// $("#gDri").hide();
 		$("#fGrp").hide();
 		$("#fSpc").hide();
   
-		for(var key in group)
-		{
-		group[key]="";
-		}
+		group.groupName="";
+		group.sgroupName="";
+		group.displayName="";
+		group.objID="";
+		group.sGrpID="";
+		group.sGrpObj="";
+		group.sGroup="";
+		group.googleDSgroup="";
+		group.objectGroup=null;
+
+		spaceVar.objectSpace=null;
+		spaceVar.spaceAssociationID=null;
+
 		for(var key in groupHDM)
 		{
-		groupHDM[key]="";
+			groupHDM[key]="";
 		}
 		for(var key in hiveArrays)
 		{
-		if(hiveArrays[key]!=hiveArrays.allGroups){
-		hiveArrays[key].length=0;
-		}
+			if(hiveArrays[key] != hiveArrays.allGroups){
+				hiveArrays[key].length=0;
+			}
 		}
 		for(var key in hdm_Arrays)
 		{
 			hdm_Arrays[key].length=0;
 		}
 
-		for(var key in spaceVar)
-		{
-			spaceVar[key]="";
-		}
 		for(var key in spaceArrays)
 		{
 			spaceArrays[key].length=0;
 		}
 
 		$("#lineUpUsers,#getMem,#tab3Get,#chURL").prop("disabled",true);
-
 		$("#input2,#input5,#addAll,#res,#uploadHID,#input4,#grpURL,#input3,#uploadFG,#inputFG,#uploadSpc,#inputFS").val("");
-		$( "#alertGoogleDri.success,#alertUFG.success,#alertRGM.success,#alertUG.success,#alertCGU.success,#alertFG.success,#alertASG.success,#alertFS.success" ).fadeOut();
+		$( "#alertUFG.success,#alertRGM.success,#alertUG.success,#alertCGU.success,#alertFG.success,#alertASG.success,#alertFS.success" ).fadeOut();
 		$("#menu").show();
 		$("#info").show();
 		app.resize();
@@ -205,7 +207,7 @@ var ACTION_IDS = [
 	  {
 		$("#menu").hide();
 		$("#info").hide();
-		$("#gDri").show();
+		// $("#gDri").show();
 		app.resize();
 	  });
 	$("#toFG").click(function()
@@ -232,7 +234,7 @@ var ACTION_IDS = [
 	$("#toFG").mouseenter(function(){$("#info").text("Follow a social group");});
 	$("#toFS").mouseenter(function(){$("#info").text("Follow a Space");});
 	$("#toHDM,#toUFG,#toRGM,#toUG,#toCGU,#toASG,#toGD,#toFG,#toFS").mouseleave(function(){$("#info").text("Hover over an App for more information");});
-  });
+});
   
   //Get all groups
   $(function()
@@ -321,48 +323,48 @@ var ACTION_IDS = [
 	  n2.style.textTransform="lowercase";
   }
   
-  //Validate group name
-  $(function()
-  {
-	  $("input[id='name']").keyup(function()
-	  {
-		  groupHDM.groupName = $("#name").val();
-		  groupHDM.groupURL = $("#dName").val();
-		  $("input[id='name']").css("color", "black");
-		  $("input[id='dName']").css("color", "black");
-		  document.getElementById("validName").innerHTML = "";
-  
-		  $.each(hdm_Arrays.allGroupsHDM, function(index, value)
-		  {
-			  if(value.name == groupHDM.groupName)
-			  {
-				  $("input[id='name']").css("color", "red");
-				  groupHDM.groupName = null;
-				  document.getElementById("validName").innerHTML = "This name is taken";
-				  return;
-			  }
-			  return groupHDM.groupName;
-		  });
-	  });
-  
-	  $("#dName").on('input',function()
-	  {
-		  groupHDM.groupURL = $("#dName").val();
-		  $("input[id='dName']").css("color", "black");
-  
-		  $.each(hdm_Arrays.allGroupsHDM, function(index, value)
-		  {
-			  if(value.displayName == groupHDM.groupURL)
-			  {
-				  $("input[id='dName']").css("color", "red");
-				  groupHDM.groupURL = null;
-				  return;
-			  }
-			  return groupHDM.groupURL;
-		  });
-	  });
-  });
-  //End validate group name
+//Validate group name
+$(function()
+{
+	$("input[id='name']").keyup(function()
+	{
+		groupHDM.groupName = $("#name").val();
+		groupHDM.groupURL = $("#dName").val();
+		$("input[id='name']").css("color", "black");
+		$("input[id='dName']").css("color", "black");
+		document.getElementById("validName").innerHTML = "";
+
+		$.each(hdm_Arrays.allGroupsHDM, function(index, value)
+		{
+			if(value.name == groupHDM.groupName)
+			{
+				$("input[id='name']").css("color", "red");
+				groupHDM.groupName = null;
+				document.getElementById("validName").innerHTML = "This name is taken";
+				return;
+			}
+			return groupHDM.groupName;
+		});
+	});
+
+	$("#dName").on('input',function()
+	{
+		groupHDM.groupURL = $("#dName").val();
+		$("input[id='dName']").css("color", "black");
+
+		$.each(hdm_Arrays.allGroupsHDM, function(index, value)
+		{
+			if(value.displayName == groupHDM.groupURL)
+			{
+				$("input[id='dName']").css("color", "red");
+				groupHDM.groupURL = null;
+				return;
+			}
+			return groupHDM.groupURL;
+		});
+	});
+});
+//End validate group name
   
   //Create Group function
   $(function()
