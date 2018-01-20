@@ -17,22 +17,19 @@ var spaceArrays =
 };
 
 //Pick a space
-$(function()
-{
-    $("#getAllspaces").click(function()
-    {  
-        spaceVar.objectSpace=null;
-        spaceVar.spaceAssociationID=null;
+$(function(){
+    $("#getAllspaces").click(function(){  
+        spaceVar.objectSpace = null;
+        spaceVar.spaceAssociationID = null;
         
-		for(var key in spaceArrays)
-		{
+		for(var key in spaceArrays){
 			spaceArrays[key].length=0;
 		}
         osapi.jive.corev3.places.requestPicker({  
 			type : "space",  
 			success : function(data) {  
             // "data" will be the Space object (in this case) selected by the user 
-            spaceVar.objectSpace=data;
+            spaceVar.objectSpace = data;
 			}  
         });
         $("#uploadSpc").prop("disabled",false);
@@ -40,61 +37,46 @@ $(function()
 });
 
 //Upload csv file
-$("#uploadSpc").change(function(evt)
-{
+$("#uploadSpc").change(function(evt){
     $("#alertFS").text("Loading...");
     $( "#alertFS.success" ).fadeIn();
     var file = evt.target.files[0];
     var reader = new FileReader();
     var references="";
-    reader.onload = function(e)
-    {
+    reader.onload = function(e){
         references = e.target.result;
         var header = references.split(",");
-        for(i=0;i<header.length;i++)
-        {
+        for(i=0;i<header.length;i++){
             spaceArrays.folSpace.push(header[i]);
         }
 
-        for(i=0;i<spaceArrays.folSpace.length;i+=spaceVar.emailBatch)
-        {
+        for(i=0;i<spaceArrays.folSpace.length;i+=spaceVar.emailBatch){
             spaceArrays.arrEmailBatch.push(spaceArrays.folSpace.slice(i,i+spaceVar.emailBatch));
             //return hiveArrays.arrBatch;
         }
-        if(spaceArrays.arrEmailBatch.length==0)
-        {
+        if(spaceArrays.arrEmailBatch.length === 0){
             $("#alertFS").text("List is empty...");
         }
         else {
-
-            for(i=0;i<spaceArrays.arrEmailBatch.length;i++)
-            {
-                (function(x)
-                {
-                    setTimeout(function()
-                    {
-                        $(spaceArrays.arrEmailBatch[x]).each(function(index,email)
-                        {
-                            osapi.jive.core.get(
-                            {
+            for(i=0;i<spaceArrays.arrEmailBatch.length;i++){
+                (function(x){
+                    setTimeout(function(){
+                        $(spaceArrays.arrEmailBatch[x]).each(function(index,email){
+                            osapi.jive.core.get({
                                 "v":"v3",
                                 "href":"/people/email/"+email,
                                 "fields":"id,displayName"
-                            }).execute(function(response)
-                            {
-                                if(response.error)
-                                {
+                            }).execute(function(response){
+                                if(response.error){
                                     var message = response.error.message;
                                     $("#alertFS").text(message);
                                 }
-                                else
-                                {
+                                else{
                                     spaceArrays.jiveId.push(response.id);
                                     $("#alertFS").text("Email identified: "+response.displayName);
                                     $("#alertFS").text("Completed Batch: "+x+" of "+spaceArrays.arrEmailBatch.length);
 
-                                    if(spaceArrays.arrEmailBatch.length-1 == x)
-                                    {
+                                    if(spaceArrays.arrEmailBatch.length-1 == x){
                                         $("#alertFS").text("All Batches Completed!");
                                         $("#alertFS").text("Total identified: "+spaceArrays.jiveId.length);
                                     }
@@ -109,8 +91,7 @@ $("#uploadSpc").change(function(evt)
         }//End else
     }
     reader.readAsText(file);
-    reader.onerror = function()
-    {
+    reader.onerror = function(){
         alert("Unable to read"+file.fileName);
     }
     document.getElementById("followSpace").disabled=false;
@@ -118,56 +99,41 @@ $("#uploadSpc").change(function(evt)
 });
 
 //Follow space
-$(function()
-{
-    $("#followSpace").click(function()
-    {
-        if(spaceArrays.jiveId.length === 0)
-        {
+$(function(){
+    $("#followSpace").click(function(){
+        if(spaceArrays.jiveId.length === 0){
             $("#alertFS").text("List is empty...");
         }
-        else
-        {
-            if(spaceArrays.jiveId.length>50){
-                for(i=0;i<spaceArrays.jiveId.length;i+=spaceVar.batch)
-                {
-                    spaceArrays.arrBatch.push(spaceArrays.jiveId.slice(i,i+spaceVar.batch));
+        else{
+            if(spaceArrays.jiveId.length > 50){
+                var j;
+                for(j=0;j<spaceArrays.jiveId.length;j+=spaceVar.batch){
+                    spaceArrays.arrBatch.push(spaceArrays.jiveId.slice(j,j+spaceVar.batch));
                     //return hiveArrays.arrBatch;
                 }
             }
             else{
                 spaceArrays.arrBatch.push(spaceArrays.jiveId);
             }
-            
-            for(i=0;i<spaceArrays.arrBatch.length;i++)
-            {
-                (function(x)
-                {
-                    setTimeout(function()
-                    {
-                    $(spaceArrays.arrBatch[x]).each(function(index,member)
-                    {
-                        osapi.jive.core.get(
-                        {
+            var i;
+            for(i=0;i<spaceArrays.arrBatch.length;i++){
+                (function(x){
+                    setTimeout(function(){
+                    $(spaceArrays.arrBatch[x]).each(function(index,member){
+                        osapi.jive.core.get({
                             v:"v3",
                             href:"/people/"+member+"/streams"
-                        }).execute(function(response)
-                        {
-                            $(response.list).each(function(index,stream)
-                            {
-                                if($("#checkBoxInbox").is(":checked"))
-                                {
-                                    if(stream.source == "connections")
-                                    {
+                        }).execute(function(response){
+                            $(response.list).each(function(index,stream){
+                                if($("#checkBoxInbox").is(":checked")){
+                                    if(stream.source === "connections"){
                                         var conType = stream.id;
                                         osapi.jive.core.post(
                                         {
                                             "v":"v3",
                                             "href":"/streams/"+conType+"/associations",
                                             "body":["/places/"+spaceVar.objectSpace.placeID]
-
-                                        }).execute(function(response)
-                                        {
+                                        }).execute(function(response){
                                             if(response.error)
                                             { 
                                                 if(response.error.code === "409"){
@@ -176,19 +142,19 @@ $(function()
                                                 else{
                                                     var message = response.error.message;
                                                     $("#alertFS").text("Error: "+message);
-                                                }
-                                                
+                                                } 
                                             }
                                             else {
                                                 if(response.status === 204){
-                                                    $("#alertFS").text("Completed Batch: "+x+" of "+spaceArrays.arrBatch.length);
+                                                    if(x > 0){
+                                                        $("#alertFS").text("Completed Batch: "+x+" of "+spaceArrays.arrBatch.length);
+                                                    }
+                                                }
+                                                else if(spaceArrays.arrBatch.length - 1 === x){
+                                                    $("#alertFS").text("Completed!");
                                                 }
                                                 else{
                                                     $("#alertFS").text(JSON.stringify(response));
-                                                }
-                                                if(spaceArrays.arrBatch.length-1 == x)
-                                                {
-                                                    $("#alertFS").text("Completed!");
                                                 }
                                             }
                                         });
@@ -199,50 +165,35 @@ $(function()
 
                                     }
                                 }
-                                else if($("#checkBoxActivity").is(":checked"))
-                                {
-                                    if(stream.source == "communications")
-                                    {
+                                if($("#checkBoxActivity").is(":checked")){
+                                    if(stream.source === "communications"){
                                         var conTypeComms = stream.id;
-                                        osapi.jive.core.post(
-                                        {
+                                        osapi.jive.core.post({
                                             "v":"v3",
                                             "href":"/streams/"+conTypeComms+"/associations",
                                             "body":["/places/"+spaceVar.objectSpace.placeID]
-
-                                        }).execute(function(response)
-                                        {
-                                            if(response.error)
-                                            {
+                                        }).execute(function(response){
+                                            if(response.error){
                                                 if(response.error.code === "409"){
                                                     $("#alertFS").text("Already following in Activity Stream!");
                                                 }
                                                 else{
                                                     var message = response.error.message;
                                                     $("#alertFS").text("Error: "+message);
-                                                }
-                                                
+                                                } 
                                             }
-                                            else
-                                            {
-                                                // $("#alertFS").text(JSON.stringify(response));
-                                                // $("#alertFS").text("Completed Batch: "+x+" of: "+spaceArrays.arrBatch.length);
-
-                                                // if(spaceArrays.arrBatch.length-1 == x)
-                                                // {
-                                                //     $("#alertFS").text("Completed!");
-                                                // }
+                                            else{
                                                 if(response.status === 204){
-                                                    $("#alertFS").text("Completed Batch: "+x+" of "+spaceArrays.arrBatch.length);
+                                                    if(x > 0){
+                                                        $("#alertFS").text("Completed Batch: "+x+" of "+spaceArrays.arrBatch.length);
+                                                    }
+                                                }
+                                                else if(spaceArrays.arrBatch.length - 1 === x){
+                                                    $("#alertFS").text("Completed!");
                                                 }
                                                 else{
                                                     $("#alertFS").text(JSON.stringify(response));
                                                 }  
-                                                if(spaceArrays.arrBatch.length-1 == x)
-                                                {
-                                                    $("#alertFS").text("Completed!");
-                                                }
-
                                             }
                                         });
                                     }

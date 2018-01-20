@@ -71,7 +71,7 @@ $('#paramsSampleLink').click(function() {
 /**********************************************************************
 								 HDM
 ***********************************************************************/
-var groupHDM ={
+var groupHDM = {
 	grp_hdm:"",
 	groupName:"",
 	groupURL:"",
@@ -84,7 +84,7 @@ var groupHDM ={
 	grp_id_cancel:""
 };
   
-var hdm_Arrays={
+var hdm_Arrays = {
 	allGroupsHDM:[],
 	peopleInThisLocation:[],
 	allLocs:[],
