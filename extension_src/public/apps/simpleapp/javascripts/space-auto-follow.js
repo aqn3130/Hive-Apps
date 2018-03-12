@@ -1,6 +1,7 @@
 var spaceVar =
 {
     batch:50,
+    unfollowBatch:25,
     emailBatch:50,
     objectSpace:null,
     spaceAssociationID:null
@@ -46,18 +47,22 @@ $("#uploadSpc").change(function(evt){
     reader.onload = function(e){
         references = e.target.result;
         var header = references.split(",");
-        for(i=0;i<header.length;i++){
-            spaceArrays.folSpace.push(header[i]);
+        var j;
+        spaceArrays.folSpace.length = 0;
+        for(j=0;j<header.length;j++){
+            spaceArrays.folSpace.push(header[j]);
         }
-
-        for(i=0;i<spaceArrays.folSpace.length;i+=spaceVar.emailBatch){
-            spaceArrays.arrEmailBatch.push(spaceArrays.folSpace.slice(i,i+spaceVar.emailBatch));
+        var k;
+        spaceArrays.arrEmailBatch.length = 0;
+        for(k=0;k<spaceArrays.folSpace.length;k+=spaceVar.emailBatch){
+            spaceArrays.arrEmailBatch.push(spaceArrays.folSpace.slice(k,k+spaceVar.emailBatch));
             //return hiveArrays.arrBatch;
         }
         if(spaceArrays.arrEmailBatch.length === 0){
             $("#alertFS").text("List is empty...");
         }
         else {
+            var i;
             for(i=0;i<spaceArrays.arrEmailBatch.length;i++){
                 (function(x){
                     setTimeout(function(){
@@ -74,7 +79,7 @@ $("#uploadSpc").change(function(evt){
                                 else{
                                     spaceArrays.jiveId.push(response.id);
                                     $("#alertFS").text("Email identified: "+response.displayName);
-                                    $("#alertFS").text("Completed Batch: "+x+" of "+spaceArrays.arrEmailBatch.length);
+                                    $("#alertFS").text("Identifying Batch: "+x+" of "+spaceArrays.arrEmailBatch.length);
 
                                     if(spaceArrays.arrEmailBatch.length-1 == x){
                                         $("#alertFS").text("All Batches Completed!");
@@ -105,16 +110,17 @@ $(function(){
             $("#alertFS").text("List is empty...");
         }
         else{
-            if(spaceArrays.jiveId.length > 50){
+            // if(spaceArrays.jiveId.length > 50){
+                spaceArrays.arrBatch.length = 0;
                 var j;
                 for(j=0;j<spaceArrays.jiveId.length;j+=spaceVar.batch){
                     spaceArrays.arrBatch.push(spaceArrays.jiveId.slice(j,j+spaceVar.batch));
                     //return hiveArrays.arrBatch;
                 }
-            }
-            else{
-                spaceArrays.arrBatch.push(spaceArrays.jiveId);
-            }
+            // }
+            // else{
+            //     spaceArrays.arrBatch.push(spaceArrays.jiveId);
+            // }
             var i;
             for(i=0;i<spaceArrays.arrBatch.length;i++){
                 (function(x){
@@ -126,85 +132,17 @@ $(function(){
                         }).execute(function(response){
                             $(response.list).each(function(index,stream){
                                 if($("#checkBoxInbox").is(":checked")){
-                                    if(stream.source === "connections"){
-                                        var conType = stream.id;
-                                        osapi.jive.core.post(
-                                        {
-                                            "v":"v3",
-                                            "href":"/streams/"+conType+"/associations",
-                                            "body":["/places/"+spaceVar.objectSpace.placeID]
-                                        }).execute(function(response){
-                                            if(response.error)
-                                            { 
-                                                if(response.error.code === "409"){
-                                                    $("#alertFS").text("Already following in Inbox!");
-                                                }
-                                                else{
-                                                    var message = response.error.message;
-                                                    $("#alertFS").text("Error: "+message);
-                                                } 
-                                            }
-                                            else {
-                                                if(response.status === 204){
-                                                    if(x > 0){
-                                                        $("#alertFS").text("Completed Batch: "+x+" of "+spaceArrays.arrBatch.length);
-                                                    }
-                                                }
-                                                else if(spaceArrays.arrBatch.length - 1 === x){
-                                                    $("#alertFS").text("Completed!");
-                                                }
-                                                else{
-                                                    $("#alertFS").text(JSON.stringify(response));
-                                                }
-                                            }
-                                        });
-                                    }
-                                    else
-                                    {
-                                        $("#alertFS").text("Stream not found!");
-
-                                    }
+                                    app.followStreamInbox(stream,x);
+                                    
                                 }
                                 if($("#checkBoxActivity").is(":checked")){
-                                    if(stream.source === "communications"){
-                                        var conTypeComms = stream.id;
-                                        osapi.jive.core.post({
-                                            "v":"v3",
-                                            "href":"/streams/"+conTypeComms+"/associations",
-                                            "body":["/places/"+spaceVar.objectSpace.placeID]
-                                        }).execute(function(response){
-                                            if(response.error){
-                                                if(response.error.code === "409"){
-                                                    $("#alertFS").text("Already following in Activity Stream!");
-                                                }
-                                                else{
-                                                    var message = response.error.message;
-                                                    $("#alertFS").text("Error: "+message);
-                                                } 
-                                            }
-                                            else{
-                                                if(response.status === 204){
-                                                    if(x > 0){
-                                                        $("#alertFS").text("Completed Batch: "+x+" of "+spaceArrays.arrBatch.length);
-                                                    }
-                                                }
-                                                else if(spaceArrays.arrBatch.length - 1 === x){
-                                                    $("#alertFS").text("Completed!");
-                                                }
-                                                else{
-                                                    $("#alertFS").text(JSON.stringify(response));
-                                                }  
-                                            }
-                                        });
-                                    }
-                                    else
-                                    {
-                                        $("#alertFS").text("Stream not found!");
-
-                                    }
-                                }  
-                                else
-                                {
+                                    app.followStreamActivity(stream,x);
+                                   
+                                } 
+                                // if(spaceArrays.arrBatch.length - 1 === x){
+                                //     $("#alertFS").text("Completed!");
+                                // } 
+                                else{
                                     $("#alertFS").text("Make a selection please Inbox or Activity!");
                                 }
                             });
@@ -319,17 +257,20 @@ $(function(){
         if(spaceArrays.unfolSpace.length>0)
         {
             $("#alertFS").text("Unfollowing...");
-            for(i=0;i<spaceArrays.unfolSpace.length;i+=spaceVar.batch)
+            var i;
+            spaceArrays.unfolSpaceBatch.length = 0;
+            for(i=0;i<spaceArrays.unfolSpace.length;i+=spaceVar.unfollowBatch)
             {
-                spaceArrays.unfolSpaceBatch.push(spaceArrays.unfolSpace.slice(i,i+spaceVar.batch));
+                spaceArrays.unfolSpaceBatch.push(spaceArrays.unfolSpace.slice(i,i+spaceVar.unfollowBatch));
             }
+            var j;
             for(j=0;j<spaceArrays.unfolSpaceBatch.length;j++)
             {
                 (function(y)
                 {
                     setTimeout(function()
                     {
-                        if(spaceVar.spaceAssociationID == null || spaceVar.spaceAssociationID == "")
+                        if(spaceVar.spaceAssociationID === null || spaceVar.spaceAssociationID === "")
                         {
                             window.alert("Group association not found! Load Followers again");
                         }
@@ -345,7 +286,7 @@ $(function(){
                                 {
                                     $(response.list).each(function(index,stream)
                                     {
-                                        if(stream.source == "connections")
+                                        if(stream.source === "connections")
                                         {
                                             var connStream = stream.id;
                                             osapi.jive.core.delete(
@@ -354,7 +295,6 @@ $(function(){
                                                 href:"/streams/"+connStream+"/associations/spaces/"+spaceVar.spaceAssociationID
                                             }).execute(function(response)
                                             {
-        
                                                 if(response.error)
                                                 {
                                                     var message = response.error.message;
@@ -371,7 +311,7 @@ $(function(){
         
                                             });
                                         }
-                                        else if(stream.source == "communications")
+                                        else if(stream.source === "communications")
                                         {
                                             var commStream = stream.id;
                                             osapi.jive.core.delete(
@@ -380,13 +320,12 @@ $(function(){
                                                 href:"/streams/"+commStream+"/associations/spaces/"+spaceVar.spaceAssociationID
                                             }).execute(function(response)
                                             {
-        
                                                 if(response.error)
                                                 {
                                                     var message = response.error.message;
                                                     $("#alertFS").text(message);
                                                 }
-                                                else if(spaceArrays.unfolSpaceBatch.length-1 == y)
+                                                else if(spaceArrays.unfolSpaceBatch.length-1 === y)
                                                 {
                                                     $("#alertFS").text("Unfollow Completed!");
                                                 }

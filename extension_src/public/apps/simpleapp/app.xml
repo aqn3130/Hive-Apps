@@ -58,7 +58,7 @@
            <action id="example.app.launcherlessapp"
                    path="jive/apps/launcher?filter=false()"/>
            -->
-			<!--
+<!--
            <action id="example.app.places.all.tab"
                    path="jive/tabs/places/*"
                    label="Example (All Places)"
@@ -73,17 +73,17 @@
                    path="jive/tabs/places/space"
                    label="Example (Space)"
                    view="place-space-tab"/>
-
+-->
            <action id="example.app.places.group.tab"
-                   path="jive/tabs/places/group"
+                   path="jive/tabs/places/group?filter=equals(context.ID,6042)"
                    label="Hive Apps"
                    view="place-group-tab"/>
-       -->
+<!--
            <action id="example.app.actions.tab"
                    path="jive/tabs/actions"
                    label="Hive Apps"
                    view="actions-tab"/>
-			<!--
+
            <action id="example.app.profile.tab"
                    path="jive/tabs/profile"
                    label="Example (Profile)"

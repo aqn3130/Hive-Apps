@@ -11,6 +11,8 @@ var app = {
   actionContext : { },
   data : null,
   viewer : null,
+  stream : null,
+  x : null,
   
   resize : function() {
     //console.log('resize');
@@ -156,5 +158,86 @@ var app = {
   //     }  
   //     });
   // }
+
+//foll stream inbox
+  followStreamInbox : function(stream,x){
+    app.stream = stream;
+    app.x = x;
+    if(stream.source === "connections"){
+      var conType = stream.id;
+      osapi.jive.core.post(
+      {
+          "v":"v3",
+          "href":"/streams/"+conType+"/associations",
+          "body":["/places/"+spaceVar.objectSpace.placeID]
+      }).execute(function(response){
+          if(response.error)
+          { 
+              // if(response.error.code === "409"){
+              //     $("#alertFS").text("Already following in Inbox!");
+              // }
+              // else{
+                  var message = response.error.message;
+                  $("#alertFS").text("Error: "+message);
+              // } 
+          }
+          else {
+              // if(response.status === 204){
+                  // if(x > 0){
+                      $("#alertFS").text("Completed Batch: "+x+" of "+spaceArrays.arrBatch.length);
+                  // }
+              // }
+              if(spaceArrays.arrBatch.length - 1 === x){
+                  $("#alertFS").text("Completed!");
+              }
+              // else{
+              //     $("#alertFS").text(JSON.stringify(response));
+              // }
+          }
+      });
+  }
+  else
+  {
+      $("#alertFS").text("Stream not found!");
+
+  }
+  },
+  //follow activity stream
+  followStreamActivity : function(stream,x){
+    if(stream.source === "communications"){
+      var conTypeComms = stream.id;
+      osapi.jive.core.post({
+          "v":"v3",
+          "href":"/streams/"+conTypeComms+"/associations",
+          "body":["/places/"+spaceVar.objectSpace.placeID]
+      }).execute(function(response){
+          if(response.error){
+              // if(response.error.code === "409"){
+              //     $("#alertFS").text("Already following in Activity Stream!");
+              // }
+              // else{
+                  var message = response.error.message;
+                  $("#alertFS").text("Error: "+message);
+              // } 
+          }
+          else{
+              // if(response.status === 204){
+              //     if(x > 0){
+                      $("#alertFS").text("Completed Batch: "+x+" of "+spaceArrays.arrBatch.length);
+              //     }
+              // }
+              if(spaceArrays.arrBatch.length - 1 === x){
+                  $("#alertFS").text("Completed!");
+              }
+              // else{
+              //     $("#alertFS").text(JSON.stringify(response));
+              // }  
+          }
+      });
+  }
+  else{
+      $("#alertFS").text("Stream not found!");
+  }
+  }
 };
 gadgets.util.registerOnLoadHandler(gadgets.util.makeClosure(app, app.init));

@@ -97,9 +97,10 @@ function nextPage(request){
 		if(response.error){
 			var code = response.error.code;
 			var message = response.error.message;
+			$("#alertUFG").text(message);
 		}
 		else if (!response.list){
-			alert("Error: response is not a list");
+			$("#alertUFG").text("Error: response is not a list");
 		}
 		else{
 			$(response.list).each(function(index,person){
@@ -928,7 +929,7 @@ $(function(){
 											$("#alertFG").text(JSON.stringify(response));
 											$("#alertFG").text("Completed Batch: "+x+" of "+hiveArrays.arrBatch.length);
 	
-											if(hiveArrays.arrBatch.length-1 == x){
+											if(hiveArrays.arrBatch.length - 1 === x){
 													$("#alertFG").text("Completed!");
 											}
 										}
