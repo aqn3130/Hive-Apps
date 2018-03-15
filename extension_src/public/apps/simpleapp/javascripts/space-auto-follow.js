@@ -110,48 +110,62 @@ $(function(){
             $("#alertFS").text("List is empty...");
         }
         else{
-            // if(spaceArrays.jiveId.length > 50){
-                spaceArrays.arrBatch.length = 0;
-                var j;
-                for(j=0;j<spaceArrays.jiveId.length;j+=spaceVar.batch){
-                    spaceArrays.arrBatch.push(spaceArrays.jiveId.slice(j,j+spaceVar.batch));
-                    //return hiveArrays.arrBatch;
-                }
-            // }
-            // else{
-            //     spaceArrays.arrBatch.push(spaceArrays.jiveId);
-            // }
-            var i;
-            for(i=0;i<spaceArrays.arrBatch.length;i++){
-                (function(x){
-                    setTimeout(function(){
-                    $(spaceArrays.arrBatch[x]).each(function(index,member){
-                        osapi.jive.core.get({
-                            v:"v3",
-                            href:"/people/"+member+"/streams"
-                        }).execute(function(response){
-                            $(response.list).each(function(index,stream){
-                                if($("#checkBoxInbox").is(":checked")){
-                                    app.followStreamInbox(stream,x);
-                                    
+            if (!$("#checkBoxActivity").prop( "checked" ) && !$("#checkBoxInbox").prop( "checked" )){
+                $("#alertFS").text("Please make a selection Inbox or Activity stream");
+            }
+            else{
+                $("#alertFS").text("Working...");
+                // if(spaceArrays.jiveId.length > 50){
+                    spaceArrays.arrBatch.length = 0;
+                    var j;
+                    for(j=0;j<spaceArrays.jiveId.length;j+=spaceVar.batch){
+                        spaceArrays.arrBatch.push(spaceArrays.jiveId.slice(j,j+spaceVar.batch));
+                        //return hiveArrays.arrBatch;
+                    }
+                // }
+                // else{
+                //     spaceArrays.arrBatch.push(spaceArrays.jiveId);
+                // }
+                var i;
+                for(i=0;i<spaceArrays.arrBatch.length;i++){
+                    (function(x){
+                        setTimeout(function(){
+                        $(spaceArrays.arrBatch[x]).each(function(index,member){
+                            osapi.jive.core.get({
+                                v:"v3",
+                                href:"/people/"+member+"/streams"
+                            }).execute(function(response){
+                                if(response.error){
+                                    $("#alertFS").text(response.error.message);
                                 }
-                                if($("#checkBoxActivity").is(":checked")){
-                                    app.followStreamActivity(stream,x);
-                                   
-                                } 
-                                // if(spaceArrays.arrBatch.length - 1 === x){
-                                //     $("#alertFS").text("Completed!");
-                                // } 
                                 else{
-                                    $("#alertFS").text("Make a selection please Inbox or Activity!");
+                                    $(response.list).each(function(index,stream){
+                                        if($("#checkBoxInbox").is(":checked")){
+                                            app.followStreamInbox(stream,x);
+                                            
+                                        }
+                                        if($("#checkBoxActivity").is(":checked")){
+                                            app.followStreamActivity(stream,x);
+                                            
+                                        } 
+                                        // if(spaceArrays.arrBatch.length - 1 === x){
+                                        //     $("#alertFS").text("Completed!");
+                                        // } 
+    
+                                        // else{
+                                        //     $("#alertFS").text("Make a selection please Inbox or Activity!");
+                                        // }
+                                        
+                                    });
                                 }
                             });
                         });
-                    });
-                    },60000*x);
-                })(i);
-            }//end for loop
-        }//end else
+                        },60000*x);
+                    })(i);
+                }//end for loop
+            }
+            
+        }//end else        
     });
 });
 

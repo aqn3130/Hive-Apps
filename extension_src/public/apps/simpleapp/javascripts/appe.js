@@ -796,6 +796,9 @@ $("#uploadFG").change(function(evt){
 	var file = evt.target.files[0];
 	var reader = new FileReader();
 	var references="";
+	if(hiveArrays.folGrpId.length >0 ){
+		hiveArrays.folGrpId.length = 0;
+	}
 	reader.onload = function(e){
 		references = e.target.result;
 		var header = references.split(",");
@@ -895,76 +898,82 @@ function getGrpMem(request){
 //set auto Follow
 $(function(){
 	$("#follow").click(function(){
-		if(hiveArrays.grpMembers.length>0){
-			hiveArrays.folGrpId = hiveArrays.grpMembers;
+		if(hiveArrays.folGrpId.length === 0){
+			$("#alertFG").text("List is empty!");
 		}
-		$("#alertFG").text("Loading...");
-		$( "#alertFG.success" ).fadeIn();
-		var i,j;
-		for(j = 0; j < hiveArrays.folGrpId.length; j+= group.batch){
-			hiveArrays.arrBatch.push(hiveArrays.folGrpId.slice(j,j+group.batch));
-		}
-		for(i = 0; i < hiveArrays.arrBatch.length; i++){
-			(function(x){
-				setTimeout(function(){
-					$(hiveArrays.arrBatch[x]).each(function(index,member){
-						osapi.jive.core.get({
-								v:"v3",
-								href:"/people/"+member+"/streams"
-						}).execute(function(response){
-							$(response.list).each(function(index,stream){
-								if (stream.source === "connections"){
-									var conType = stream.id;
-									osapi.jive.core.post({
-										"v":"v3",
-										"href":"/streams/"+conType+"/associations",
-										"body":["/places/"+group.objectGroup.placeID]
-	
-									}).execute(function(response){
-										if (response.error){
-											var message = response.error.message;
-											$("#alertFG").text("Error: "+message);
+		else{
+			if (!$("#checkBoxActivity_group").prop( "checked" ) && !$("#checkBoxInbox_group").prop( "checked" )){
+				$("#alertFG").text("Please make a selection Inbox or Activity stream");
+			}
+			else{
+				$("#alertFG").text("Working...");
+				if(hiveArrays.arrBatch.length > 0){
+					hiveArrays.arrBatch.length = 0;
+				}
+				if(hiveArrays.grpMembers.length > 0){
+					hiveArrays.folGrpId = hiveArrays.grpMembers;
+				}
+				
+				var i,j;
+				for(j = 0; j < hiveArrays.folGrpId.length; j+= group.batch){
+					hiveArrays.arrBatch.push(hiveArrays.folGrpId.slice(j,j+group.batch));
+				}
+				for(i = 0; i < hiveArrays.arrBatch.length; i++){
+					(function(x){
+						setTimeout(function(){
+							$(hiveArrays.arrBatch[x]).each(function(index,member){
+								osapi.jive.core.get({
+										v:"v3",
+										href:"/people/"+member+"/streams"
+								}).execute(function(response){
+									$(response.list).each(function(index,stream){
+										if (stream.source === "connections" && $("#checkBoxInbox_group").is(":checked")){
+											var conType = stream.id;
+											osapi.jive.core.post({
+												"v":"v3",
+												"href":"/streams/"+conType+"/associations",
+												"body":["/places/"+group.objectGroup.placeID]
+			
+											}).execute(function(response){
+												if (response.error){
+													var message = response.error.message;
+													$("#alertFG").text("Error: "+message);
+												}
+												else {
+													$("#alertFG").text("Completed Batch: "+x+" of "+hiveArrays.arrBatch.length);
+													if(hiveArrays.arrBatch.length - 1 === x){
+														$("#alertFG").text("Completed!");
+													}
+												}
+											});
 										}
-										else {
-											$("#alertFG").text(JSON.stringify(response));
-											$("#alertFG").text("Completed Batch: "+x+" of "+hiveArrays.arrBatch.length);
-	
-											if(hiveArrays.arrBatch.length - 1 === x){
-													$("#alertFG").text("Completed!");
-											}
+										if (stream.source === "communications" && $("#checkBoxActivity_group").is(":checked")){
+											var conTypeComms = stream.id;
+											osapi.jive.core.post({
+												"v":"v3",
+												"href":"/streams/"+conTypeComms+"/associations",
+												"body":["/places/"+group.objectGroup.placeID]
+											}).execute(function(response){
+												if (response.error){
+													var message = response.error.message;
+													$("#alertFG").text("Error: "+message);
+												}
+												else{
+													$("#alertFG").text("Completed Batch: "+x+" of: "+hiveArrays.arrBatch.length);
+													if(hiveArrays.arrBatch.length - 1 === x){
+														$("#alertFG").text("Completed!");
+													}
+												}
+											});
 										}
 									});
-								}
-								else if (stream.source === "communications"){
-									var conTypeComms = stream.id;
-									osapi.jive.core.post({
-										"v":"v3",
-										"href":"/streams/"+conTypeComms+"/associations",
-										"body":["/places/"+group.objectGroup.placeID]
-									}).execute(function(response){
-										if (response.error){
-											var message = response.error.message;
-											$("#alertFG").text("Error: "+message);
-										}
-										else{
-											$("#alertFG").text(JSON.stringify(response));
-											$("#alertFG").text("Completed Batch: "+x+" of: "+hiveArrays.arrBatch.length);
-	
-											if(hiveArrays.arrBatch.length - 1 === x){
-												$("#alertFG").text("Completed!");
-											}
-										}
-									});
-								}
-								else{
-									$("#alertFG").text("Stream not found!");
-								}
+								});
 							});
-						});
-					});
-				},60000*x);
-			})(i);
-		}
+						},60000*x);
+					})(i);
+				}//end for
+			}//end else
+		}//end else	
 	});
 });
 	

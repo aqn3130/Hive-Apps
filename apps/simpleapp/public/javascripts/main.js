@@ -196,11 +196,11 @@ var app = {
           }
       });
   }
-  else
-  {
-      $("#alertFS").text("Stream not found!");
+  // else
+  // {
+  //     $("#alertFS").text("Stream not found!");
 
-  }
+  // }
   },
   //follow activity stream
   followStreamActivity : function(stream,x){
@@ -235,9 +235,9 @@ var app = {
           }
       });
   }
-  else{
-      $("#alertFS").text("Stream not found!");
-  }
+  // else{
+  //     $("#alertFS").text("Stream not found!");
+  // }
   }
 };
 gadgets.util.registerOnLoadHandler(gadgets.util.makeClosure(app, app.init));
