@@ -4,15 +4,11 @@
 * Note:  This implmentation has been provided for convenience, developers are not required to use this pattern.
 ****************************************************/
 var app = {
-
   NO_CONTEXT : "NO_CONTEXT",
-
   viewContext : { },
   actionContext : { },
   data : null,
   viewer : null,
-  stream : null,
-  x : null,
   
   resize : function() {
     //console.log('resize');
@@ -147,22 +143,8 @@ var app = {
     app.fireOnViewer();
   }, // end handleViewer
 
-  // getPlace : function(plc){
-  //   osapi.jive.corev3.places.requestPicker({  
-  //     type : plc,  
-  //     success : function(data) {  
-  //       // "data" will be the Space object (in this case) selected by the user 
-  //     // group.objectGroup=data;
-  //     var place = data;
-  //     return place;
-  //     }  
-  //     });
-  // }
-
-//foll stream inbox
+  //foll stream inbox
   followStreamInbox : function(stream,x){
-    app.stream = stream;
-    app.x = x;
     if(stream.source === "connections"){
       var conType = stream.id;
       osapi.jive.core.post(
@@ -171,36 +153,18 @@ var app = {
           "href":"/streams/"+conType+"/associations",
           "body":["/places/"+spaceVar.objectSpace.placeID]
       }).execute(function(response){
-          if(response.error)
-          { 
-              // if(response.error.code === "409"){
-              //     $("#alertFS").text("Already following in Inbox!");
-              // }
-              // else{
-                  var message = response.error.message;
-                  $("#alertFS").text("Error: "+message);
-              // } 
+          if(response.error){ 
+            var message = response.error.message;
+            $("#alertFS").text("Error: "+message);
           }
           else {
-              // if(response.status === 204){
-                  // if(x > 0){
-                      $("#alertFS").text("Completed Batch: "+x+" of "+spaceArrays.arrBatch.length);
-                  // }
-              // }
-              if(spaceArrays.arrBatch.length - 1 === x){
-                  $("#alertFS").text("Completed!");
-              }
-              // else{
-              //     $("#alertFS").text(JSON.stringify(response));
-              // }
+            $("#alertFS").text("Completed Batch: "+x+" of "+spaceArrays.arrBatch.length);
+            if(spaceArrays.arrBatch.length - 1 === x){
+              $("#alertFS").text("Completed!");
+            }
           }
       });
-  }
-  // else
-  // {
-  //     $("#alertFS").text("Stream not found!");
-
-  // }
+    }
   },
   //follow activity stream
   followStreamActivity : function(stream,x){
@@ -212,32 +176,17 @@ var app = {
           "body":["/places/"+spaceVar.objectSpace.placeID]
       }).execute(function(response){
           if(response.error){
-              // if(response.error.code === "409"){
-              //     $("#alertFS").text("Already following in Activity Stream!");
-              // }
-              // else{
-                  var message = response.error.message;
-                  $("#alertFS").text("Error: "+message);
-              // } 
+            var message = response.error.message;
+            $("#alertFS").text("Error: "+message); 
           }
           else{
-              // if(response.status === 204){
-              //     if(x > 0){
-                      $("#alertFS").text("Completed Batch: "+x+" of "+spaceArrays.arrBatch.length);
-              //     }
-              // }
-              if(spaceArrays.arrBatch.length - 1 === x){
-                  $("#alertFS").text("Completed!");
-              }
-              // else{
-              //     $("#alertFS").text(JSON.stringify(response));
-              // }  
+            $("#alertFS").text("Completed Batch: "+x+" of "+spaceArrays.arrBatch.length);
+            if(spaceArrays.arrBatch.length - 1 === x){
+                $("#alertFS").text("Completed!");
+            } 
           }
       });
-  }
-  // else{
-  //     $("#alertFS").text("Stream not found!");
-  // }
-  }
+    }
+  }//end followStreamActivity
 };
 gadgets.util.registerOnLoadHandler(gadgets.util.makeClosure(app, app.init));

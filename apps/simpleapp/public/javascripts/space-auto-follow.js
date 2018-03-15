@@ -85,8 +85,6 @@ $("#uploadSpc").change(function(evt){
                                         $("#alertFS").text("All Batches Completed!");
                                         $("#alertFS").text("Total identified: "+spaceArrays.jiveId.length);
                                     }
-                                    //console.log(response);
-                                    //console.log(spaceArrays.jiveId);
                                 }
                             });
                         });
@@ -115,17 +113,11 @@ $(function(){
             }
             else{
                 $("#alertFS").text("Working...");
-                // if(spaceArrays.jiveId.length > 50){
-                    spaceArrays.arrBatch.length = 0;
-                    var j;
-                    for(j=0;j<spaceArrays.jiveId.length;j+=spaceVar.batch){
-                        spaceArrays.arrBatch.push(spaceArrays.jiveId.slice(j,j+spaceVar.batch));
-                        //return hiveArrays.arrBatch;
-                    }
-                // }
-                // else{
-                //     spaceArrays.arrBatch.push(spaceArrays.jiveId);
-                // }
+                spaceArrays.arrBatch.length = 0;
+                var j;
+                for(j=0;j<spaceArrays.jiveId.length;j+=spaceVar.batch){
+                    spaceArrays.arrBatch.push(spaceArrays.jiveId.slice(j,j+spaceVar.batch));
+                }
                 var i;
                 for(i=0;i<spaceArrays.arrBatch.length;i++){
                     (function(x){
@@ -142,20 +134,10 @@ $(function(){
                                     $(response.list).each(function(index,stream){
                                         if($("#checkBoxInbox").is(":checked")){
                                             app.followStreamInbox(stream,x);
-                                            
                                         }
                                         if($("#checkBoxActivity").is(":checked")){
                                             app.followStreamActivity(stream,x);
-                                            
                                         } 
-                                        // if(spaceArrays.arrBatch.length - 1 === x){
-                                        //     $("#alertFS").text("Completed!");
-                                        // } 
-    
-                                        // else{
-                                        //     $("#alertFS").text("Make a selection please Inbox or Activity!");
-                                        // }
-                                        
                                     });
                                 }
                             });
@@ -163,8 +145,7 @@ $(function(){
                         },60000*x);
                     })(i);
                 }//end for loop
-            }
-            
+            }//end else
         }//end else        
     });
 });
@@ -266,96 +247,68 @@ $(function(){
 
 //Unfollow Space
 $(function(){
-	$("#unfollowSpace").click(function()
-	{
-        if(spaceArrays.unfolSpace.length>0)
-        {
+	$("#unfollowSpace").click(function(){
+        if(spaceArrays.unfolSpace.length > 0){
             $("#alertFS").text("Unfollowing...");
             var i;
             spaceArrays.unfolSpaceBatch.length = 0;
-            for(i=0;i<spaceArrays.unfolSpace.length;i+=spaceVar.unfollowBatch)
-            {
+            for(i=0;i<spaceArrays.unfolSpace.length;i+=spaceVar.unfollowBatch){
                 spaceArrays.unfolSpaceBatch.push(spaceArrays.unfolSpace.slice(i,i+spaceVar.unfollowBatch));
             }
             var j;
-            for(j=0;j<spaceArrays.unfolSpaceBatch.length;j++)
-            {
-                (function(y)
-                {
-                    setTimeout(function()
-                    {
-                        if(spaceVar.spaceAssociationID === null || spaceVar.spaceAssociationID === "")
-                        {
+            for(j=0;j<spaceArrays.unfolSpaceBatch.length;j++){
+                (function(y){
+                    setTimeout(function(){
+                        if(spaceVar.spaceAssociationID === null || spaceVar.spaceAssociationID === ""){
                             window.alert("Group association not found! Load Followers again");
                         }
-                        else
-                        {
-                            $(spaceArrays.unfolSpaceBatch[y]).each(function(index,member)
-                            {
-                                osapi.jive.core.get(
-                                {
+                        else{
+                            $(spaceArrays.unfolSpaceBatch[y]).each(function(index,member){
+                                osapi.jive.core.get({
                                     v:"v3",
                                     href:"/people/"+member.id+"/streams"
-                                }).execute(function(response)
-                                {
-                                    $(response.list).each(function(index,stream)
-                                    {
-                                        if(stream.source === "connections")
-                                        {
+                                }).execute(function(response){
+                                    $(response.list).each(function(index,stream){
+                                        if(stream.source === "connections"){
                                             var connStream = stream.id;
                                             osapi.jive.core.delete(
                                             {
                                                 v:"v3",
                                                 href:"/streams/"+connStream+"/associations/spaces/"+spaceVar.spaceAssociationID
-                                            }).execute(function(response)
-                                            {
-                                                if(response.error)
-                                                {
-                                                    var message = response.error.message;
-                                                    $("#alertFS").text(message);
+                                            }).execute(function(response){
+                                                if(response.error){
+                                                    if(response.error.code !== "objectInvalidURI"){
+                                                        $("#alertFS").text(response.error.message);
+                                                    }
                                                 }
-                                                else if(spaceArrays.unfolSpaceBatch.length-1 == y)
-                                                {
+                                                else if(spaceArrays.unfolSpaceBatch.length-1 == y){
                                                     $("#alertFS").text("Unfollow Completed!");
                                                 }
-                                                else
-                                                {
+                                                else{
                                                     $("#alertFS").text("Unfollowed Batch : "+y+" of: "+spaceArrays.unfolSpaceBatch.length);
                                                 }
-        
                                             });
                                         }
-                                        else if(stream.source === "communications")
-                                        {
+                                        if(stream.source === "communications"){
                                             var commStream = stream.id;
                                             osapi.jive.core.delete(
                                             {
                                                 v:"v3",
                                                 href:"/streams/"+commStream+"/associations/spaces/"+spaceVar.spaceAssociationID
-                                            }).execute(function(response)
-                                            {
-                                                if(response.error)
-                                                {
-                                                    var message = response.error.message;
-                                                    $("#alertFS").text(message);
+                                            }).execute(function(response){
+                                                if(response.error){
+                                                    if(response.error.code !== "objectInvalidURI"){
+                                                        $("#alertFS").text(response.error.message);
+                                                    }
                                                 }
-                                                else if(spaceArrays.unfolSpaceBatch.length-1 === y)
-                                                {
+                                                else if(spaceArrays.unfolSpaceBatch.length-1 === y){
                                                     $("#alertFS").text("Unfollow Completed!");
                                                 }
-                                                else
-                                                {
+                                                else{
                                                     $("#alertFS").text("Unfollowed Batch: "+y+" of: "+spaceArrays.unfolSpaceBatch.length);
-        
                                                 }
-        
                                             });
-                                        }
-                                        else
-                                        {
-                                            $("#alertFS").text("No Streams found!");
-        
-                                        }
+                                        }//end if
                                     });
                                 });
                             });
@@ -367,7 +320,6 @@ $(function(){
         else{
             $("#alertFS").text("There are no followers in this group, pick space and try again!");
         }
-        
 	});
 });
 //Download Followers
