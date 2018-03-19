@@ -529,7 +529,7 @@ $(function()
 	  $("#getPeople").click(function()
 	  {
 		  var request = osapi.jive.corev3.people.getAll({fields:'@all',count:100});
-		  hdm_Arrays.peopleInThisLocation.length=0;
+		  hdm_Arrays.peopleInThisLocation.length = 0;
 		  $("#alertHDMT2").text("Loading people in this location...");
 		  nextPagePIL(request);
   
@@ -550,14 +550,14 @@ $(function()
 		  }
 		  else
 		  {
-				$(response.list).each(function(index,person)
+			$(response.list).each(function(index,person)
+			{
+				if(person.location == groupHDM.location)
 				{
-					if(person.location == groupHDM.location)
-			  {
-				  hdm_Arrays.peopleInThisLocation.push(person);
-				  $("#alertHDMT2").text("Loading: "+person.displayName);
-			  }
-		  });
+					hdm_Arrays.peopleInThisLocation.push(person);
+					$("#alertHDMT2").text("Loading: "+person.displayName);
+				}
+			});
 		  if (response.getNextPage)
 				{
 					  var requestNextPage = response.getNextPage();

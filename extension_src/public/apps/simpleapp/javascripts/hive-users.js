@@ -48,7 +48,6 @@ $(function()
     });
 });
 
-
 //Get all Hive active users
 function getHiveActiveUsers()
 {

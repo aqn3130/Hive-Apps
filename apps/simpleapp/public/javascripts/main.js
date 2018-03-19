@@ -9,6 +9,9 @@ var app = {
   actionContext : { },
   data : null,
   viewer : null,
+  request : undefined,
+  jive_user_id : [],
+  cancelled : false,
   
   resize : function() {
     //console.log('resize');
@@ -187,6 +190,50 @@ var app = {
           }
       });
     }
-  }//end followStreamActivity
+  },//end followStreamActivity
+ 
+  //Get all people
+  getAll : function (alert_msg){
+    app.jive_user_id.length = 0;
+    app.request = osapi.jive.corev3.people.getAll({fields:'@all',count:100});
+    app.getPeople(app.request,alert_msg);
+  },
+  getPeople : function (request,alert_msg){
+	  request.execute(function(response){
+		  if(response.error){
+        $(alert_msg).text(response.error.message);
+      }
+      else if( app.cancelled === true ){
+        return app.jive_user_id;
+      }
+		  else if (!response.list){
+			  $(alert_msg).text("Response is not a list!");
+		  }
+		  else{
+        $(response.list).each(function(index,person){
+          app.jive_user_id.push(person.id);
+          $(alert_msg).text( "Adding employee : " + app.jive_user_id.length );
+        });
+        if (response.getNextPage){
+            var requestNextPage = response.getNextPage();
+            app.getPeople(requestNextPage,alert_msg);
+        }
+        if(!response.getNextPage){
+            $(alert_msg).text( "People Successfuly Loaded: " + app.jive_user_id.length );
+            var confirmed = confirm( "You are about to make all Hive users auto follow this group: "+ group.objectGroup.name +", are you sure?" );
+            if( confirmed == true ){
+              hiveArrays.folGrpId = app.jive_user_id;
+              set_grp_auto_follow();
+            }
+            else{
+              app.jive_user_id.length = 0;
+              clear_checkbox();
+            }
+           
+        }
+      }
+    });
+  }
+  //end function get all people
 };
 gadgets.util.registerOnLoadHandler(gadgets.util.makeClosure(app, app.init));

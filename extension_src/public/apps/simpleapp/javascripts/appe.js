@@ -8,19 +8,15 @@
 												- Add google drive
 ****************************************************************************************************************************/
 var group = {
-	groupName:"",
-	sgroupName:"",
-	displayName:"",
-	objID:"",
-	sGrpID:"",
-	sGrpObj:"",
-	sGroup:"",
-	googleDSgroup:"",
+	sgroupName:undefined,
+	objID:undefined,
+	sGrpID:undefined,
+	sGrpObj:undefined,
 	batch:50,
 	unfolBatch:20,
 	batchMkGrpPub:100,
 	batchDelMem:20,
-	objectGroup:null
+	objectGroup:undefined
 };
 var hiveArrays = {
 	allSGroups:[],
@@ -28,10 +24,6 @@ var hiveArrays = {
 	groupMem:[],
 	groupFol:[],
 	sGrpData:[],
-	allGID:[],
-	allJID:[],
-	allsGrpMem:[],
-	sGrpDif:[],
 	folGrp:[],
 	grpMembers:[],
 	arrBatch:[],
@@ -39,7 +31,9 @@ var hiveArrays = {
 	mkGrpPubBatch:[],
 	delMemBatch:[],
 	folGrpBatch:[],
-	folGrpId:[]
+	folGrpId:[],
+	sGrpId:[],
+	allActiveUsers:[]
 };
 
 //Get all groups
@@ -48,12 +42,16 @@ $(function(){
 		osapi.jive.corev3.places.requestPicker({  
 			type : "group",  
 			success : function(data) {  
-		// "data" will be the Space object (in this case) selected by the user 
-			group.objectGroup=data;
+			// "data" will be the Space object (in this case) selected by the user 
+				group.objectGroup = data;
+				if(group.objectGroup !== undefined){
+					$("#lineUpUsers,#getMem,#tab3Get,#chURL,#inputFG,#uploadFG,#memFG,#follow").prop("disabled",false);
+					$( "#alertUFG.success,#alertFG.success,#alertRGM.success,#alertUG.success,#alertCGU.success,#alertASG.success" ).fadeIn();
+					$("#alertFG,#alertUFG,#alertRGM,#alertUG,#alertCGU,#alertASG").text( "Group selected: " + group.objectGroup.name );
+				}
 			}  
 		});
 		// group.objectGroup = app.getPlace("group");
-		$("#lineUpUsers,#getMem,#tab3Get,#chURL,#inputFG,#uploadFG,#memFG").prop("disabled",false);
 	});
 });
 //end function get all groups
@@ -89,7 +87,7 @@ $(function(){
 		nextPage(request);
 		hiveArrays.allPeople.length=0;
 		$("#alertUFG").text("Loading...");
-		$( "#alertUFG.success" ).fadeIn();
+		// $( "#alertUFG.success" ).fadeIn();
 	});
 });
 function nextPage(request){
@@ -115,10 +113,7 @@ function nextPage(request){
 			}
 			else{
 				$("#alertUFG").text("Loaded all active users : "+hiveArrays.allPeople.length);
-				//$( "#alertUFG.success" ).fadeOut(3000);
 				document.getElementById("addAllButton").disabled = false;
-				//isExternal(hiveArrays.allPeople);
-				//console.log(hiveArrays.allPeople.length);
 			}
 		}
 	});
@@ -197,7 +192,7 @@ $(function(){
 			nextMem(request);
 			hiveArrays.groupMem.length=0;
 			$("#alertRGM").text("Loading...");
-			$( "#alertRGM.success" ).fadeIn();
+			// $( "#alertRGM.success" ).fadeIn();
 		}
 	});
 });
@@ -285,7 +280,7 @@ $(function(){
 			var request = group.objectGroup.getFollowers({count:100});
 			nextFol(request);
 			$("#alertUG").text("Loading followers...");
-			$( "#alertUG.success" ).fadeIn();
+			// $( "#alertUG.success" ).fadeIn();
 		}
 	});
 });
@@ -355,69 +350,75 @@ $(function(){
 $(function(){
 	$("#unFollow").click(function(){
 		$("#alertUG").text("Unfollowing...");
-		for(i=0;i<hiveArrays.groupFol.length;i+=group.unfolBatch){
-			hiveArrays.unfolArrBatch.push(hiveArrays.groupFol.slice(i,i+group.unfolBatch));
-		}
-		for(j=0;j<hiveArrays.unfolArrBatch.length;j++){
-			(function(y){
-				setTimeout(function(){
-					if(group.objID == null || group.objID == ""){
-						window.alert("Group association not found! Load Followers again");
-					}
-					else{
-						$(hiveArrays.unfolArrBatch[y]).each(function(index,member){
-							osapi.jive.core.get(
-							{
-								v:"v3",
-								href:"/people/"+member.id+"/streams"
-							}).execute(function(response){
-								$(response.list).each(function(index,stream){
-									if(stream.source == "connections"){
-										var connStream = stream.id;
-										osapi.jive.core.delete({
-											v:"v3",
-											href:"/streams/"+connStream+"/associations/groups/"+group.objID
-										}).execute(function(response){
-											if(response.error){
-												if(response.error.code !== "objectInvalidURI"){
-													$("#alertUG").text(response.error.message);
+		(function(){
+			var i;
+			for( i = 0; i < hiveArrays.groupFol.length; i += group.unfolBatch ){
+				hiveArrays.unfolArrBatch.push(hiveArrays.groupFol.slice( i, i + group.unfolBatch ));
+			}
+		})();
+		(function(){
+			var j;
+			for( j = 0; j < hiveArrays.unfolArrBatch.length; j++ ){
+				(function(y){
+					setTimeout(function(){
+						if(group.objID === undefined){
+							window.alert("Group association not found! Load Followers again");
+						}
+						else{
+							$(hiveArrays.unfolArrBatch[y]).each(function(index,member){
+								osapi.jive.core.get(
+								{
+									v:"v3",
+									href:"/people/"+member.id+"/streams"
+								}).execute(function(response){
+									$(response.list).each(function(index,stream){
+										if(stream.source == "connections"){
+											var connStream = stream.id;
+											osapi.jive.core.delete({
+												v:"v3",
+												href:"/streams/"+connStream+"/associations/groups/"+group.objID
+											}).execute(function(response){
+												if(response.error){
+													if(response.error.code !== "objectInvalidURI"){
+														$("#alertUG").text(response.error.message);
+													}
 												}
-											}
-											else if(hiveArrays.unfolArrBatch.length-1 == y){
-												$("#alertUG").text("Unfollow Completed!");
-											}
-											else{
-												$("#alertUG").text("Unfollowed Batch : "+y+" of: "+hiveArrays.unfolArrBatch.length);
-											}
-										});
-									}
-									if(stream.source == "communications"){
-										var commStream = stream.id;
-										osapi.jive.core.delete(
-										{
-											v:"v3",
-											href:"/streams/"+commStream+"/associations/groups/"+group.objID
-										}).execute(function(response){
-											if(response.error){
-												if(response.error.code !== "objectInvalidURI"){
-													$("#alertUG").text(response.error.message);
+												else if(hiveArrays.unfolArrBatch.length-1 == y){
+													$("#alertUG").text("Unfollow Completed!");
 												}
-											}
-											else if(hiveArrays.unfolArrBatch.length-1 == y){
-												$("#alertUG").text("Unfollow Completed!");
-											}
-											else{
-												$("#alertUG").text("Unfollowed Batch: "+y+" of: "+hiveArrays.unfolArrBatch.length);
-											}
-										});
-									}
+												else{
+													$("#alertUG").text("Unfollowed Batch : "+y+" of: "+hiveArrays.unfolArrBatch.length);
+												}
+											});
+										}
+										if(stream.source == "communications"){
+											var commStream = stream.id;
+											osapi.jive.core.delete(
+											{
+												v:"v3",
+												href:"/streams/"+commStream+"/associations/groups/"+group.objID
+											}).execute(function(response){
+												if(response.error){
+													if(response.error.code !== "objectInvalidURI"){
+														$("#alertUG").text(response.error.message);
+													}
+												}
+												else if(hiveArrays.unfolArrBatch.length-1 == y){
+													$("#alertUG").text("Unfollow Completed!");
+												}
+												else{
+													$("#alertUG").text("Unfollowed Batch: "+y+" of: "+hiveArrays.unfolArrBatch.length);
+												}
+											});
+										}
+									});
 								});
 							});
-						});
-					}//end else
-				},30000*y);
-			})(j);
-		}
+						}//end else
+					},30000*y);
+				})(j);
+			}
+		})();
 	});
 });
 //End unFollow members
@@ -425,8 +426,9 @@ $(function(){
 //Download Followers
 $(function(){
 	$("#downFol").click(function(){
-		var folArr=[];
-		for(i=0;i<hiveArrays.groupFol.length;i++){
+		var folArr = [];
+		var i;
+		for( i= 0; i < hiveArrays.groupFol.length; i++ ){
 			folArr.push(hiveArrays.groupFol[i].displayName)
 		}
 		var csvCont = "data:text/csv;charset=utf-8,";
@@ -452,7 +454,7 @@ Change group URL
 $(function(){
 	$("#chURL").click(function(){
 		$("#alertCGU").text("Loading...");
-		$( "#alertCGU.success" ).fadeIn();
+		// $( "#alertCGU.success" ).fadeIn();
 		var grpURL = $("#grpURL").val();
 		osapi.jive.core.put({
 			"v":"v3",
@@ -484,7 +486,7 @@ $(function(){
 		nextSGroups(request);
 		hiveArrays.allSGroups.length=0;
 		$("#alertASG").text("Loading...");
-		$( "#alertASG.success" ).fadeIn();
+		// $( "#alertASG.success" ).fadeIn();
     });
 });
 
@@ -535,17 +537,66 @@ $(function(){
 		}
 		else
 		{
-			hiveArrays.sGrpData.length=0;
+			hiveArrays.sGrpData.length = 0;
 			var file = evt.target.files[0];
 			var reader = new FileReader();
 			var references="";
 			reader.onload = function(e){
 				references = e.target.result;
 				var header = references.split(",");
-				for(i=0;i<header.length;i++)
-				{
-					hiveArrays.sGrpData.push(header[i]);
+
+				(function(){
+					var i;
+					for( i = 0; i < header.length; i++ )
+					{
+						hiveArrays.sGrpData.push(header[i]);
+					}
+				})();
+				
+				var sGrp_batch = [];
+				(function(){
+					var i;
+					for( i = 0; i < hiveArrays.sGrpData.length; i += group.batch ){
+						sGrp_batch.push(hiveArrays.sGrpData.slice( i, i+group.batch ));
+					}
+				})();
+				
+				if(sGrp_batch.length === 0){
+					$("#alertFG").text("List is empty...");
 				}
+				else {
+					(function(){
+						var i;
+						for( i = 0; i < sGrp_batch.length; i++ ){
+							(function(x){
+								setTimeout(function(){
+									$(sGrp_batch[x]).each(function(index,email){
+										osapi.jive.core.get({
+											"v":"v3",
+											"href":"/people/email/"+email,
+											"fields":"id,displayName"
+										}).execute(function(response){
+											if(response.error){
+												var message = response.error.message;
+												$("#alertASG").text(message);
+											}
+											else{
+												hiveArrays.sGrpId.push(response.id);
+												$("#alertASG").text("Email identified: "+response.displayName);
+												$("#alertASG").text("Completed Batch: "+x+" of "+sGrp_batch.length);
+			
+												if(sGrp_batch.length - 1 === x){
+													$("#alertASG").text("All Batches Completed!");
+													$("#alertASG").text("Total identified: "+hiveArrays.sGrpData.length);
+												}
+											}
+										});
+									});
+								},60000*x);
+							})(i);
+						}//End for loop
+					})();
+				}//End else
 			}
 			reader.readAsText(file);
 			reader.onerror = function(){
@@ -560,14 +611,14 @@ $(function(){
 //Add members to security group
 $(function(){
 	$("#addSGMem").click(function(){
-		if(hiveArrays.sGrpData.length == 0){
+		if(hiveArrays.sGrpId.length === 0){
 			alert("The list is empty!")
 		}
 		else{
 			var batchRequests = osapi.newBatch();
 			$("#alertASG").text("Loading...");
-			$( "#alertASG.success" ).fadeIn();
-			$(hiveArrays.sGrpData).each(function(index,id){
+			// $( "#alertASG.success" ).fadeIn();
+			$(hiveArrays.sGrpId).each(function(index,id){
 				batchRequests.add
 				(
 					id,group.sGrpObj.createMembers(["/people/"+id])
@@ -580,7 +631,7 @@ $(function(){
 					$("#alertASG").text("Error: "+group.sg_message);
 				}
 				else{
-					$("#alertASG").text("Added Members: "+hiveArrays.sGrpData.length);
+					$("#alertASG").text("Added Members: "+hiveArrays.sGrpId.length);
 
 				}
 			});
@@ -592,84 +643,99 @@ $(function(){
 /***************************************************************************************************************************
 Follow group
 ****************************************************************************************************************************/
+//Get all users id from uploaded file
 $("#uploadFG").change(function(evt){
+	// $( "#alertFG.success" ).fadeIn();
 	$("#alertFG").text("Reading from email list...");
-    $( "#alertFG.success" ).fadeIn();
 	var file = evt.target.files[0];
 	var reader = new FileReader();
 	var references="";
-	if(hiveArrays.folGrpId.length >0 ){
+	if(hiveArrays.folGrpId.length > 0 ){
 		hiveArrays.folGrpId.length = 0;
 	}
 	reader.onload = function(e){
 		references = e.target.result;
 		var header = references.split(",");
-		for(i=0;i<header.length;i++){
-			hiveArrays.folGrp.push(header[i]);
-		}
-		for(i=0;i<hiveArrays.folGrp.length;i+=group.batch){
-			hiveArrays.folGrpBatch.push(hiveArrays.folGrp.slice(i,i+group.batch));
-			//return hiveArrays.arrBatch;
-		}
-		if(hiveArrays.folGrpBatch.length==0){
+		(function(){
+			var i;
+			for( i = 0; i < header.length; i++ ){
+				hiveArrays.folGrp.push(header[i]);
+			}
+		})();
+		(function(){
+			var i;
+			for( i = 0; i < hiveArrays.folGrp.length; i += group.batch ){
+				hiveArrays.folGrpBatch.push( hiveArrays.folGrp.slice( i,i+group.batch ) );
+			}
+		})();
+		
+		if( hiveArrays.folGrpBatch.length === 0 ){
 			$("#alertFG").text("List is empty...");
 		}
 		else {
-			for(i=0;i<hiveArrays.folGrpBatch.length;i++){
-				(function(x){
-					setTimeout(function(){
-						$(hiveArrays.folGrpBatch[x]).each(function(index,email){
-							osapi.jive.core.get({
-								"v":"v3",
-								"href":"/people/email/"+email,
-								"fields":"id,displayName"
-							}).execute(function(response){
-								if(response.error){
-									var message = response.error.message;
-									$("#alertFG").text(message);
-								}
-								else{
-									hiveArrays.folGrpId.push(response.id);
-									$("#alertFG").text("Email identified: "+response.displayName);
-									$("#alertFG").text("Completed Batch: "+x+" of "+hiveArrays.folGrpBatch.length);
-
-									if(hiveArrays.folGrpBatch.length-1 == x){
-										$("#alertFG").text("All Batches Completed!");
-										$("#alertFG").text("Total identified: "+hiveArrays.folGrpId.length);
+			(function(){
+				var i;
+				for( i = 0; i < hiveArrays.folGrpBatch.length; i++ ){
+					(function(x){
+						setTimeout(function(){
+							$(hiveArrays.folGrpBatch[x]).each(function(index,email){
+								osapi.jive.core.get({
+									"v":"v3",
+									"href":"/people/email/"+email,
+									"fields":"id,displayName"
+								}).execute(function(response){
+									if(response.error){
+										var message = response.error.message;
+										$("#alertFG").text(message);
 									}
-								}
+									else{
+										hiveArrays.folGrpId.push(response.id);
+										$("#alertFG").text("Email identified: "+response.displayName);
+										$("#alertFG").text( "Completed Batch: " + x + " of " + hiveArrays.folGrpBatch.length );
+	
+										if(hiveArrays.folGrpBatch.length - 1 === x){
+											$("#alertFG").text("All Batches Completed!");
+											$("#alertFG").text("Total identified: " + hiveArrays.folGrpId.length);
+										}
+									}
+								});
 							});
-						});
-					},60000*x);
-				})(i);
-			}//End for loop
+						},60000*x);
+					})(i);
+				}//End for loop
+			})();
 		}//End else
 	}
 	reader.readAsText(file);
 	reader.onerror = function(){
 		alert("Unable to read"+file.fileName);
 	}
-	document.getElementById("follow").disabled=false;
+	document.getElementById("follow").disabled = false;
 });
 
 //Get all members
-$(function(){
-	$("#memFG").click(function(){
+// $(function(){
+// 	$("#grp_members").on("change",function(){
+// 		if($("#grp_members").prop("checked")){
+	function get_grp_members(){
 		if(group.objectGroup === null){
 			alert("Please pick a group first");
 		}
 		else{
-			hiveArrays.grpMembers.length=0;
+			hiveArrays.grpMembers.length = 0;
+			// $( "#alertFG.success" ).fadeIn();
 			$("#alertFG").text("Loading...");
-			$( "#alertFG.success" ).fadeIn();
 			var grpMem = osapi.jive.core.get({
 				"v":"v3",
 				"href":"/members/places/"+group.objectGroup.placeID
 			});
 			getGrpMem(grpMem);
-		}	
-	});
-});
+		}
+	}
+			
+// 		}
+// 	});
+// });
 function getGrpMem(request){
 	request.execute(function(response){
 		if (response.error){
@@ -689,6 +755,10 @@ function getGrpMem(request){
 			}
 			else{
 				$("#alertFG").text("Members found: "+hiveArrays.grpMembers.length);
+				if ( hiveArrays.grpMembers.length > 0 ) {
+					hiveArrays.folGrpId = hiveArrays.grpMembers;
+					set_grp_auto_follow();
+				}
 				if(document.getElementById("follow").disabled === true){
 					document.getElementById("follow").disabled = false;
 				}
@@ -697,85 +767,133 @@ function getGrpMem(request){
 	});
 }//End get group members
 
+//Get all active users
+$(function(){
+	$("#all_active_users").on("change",function(){
+		if(	$("#all_active_users").prop("checked") ){
+			// $( "#alertFG.success" ).fadeIn();
+			$("#cancel_getPeople").prop("disabled",false);
+			$("#follow").prop("disabled",false);
+			// (function(){
+				// app.getAll("#alertFG");
+			// })();
+		}
+	});
+	$("#cancel_getPeople").click(function(){	
+		app.cancelled = true;
+		if ( app.jive_user_id.length > 0 ) {
+			hiveArrays.folGrpId = app.jive_user_id;
+		}
+	});
+});
+
+//Clear checkboxes
+function clear_checkbox(){
+	$("input").each(function(index,item){
+		$(item).prop("checked",false);
+	});
+}
 //set auto Follow
 $(function(){
 	$("#follow").click(function(){
-		if(hiveArrays.folGrpId.length === 0){
-			$("#alertFG").text("List is empty!");
+		// $( "#alertFG.success" ).fadeIn();
+		if (!$("#checkBoxActivity_group").prop( "checked" ) && !$("#checkBoxInbox_group").prop( "checked" )){
+			$("#alertFG").text("Please make a selection Inbox or Activity stream");
 		}
-		else{
-			if (!$("#checkBoxActivity_group").prop( "checked" ) && !$("#checkBoxInbox_group").prop( "checked" )){
-				$("#alertFG").text("Please make a selection Inbox or Activity stream");
+		else if( $( "#grp_members" ).prop( "checked" ) ){
+			get_grp_members();
+		}
+		else if( $("#all_active_users").prop("checked") ){
+			var confirmed = confirm("You are about to add all Hive users to follow this group, are you sure?");
+			if( confirmed == true ){
+				app.getAll( "#alertFG" );
 			}
 			else{
-				$("#alertFG").text("Working...");
-				if(hiveArrays.arrBatch.length > 0){
-					hiveArrays.arrBatch.length = 0;
-				}
-				if(hiveArrays.grpMembers.length > 0){
-					hiveArrays.folGrpId = hiveArrays.grpMembers;
-				}
-				
-				var i,j;
-				for(j = 0; j < hiveArrays.folGrpId.length; j+= group.batch){
-					hiveArrays.arrBatch.push(hiveArrays.folGrpId.slice(j,j+group.batch));
-				}
-				for(i = 0; i < hiveArrays.arrBatch.length; i++){
-					(function(x){
-						setTimeout(function(){
-							$(hiveArrays.arrBatch[x]).each(function(index,member){
-								osapi.jive.core.get({
-										v:"v3",
-										href:"/people/"+member+"/streams"
-								}).execute(function(response){
-									$(response.list).each(function(index,stream){
-										if (stream.source === "connections" && $("#checkBoxInbox_group").is(":checked")){
-											var conType = stream.id;
-											osapi.jive.core.post({
-												"v":"v3",
-												"href":"/streams/"+conType+"/associations",
-												"body":["/places/"+group.objectGroup.placeID]
-			
-											}).execute(function(response){
-												if (response.error){
-													var message = response.error.message;
-													$("#alertFG").text("Error: "+message);
-												}
-												else {
-													$("#alertFG").text("Completed Batch: "+x+" of "+hiveArrays.arrBatch.length);
-													if(hiveArrays.arrBatch.length - 1 === x){
-														$("#alertFG").text("Completed!");
-													}
-												}
-											});
-										}
-										if (stream.source === "communications" && $("#checkBoxActivity_group").is(":checked")){
-											var conTypeComms = stream.id;
-											osapi.jive.core.post({
-												"v":"v3",
-												"href":"/streams/"+conTypeComms+"/associations",
-												"body":["/places/"+group.objectGroup.placeID]
-											}).execute(function(response){
-												if (response.error){
-													var message = response.error.message;
-													$("#alertFG").text("Error: "+message);
-												}
-												else{
-													$("#alertFG").text("Completed Batch: "+x+" of: "+hiveArrays.arrBatch.length);
-													if(hiveArrays.arrBatch.length - 1 === x){
-														$("#alertFG").text("Completed!");
-													}
-												}
-											});
-										}
-									});
-								});
-							});
-						},60000*x);
-					})(i);
-				}//end for
-			}//end else
-		}//end else	
+				clear_checkbox();
+			}
+		}
+		else if ( $("#uploadFG").get(0).files.length !== 0 ){
+			set_grp_auto_follow();
+		}
+		else{
+			$("#alertFG").text("Please make a selection");
+		}
 	});
 });
 	
+function set_grp_auto_follow(){
+	if ( hiveArrays.folGrpId.length === 0 ){
+		$("#alertFG").text("List is empty!");
+	}
+	else{
+		$("#alertFG").text(" Setting auto follow...");
+		if ( hiveArrays.arrBatch.length > 0 ) {
+			hiveArrays.arrBatch.length = 0;
+		}
+		(function(){
+			var j;
+			for(j = 0; j < hiveArrays.folGrpId.length; j += group.batch){
+				hiveArrays.arrBatch.push(hiveArrays.folGrpId.slice(j,j+group.batch));
+			}
+		})();
+		(function(){
+			var i;
+			for(i = 0; i < hiveArrays.arrBatch.length; i++){
+				(function(x){
+					setTimeout(function(){
+						$(hiveArrays.arrBatch[x]).each(function(index,member){
+							osapi.jive.core.get({
+									v:"v3",
+									href:"/people/"+member+"/streams"
+							}).execute(function(response){
+								$(response.list).each(function(index,stream){
+									if (stream.source === "connections" && $("#checkBoxInbox_group").is(":checked")){
+										var conType = stream.id;
+										osapi.jive.core.post({
+											"v":"v3",
+											"href":"/streams/"+conType+"/associations",
+											"body":["/places/"+group.objectGroup.placeID]
+		
+										}).execute(function(response){
+											if (response.error){
+												var message = response.error.message;
+												$("#alertFG").text("Error: "+message);
+											}
+											else {
+												$("#alertFG").text("Completed Batch: "+x+" of "+hiveArrays.arrBatch.length);
+												if(hiveArrays.arrBatch.length - 1 === x){
+													$("#alertFG").text("Completed!");
+													clear_checkbox();
+												}
+											}
+										});
+									}
+									if (stream.source === "communications" && $("#checkBoxActivity_group").is(":checked")){
+										var conTypeComms = stream.id;
+										osapi.jive.core.post({
+											"v":"v3",
+											"href":"/streams/"+conTypeComms+"/associations",
+											"body":["/places/"+group.objectGroup.placeID]
+										}).execute(function(response){
+											if (response.error){
+												var message = response.error.message;
+												$("#alertFG").text("Error: "+message);
+											}
+											else{
+												$("#alertFG").text("Completed Batch: "+x+" of: "+hiveArrays.arrBatch.length);
+												if(hiveArrays.arrBatch.length - 1 === x){
+													$("#alertFG").text("Completed!");
+													clear_checkbox();
+												}
+											}
+										});
+									}
+								});
+							});
+						});
+					},60000*x);
+				})(i);
+			}//end for
+		})();
+	}
+}

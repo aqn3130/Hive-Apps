@@ -248,20 +248,26 @@
 					<h3 class = "panel-title">Follow Group</h3>
 				</div>
 				<div class = "panel-body">
-					<button type="button" id="LoadGroupsFG">Pick Group</button>
-					<br><br>
-					<input id="checkBoxInbox_group" type="checkbox">
-					<label for="checkBoxInbox_group">Follow in Activity Streams</label>
-					<br />
-					<input id="checkBoxActivity_group" type="checkbox">
-					<label for="checkBoxActivity_group">Follow in Inbox</label>
-					<br /><br />
-					<span>
-					<button style="display: inline" type="button" id="memFG">Get Members</button> OR
-					<input style="display: inline" id="uploadFG" type="file" accept=".csv" name="Upload Followers" disabled/>
-					</span>
-					<br><br>
-					<button type="button" id="follow" disabled>Follow Group</button>
+					<form>
+						<div>
+							<button type="button" id="LoadGroupsFG">Pick Group</button>
+							<hr>
+							<input id="checkBoxInbox_group" type="checkbox">
+							<label for="checkBoxInbox_group">Follow in Activity Streams</label>
+							<br />
+							<input id="checkBoxActivity_group" type="checkbox">
+							<label for="checkBoxActivity_group">Follow in Inbox</label>
+							<hr>
+							<input class="folGrp" id="grp_members" type="radio" name="grp_auto_follow">
+							<label class="folGrp" for="grp_members" >Group Members</label>
+							<input class="folGrp" id="all_active_users" type="radio" name="grp_auto_follow">
+							<label class="folGrp" for="all_active_users" >All Registered Users</label>
+							<input class="folGrp" style="display: inline" id="uploadFG" type="file" accept=".csv" name="Upload Followers" disabled style="display:inline"/>
+							<hr>
+							<button type="button" id="follow" disabled style="display:inline">Follow Group</button>
+							<button type="button" id="cancel_getPeople" disabled style="display:inline">Cancel</button>
+						</div>
+					</form>
 				</div>
 			</div>
 		</div>
