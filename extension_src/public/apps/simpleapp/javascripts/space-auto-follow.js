@@ -1,13 +1,12 @@
-var spaceVar =
-{
+"use strict"
+var spaceVar = {
     batch:50,
     unfollowBatch:25,
     emailBatch:50,
     objectSpace:null,
     spaceAssociationID:null
 };
-var spaceArrays =
-{
+var spaceArrays = {
     spaces:[],
     folSpace:[],
     arrBatch:[],
@@ -18,15 +17,15 @@ var spaceArrays =
 };
 
 //Pick a space
-$(function(){
-    $("#getAllspaces").click(function(){  
+$ (function() {
+    $ ( "#getAllspaces" ).click( function() {  
         spaceVar.objectSpace = null;
         spaceVar.spaceAssociationID = null;
         
-		for(var key in spaceArrays){
-			spaceArrays[key].length=0;
+		for ( var key in spaceArrays ) {
+			spaceArrays[key].length = 0;
 		}
-        osapi.jive.corev3.places.requestPicker({  
+        osapi.jive.corev3.places.requestPicker( {  
 			type : "space",  
 			success : function(data) {  
             // "data" will be the Space object (in this case) selected by the user 
@@ -38,7 +37,7 @@ $(function(){
 });
 
 //Upload csv file
-$("#uploadSpc").change(function(evt){
+$("#uploadSpc").change( function( evt ) {
     $("#alertFS").text("Loading...");
     $( "#alertFS.success" ).fadeIn();
     var file = evt.target.files[0];
@@ -102,41 +101,41 @@ $("#uploadSpc").change(function(evt){
 });
 
 //Follow space
-$(function(){
-    $("#followSpace").click(function(){
-        if(spaceArrays.jiveId.length === 0){
-            $("#alertFS").text("List is empty...");
+$ (function() {
+    $ ( "#followSpace" ).click( function() {
+        if ( spaceArrays.jiveId.length === 0 ) {
+            $ ( "#alertFS" ).text( "List is empty..." );
         }
-        else{
-            if (!$("#checkBoxActivity").prop( "checked" ) && !$("#checkBoxInbox").prop( "checked" )){
-                $("#alertFS").text("Please make a selection Inbox or Activity stream");
+        else {
+            if ( ! $ ( "#checkBoxActivity" ).prop( "checked" ) && ! $ ( "#checkBoxInbox" ).prop( "checked" ) ){
+                $ ( "#alertFS" ).text( "Please make a selection Inbox or Activity stream" );
             }
-            else{
-                $("#alertFS").text("Working...");
+            else {
+                $ ( "#alertFS" ).text( "Working..." );
                 spaceArrays.arrBatch.length = 0;
                 var j;
-                for(j=0;j<spaceArrays.jiveId.length;j+=spaceVar.batch){
-                    spaceArrays.arrBatch.push(spaceArrays.jiveId.slice(j,j+spaceVar.batch));
+                for ( j = 0; j < spaceArrays.jiveId.length; j += spaceVar.batch ) {
+                    spaceArrays.arrBatch.push( spaceArrays.jiveId.slice( j , j + spaceVar.batch ) );
                 }
                 var i;
-                for(i=0;i<spaceArrays.arrBatch.length;i++){
-                    (function(x){
-                        setTimeout(function(){
-                        $(spaceArrays.arrBatch[x]).each(function(index,member){
-                            osapi.jive.core.get({
-                                v:"v3",
-                                href:"/people/"+member+"/streams"
-                            }).execute(function(response){
-                                if(response.error){
-                                    $("#alertFS").text(response.error.message);
+                for ( i = 0; i < spaceArrays.arrBatch.length; i++ ) {
+                    ( function(x) {
+                        setTimeout( function(){ 
+                        $ ( spaceArrays.arrBatch[x] ).each( function( index , member ){
+                            osapi.jive.core.get( {
+                                v : "v3",
+                                href : "/people/" + member + "/streams"
+                            } ).execute( function ( response ) {
+                                if ( response.error ) {
+                                    $ ( "#alertFS" ).text( response.error.message );
                                 }
-                                else{
-                                    $(response.list).each(function(index,stream){
-                                        if($("#checkBoxInbox").is(":checked")){
-                                            app.followStreamInbox(stream,x);
+                                else {
+                                    $ ( response.list ).each( function( index,stream ) {
+                                        if ( $( "#checkBoxInbox" ).is( ":checked" ) ) {
+                                            app.followStreamInbox( stream , x );
                                         }
-                                        if($("#checkBoxActivity").is(":checked")){
-                                            app.followStreamActivity(stream,x);
+                                        if ( $( "#checkBoxActivity" ).is( ":checked" ) ) {
+                                            app.followStreamActivity( stream , x );
                                         } 
                                     });
                                 }
@@ -151,57 +150,40 @@ $(function(){
 });
 
 //Get followers
-$(function()
-{
-	$("#getSpaceFollowers").click(function()
-	{
-		if(spaceVar.objectSpace == null)
-		{
+$ ( function() {
+	$ ( "#getSpaceFollowers" ).click( function() {
+		if ( spaceVar.objectSpace == null ){
 			alert("Please pick a space first!");
 		}
-		else
-		{
-			spaceArrays.unfolSpace.length=0;
-			var request = spaceVar.objectSpace.getFollowers({fields:"@all",count:100});
-			getNextSpaceFollowers(request);
-			$("#alertFS").text("Loading followers...");
+		else {
+			spaceArrays.unfolSpace.length = 0;
+			var request = spaceVar.objectSpace.getFollowers( {fields : "@all" , count:100 } );
+			getNextSpaceFollowers( request );
+			$( "#alertFS" ).text( "Loading followers..." );
 			$( "#alertFS.success" ).fadeIn();
 		}
 	});
 });
 
-function getNextSpaceFollowers(request)
-{
-	request.execute(function(response)
-	{
-		if(response.error)
-		{
-			var code = response.error.code;
-			var message = response.error.message;
+function getNextSpaceFollowers( request ) {
+	request.execute( function( response ) {
+		if(response.error) {
+            $ ( "#alertFS" ).text( response.error.message );
 		}
-		else if (!response.list)
-		{
-			alert("Error: response is not a list");
+		else if ( !response.list ) {
+			$ ( "#alertFS" ).text( "Reesponse is not a list..." );
 		}
-		else
-		{
-			$(response.list).each(function(index,follower)
-			{
+		else{
+			$ ( response.list ).each( function( index , follower ){
 				spaceArrays.unfolSpace.push(follower);
 				$("#alertFS").text("Loading followers  : "+spaceArrays.unfolSpace.indexOf(follower));
 			});
-			if (response.getNextPage)
-			{
+			if ( response.getNextPage ) {
 				var requestNextPage = response.getNextPage();
 				getNextSpaceFollowers(requestNextPage);
 			}
-			if(!response.getNextPage)
-			{
+			if ( !response.getNextPage ){
 				$("#alertFS").text("Followers loaded : "+spaceArrays.unfolSpace.length);
-				//$( "#alertFS.success" ).fadeOut(4000);
-				// document.getElementById("getStr").disabled = false;
-				// document.getElementById("downFol").disabled = false;
-				// getStream();
 			}
 		}
     });
@@ -209,38 +191,28 @@ function getNextSpaceFollowers(request)
 
 //Get associations
 $(function(){
-	$("#getSpaceStream").click(function()
-	{
+	$("#getSpaceStream").click(function() {
 		$("#alertFS").text("Loading streams...");
-		if(spaceArrays.unfolSpace.length>0)
-		{
-			osapi.jive.core.get(
-			{
-				v:"v3",
-				href:"/people/"+spaceArrays.unfolSpace[0].id+"/streams"
-			}).execute(function(response)
-			{
-				$(response.list).each(function(index,stream)
-				{
-					stream.getAssociations({type:"space",fields:"@all"}).execute(function(response)
-					{
-						$(response.list).each(function(index, association)
-						{
-							if(association.name === spaceVar.objectSpace.name || association.placeID === spaceVar.objectSpace.placeID)
-							{
+		if ( spaceArrays.unfolSpace.length > 0 ) {
+			osapi.jive.core.get( {
+				v : "v3",
+				href : "/people/" + spaceArrays.unfolSpace[0].id + "/streams"
+			}).execute( function( response) {
+				$ ( response.list ).each( function( index , stream ) {
+					stream.getAssociations( { type : "space" , fields : "@all" } ).execute( function( response ) {
+						$ ( response.list ).each( function( index , association ) {
+							if ( association.name === spaceVar.objectSpace.name || association.placeID === spaceVar.objectSpace.placeID) {
 								spaceVar.spaceAssociationID = association.id;
-								$("#alertFS").text("Association found  : "+association.id);
+								$ ( "#alertFS" ).text( "Association found  : " + association.id );
 								// unfollow();
 							}
 						});
 					});
 				});
 			});
-		}//End if
-		else
-		{
+		}
+		else{
 			$("#alertFS").text("There are no followers in this group!");
-	
 		}
 	});
 });
@@ -248,27 +220,27 @@ $(function(){
 //Unfollow Space
 $(function(){
 	$("#unfollowSpace").click(function(){
-        if(spaceArrays.unfolSpace.length > 0){
-            $("#alertFS").text("Unfollowing...");
+        if ( spaceArrays.unfolSpace.length > 0 ) {
+            $ ( "#alertFS" ).text( "Unfollowing..." );
             var i;
             spaceArrays.unfolSpaceBatch.length = 0;
-            for(i=0;i<spaceArrays.unfolSpace.length;i+=spaceVar.unfollowBatch){
-                spaceArrays.unfolSpaceBatch.push(spaceArrays.unfolSpace.slice(i,i+spaceVar.unfollowBatch));
+            for ( i = 0; i < spaceArrays.unfolSpace.length; i += spaceVar.unfollowBatch ) {
+                spaceArrays.unfolSpaceBatch.push( spaceArrays.unfolSpace.slice( i , i + spaceVar.unfollowBatch ) );
             }
             var j;
-            for(j=0;j<spaceArrays.unfolSpaceBatch.length;j++){
-                (function(y){
-                    setTimeout(function(){
-                        if(spaceVar.spaceAssociationID === null || spaceVar.spaceAssociationID === ""){
+            for ( j = 0; j < spaceArrays.unfolSpaceBatch.length; j++ ) {
+                ( function( y ) {
+                    setTimeout( function() {
+                        if ( spaceVar.spaceAssociationID === null || spaceVar.spaceAssociationID === "" ) {
                             window.alert("Group association not found! Load Followers again");
                         }
-                        else{
-                            $(spaceArrays.unfolSpaceBatch[y]).each(function(index,member){
+                        else {
+                            $ ( spaceArrays.unfolSpaceBatch[y] ).each( function( index , member ) {
                                 osapi.jive.core.get({
-                                    v:"v3",
-                                    href:"/people/"+member.id+"/streams"
-                                }).execute(function(response){
-                                    $(response.list).each(function(index,stream){
+                                    v : "v3",
+                                    href : "/people/" + member.id + "/streams"
+                                }).execute( function( response ) {
+                                    $ ( response.list ).each( function( index , stream ){
                                         if(stream.source === "connections"){
                                             var connStream = stream.id;
                                             osapi.jive.core.delete(
@@ -323,14 +295,13 @@ $(function(){
 	});
 });
 //Download Followers
-$(function()
-{
-	$("#downloadSpaceFollowers").click(function()
-	{
-		var folArr=[];
-		for(i=0;i<spaceArrays.unfolSpace.length;i++)
-		{
-			folArr.push(spaceArrays.unfolSpace[i].displayName)
+$ ( function() {
+	$ ( "#downloadSpaceFollowers" ).click( function() {
+        var folArr = [];
+        var i = undefined;
+		for ( i = 0; i < spaceArrays.unfolSpace.length; i++ ){
+            // folArr.push( spaceArrays.unfolSpace[i].displayName );
+            folArr.push( spaceArrays.unfolSpace[i].emails[0].value );
 		}
 		var csvCont = "data:text/csv;charset=utf-8,";
 		dataString = folArr.join(",");
