@@ -299,6 +299,7 @@ $ ( function() {
 	$ ( "#downloadSpaceFollowers" ).click( function() {
         var folArr = [];
         var i = undefined;
+        var dataString = undefined;
 		for ( i = 0; i < spaceArrays.unfolSpace.length; i++ ){
             // folArr.push( spaceArrays.unfolSpace[i].displayName );
             folArr.push( spaceArrays.unfolSpace[i].emails[0].value );

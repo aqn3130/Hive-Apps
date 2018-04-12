@@ -156,7 +156,8 @@ function sync_hive_inactive() {
             console.log( user.displayName + " : " + user.jive.enabled );
             report_array.push( user.displayName + ":" + user.jive.enabled );
             if(staff.usersByEmail.length - 1 === index){
-                runReport(report_array,"SynchedUsers.csv");
+                $( "#alertUFG" ).text( "Total of: " + staff.usersByEmail.length + " user accounts deactivated" );
+                runReport( report_array,"SynchedUsers.csv" );
             }
         });
     }
