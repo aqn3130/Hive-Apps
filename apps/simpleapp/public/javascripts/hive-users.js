@@ -9,8 +9,6 @@ var staff = {
     syncBatch:[]
 };
 var hUsers = {
-    jiveInactive: undefined,
-    jiveActive: undefined,
     batch:50,
     count:0
 };
@@ -26,8 +24,6 @@ $(function(){
         for( var e in staff ) {
             staff[e].length = 0;
         }
-        hUsers.jiveActive = undefined;
-        hUsers.jiveInactive = undefined;
         hUsers.count = 0;
         $( "#alertUFG.success" ).fadeIn();
         
@@ -38,10 +34,10 @@ $(function(){
                 if( data.info.length - 1 === index ){
                      //console.log(staff.inActive);
                     getHiveActiveUsers();
+                    runReport(staff.inActive,"UDE inactive report.csv");
                     $( "#alertUFG" ).text( "Total inactive from UDE : " + staff.inActive.length );
                 }
             });
-           
         }).fail(function(data){
             $( "#alertUFG" ).text( "Error reading from UDE: " + data );
         });
@@ -50,21 +46,19 @@ $(function(){
 
 //Get all Hive active users
 function getHiveActiveUsers(){
-    hUsers.jiveActive = osapi.jive.core.get({
+    var request = osapi.jive.core.get({
         "v":"v3",
         "href":"/people/@all",
         "count":100,
         "fields":"email"
     });
-    staff.jActive.length = 0;
-    getActive(hUsers.jiveActive);
-    
+    getActive( request );
 }
 function getActive(request){
     request.execute(function(response){
         if ( response.error ) {
             var message = response.error.message;
-
+            $( "#alertUFG" ).text( message );
         }
         else if ( !response.list ) {
             $( "#alertUFG" ).text( " Response is not list ");
@@ -94,7 +88,6 @@ function getActive(request){
 //Get Hive users by email
 function getUsersByEmail(){
     (function(){
-        staff.syncBatch.length = 0;
         var i = undefined;
         for ( i = 0; i < staff.remainderActive.length; i += hUsers.batch ) {
             staff.syncBatch.push( staff.remainderActive.slice( i , i + hUsers.batch ) );
@@ -102,12 +95,10 @@ function getUsersByEmail(){
     })();
     
     (function(){
-        staff.usersByEmail.length = 0;
         var i = undefined;
         for ( i = 0; i < staff.syncBatch.length; i++ ) {
             (function( x ){
                 setTimeout(function(){
-
                     $( staff.syncBatch[x] ).each( function( index , email ) {
                         osapi.jive.core.get({
                             "v":"v3",

@@ -1,48 +1,95 @@
-[2018-04-12 11:07:13.938] [DEBUG] jive-sdk - Zipping extension_src/i18n/root.properties to extension.zip  :  i18n/root.properties
-[2018-04-12 11:07:13.939] [DEBUG] jive-sdk - Zipping extension_src/public/canvas.html to extension.zip  :  public/canvas.html
-[2018-04-12 11:07:13.940] [DEBUG] jive-sdk - Zipping extension_src/public/favicon.ico to extension.zip  :  public/favicon.ico
-[2018-04-12 11:07:13.958] [DEBUG] jive-sdk - Zipping extension_src/public/javascripts/bootstrap-30.js to extension.zip  :  public/javascripts/bootstrap-30.js
-[2018-04-12 11:07:13.959] [DEBUG] jive-sdk - Zipping extension_src/public/javascripts/bootstrap-30.min.js to extension.zip  :  public/javascripts/bootstrap-30.min.js
-[2018-04-12 11:07:13.963] [DEBUG] jive-sdk - Zipping extension_src/public/javascripts/bootstrap.min.js to extension.zip  :  public/javascripts/bootstrap.min.js
-[2018-04-12 11:07:13.964] [DEBUG] jive-sdk - Zipping extension_src/public/javascripts/jQuery-1.10.2.js to extension.zip  :  public/javascripts/jQuery-1.10.2.js
-[2018-04-12 11:07:13.965] [DEBUG] jive-sdk - Zipping extension_src/public/javascripts/jquery-1.8.3.js to extension.zip  :  public/javascripts/jquery-1.8.3.js
-[2018-04-12 11:07:13.965] [DEBUG] jive-sdk - Zipping extension_src/public/javascripts/jquery.base64.min.js to extension.zip  :  public/javascripts/jquery.base64.min.js
-[2018-04-12 11:07:13.966] [DEBUG] jive-sdk - Zipping extension_src/public/stylesheets/bootstrap-30.css to extension.zip  :  public/stylesheets/bootstrap-30.css
-[2018-04-12 11:07:13.966] [DEBUG] jive-sdk - Zipping extension_src/public/stylesheets/bootstrap-30.min.css to extension.zip  :  public/stylesheets/bootstrap-30.min.css
-[2018-04-12 11:07:13.967] [DEBUG] jive-sdk - Zipping extension_src/public/stylesheets/bootstrap.css to extension.zip  :  public/stylesheets/bootstrap.css
-[2018-04-12 11:07:13.967] [DEBUG] jive-sdk - Zipping extension_src/public/stylesheets/bootstrap.min.css to extension.zip  :  public/stylesheets/bootstrap.min.css
-[2018-04-12 11:07:13.968] [DEBUG] jive-sdk - Zipping extension_src/public/stylesheets/style.css to extension.zip  :  public/stylesheets/style.css
-[2018-04-12 11:07:13.978] [DEBUG] jive-sdk - Zipping extension_src/public/apps/simpleapp/app.xml to extension.zip  :  public/apps/simpleapp/app.xml
-[2018-04-12 11:07:13.979] [DEBUG] jive-sdk - Zipping extension_src/public/apps/simpleapp/canvas.html to extension.zip  :  public/apps/simpleapp/canvas.html
-[2018-04-12 11:07:13.979] [DEBUG] jive-sdk - Zipping extension_src/public/apps/simpleapp/hdm.html to extension.zip  :  public/apps/simpleapp/hdm.html
-[2018-04-12 11:07:13.980] [DEBUG] jive-sdk - Zipping extension_src/public/apps/simpleapp/make_group_public.html to extension.zip  :  public/apps/simpleapp/make_group_public.html
-[2018-04-12 11:07:13.980] [DEBUG] jive-sdk - Zipping extension_src/public/apps/simpleapp/menu.html to extension.zip  :  public/apps/simpleapp/menu.html
-[2018-04-12 11:07:13.981] [DEBUG] jive-sdk - Zipping extension_src/public/apps/simpleapp/test.html to extension.zip  :  public/apps/simpleapp/test.html
-[2018-04-12 11:07:13.998] [DEBUG] jive-sdk - Zipping extension_src/public/apps/simpleapp/images/hdm.png to extension.zip  :  public/apps/simpleapp/images/hdm.png
-[2018-04-12 11:07:13.998] [DEBUG] jive-sdk - Zipping extension_src/public/apps/simpleapp/images/icon128.png to extension.zip  :  public/apps/simpleapp/images/icon128.png
-[2018-04-12 11:07:13.998] [DEBUG] jive-sdk - Zipping extension_src/public/apps/simpleapp/images/icon16.png to extension.zip  :  public/apps/simpleapp/images/icon16.png
-[2018-04-12 11:07:13.999] [DEBUG] jive-sdk - Zipping extension_src/public/apps/simpleapp/images/icon48.png to extension.zip  :  public/apps/simpleapp/images/icon48.png
-[2018-04-12 11:07:13.999] [DEBUG] jive-sdk - Zipping extension_src/public/apps/simpleapp/images/oldhdm.png to extension.zip  :  public/apps/simpleapp/images/oldhdm.png
-[2018-04-12 11:07:14.000] [DEBUG] jive-sdk - Zipping extension_src/public/apps/simpleapp/javascripts/Jive_ID.js to extension.zip  :  public/apps/simpleapp/javascripts/Jive_ID.js
-[2018-04-12 11:07:14.000] [DEBUG] jive-sdk - Zipping extension_src/public/apps/simpleapp/javascripts/Upload_Files.js to extension.zip  :  public/apps/simpleapp/javascripts/Upload_Files.js
-[2018-04-12 11:07:14.000] [DEBUG] jive-sdk - Zipping extension_src/public/apps/simpleapp/javascripts/_DS_Store to extension.zip  :  public/apps/simpleapp/javascripts/_DS_Store
-[2018-04-12 11:07:14.000] [DEBUG] jive-sdk - Zipping extension_src/public/apps/simpleapp/javascripts/app.js to extension.zip  :  public/apps/simpleapp/javascripts/app.js
-[2018-04-12 11:07:14.001] [DEBUG] jive-sdk - Zipping extension_src/public/apps/simpleapp/javascripts/appe.js to extension.zip  :  public/apps/simpleapp/javascripts/appe.js
-[2018-04-12 11:07:14.001] [DEBUG] jive-sdk - Zipping extension_src/public/apps/simpleapp/javascripts/bootstrap.min.js to extension.zip  :  public/apps/simpleapp/javascripts/bootstrap.min.js
-[2018-04-12 11:07:14.001] [DEBUG] jive-sdk - Zipping extension_src/public/apps/simpleapp/javascripts/canvas.html to extension.zip  :  public/apps/simpleapp/javascripts/canvas.html
-[2018-04-12 11:07:14.001] [DEBUG] jive-sdk - Zipping extension_src/public/apps/simpleapp/javascripts/coreapi-context-resolver-v3.js to extension.zip  :  public/apps/simpleapp/javascripts/coreapi-context-resolver-v3.js
-[2018-04-12 11:07:14.002] [DEBUG] jive-sdk - Zipping extension_src/public/apps/simpleapp/javascripts/google_drive.js to extension.zip  :  public/apps/simpleapp/javascripts/google_drive.js
-[2018-04-12 11:07:14.002] [DEBUG] jive-sdk - Zipping extension_src/public/apps/simpleapp/javascripts/hdm.js to extension.zip  :  public/apps/simpleapp/javascripts/hdm.js
-[2018-04-12 11:07:14.004] [DEBUG] jive-sdk - Zipping extension_src/public/apps/simpleapp/javascripts/hive-users.js to extension.zip  :  public/apps/simpleapp/javascripts/hive-users.js
-[2018-04-12 11:07:14.005] [DEBUG] jive-sdk - Zipping extension_src/public/apps/simpleapp/javascripts/jquery-3.1.1.min.js to extension.zip  :  public/apps/simpleapp/javascripts/jquery-3.1.1.min.js
-[2018-04-12 11:07:14.005] [DEBUG] jive-sdk - Zipping extension_src/public/apps/simpleapp/javascripts/main.js to extension.zip  :  public/apps/simpleapp/javascripts/main.js
-[2018-04-12 11:07:14.005] [DEBUG] jive-sdk - Zipping extension_src/public/apps/simpleapp/javascripts/make_group_public.js to extension.zip  :  public/apps/simpleapp/javascripts/make_group_public.js
-[2018-04-12 11:07:14.006] [DEBUG] jive-sdk - Zipping extension_src/public/apps/simpleapp/javascripts/menu.html to extension.zip  :  public/apps/simpleapp/javascripts/menu.html
-[2018-04-12 11:07:14.006] [DEBUG] jive-sdk - Zipping extension_src/public/apps/simpleapp/javascripts/space-auto-follow.js to extension.zip  :  public/apps/simpleapp/javascripts/space-auto-follow.js
-[2018-04-12 11:07:14.006] [DEBUG] jive-sdk - Zipping extension_src/public/apps/simpleapp/javascripts/spin.js to extension.zip  :  public/apps/simpleapp/javascripts/spin.js
-[2018-04-12 11:07:14.006] [DEBUG] jive-sdk - Zipping extension_src/public/apps/simpleapp/locales/all_ALL.xml to extension.zip  :  public/apps/simpleapp/locales/all_ALL.xml
-[2018-04-12 11:07:14.007] [DEBUG] jive-sdk - Zipping extension_src/public/apps/simpleapp/locales/en_ALL.xml to extension.zip  :  public/apps/simpleapp/locales/en_ALL.xml
-[2018-04-12 11:07:14.007] [DEBUG] jive-sdk - Zipping extension_src/public/apps/simpleapp/stylesheets/bootstrap.min.css to extension.zip  :  public/apps/simpleapp/stylesheets/bootstrap.min.css
-[2018-04-12 11:07:14.008] [DEBUG] jive-sdk - Zipping extension_src/public/apps/simpleapp/stylesheets/hdm.css to extension.zip  :  public/apps/simpleapp/stylesheets/hdm.css
-[2018-04-12 11:07:14.008] [DEBUG] jive-sdk - Zipping extension_src/public/apps/simpleapp/stylesheets/main.css to extension.zip  :  public/apps/simpleapp/stylesheets/main.css
-[2018-04-12 11:07:14.127] [INFO] jive-sdk - Updated 1 data file(s): [jiveExtension]
+[2018-05-17 10:15:16.713] [DEBUG] jive-sdk - Creating directory extension_src/public/services
+[2018-05-17 10:15:16.717] [DEBUG] jive-sdk - Copying public to extension_src/public
+[2018-05-17 10:15:16.806] [DEBUG] jive-sdk - Copying /Users/aqn3130/Documents/Hive-Apps/apps/simpleapp/public to extension_src/public/apps/simpleapp
+[2018-05-17 10:15:16.939] [DEBUG] jive-sdk - definitions:
+[]
+[2018-05-17 10:15:16.940] [DEBUG] jive-sdk - templates:
+[]
+[2018-05-17 10:15:16.940] [DEBUG] jive-sdk - apps:
+[
+    {
+        "id": "65f2a7f0-33da-4cf4-aa32-feb7a931cbf3",
+        "name": " Reference App",
+        "appPath": "65f2a7f033da4cf4aa32feb7a931cbf3",
+        "url": "/public/apps/simpleapp/app.xml"
+    }
+]
+[2018-05-17 10:15:16.940] [DEBUG] jive-sdk - storageDefinitions:
+[]
+[2018-05-17 10:15:16.940] [DEBUG] jive-sdk - cartridges:
+[]
+[2018-05-17 10:15:16.944] [DEBUG] jive-sdk - Extension meta: 
+{
+    "package_version": "1.0",
+    "id": "aa741bae-66f7-43cd-b073-60f5ac34628d",
+    "type": "client-app",
+    "name": "Hive Apps",
+    "description": "Applications for Hive",
+    "minimum_version": "0080300000",
+    "icon_16": "extension-16.png",
+    "icon_48": "extension-48.png",
+    "icon_128": "extension-128.png",
+    "redirect_url": "%serviceURL%",
+    "released_on": "2016-11-06T14:53:05.502Z",
+    "service_url": "http://localhost"
+}
+[2018-05-17 10:15:17.059] [DEBUG] jive-sdk - Zipping extension_src/definition.json to extension.zip  :  definition.json
+[2018-05-17 10:15:17.062] [DEBUG] jive-sdk - Zipping extension_src/meta.json to extension.zip  :  meta.json
+[2018-05-17 10:15:17.076] [DEBUG] jive-sdk - Zipping extension_src/data/eula.html to extension.zip  :  data/eula.html
+[2018-05-17 10:15:17.077] [DEBUG] jive-sdk - Zipping extension_src/data/extension-128.png to extension.zip  :  data/extension-128.png
+[2018-05-17 10:15:17.078] [DEBUG] jive-sdk - Zipping extension_src/data/extension-16.png to extension.zip  :  data/extension-16.png
+[2018-05-17 10:15:17.078] [DEBUG] jive-sdk - Zipping extension_src/data/extension-48.png to extension.zip  :  data/extension-48.png
+[2018-05-17 10:15:17.079] [DEBUG] jive-sdk - Zipping extension_src/data/install_instructions.html to extension.zip  :  data/install_instructions.html
+[2018-05-17 10:15:17.080] [DEBUG] jive-sdk - Zipping extension_src/data/overview.html to extension.zip  :  data/overview.html
+[2018-05-17 10:15:17.080] [DEBUG] jive-sdk - Zipping extension_src/data/privacy_policy.html to extension.zip  :  data/privacy_policy.html
+[2018-05-17 10:15:17.081] [DEBUG] jive-sdk - Zipping extension_src/data/screenshot_1.png to extension.zip  :  data/screenshot_1.png
+[2018-05-17 10:15:17.082] [DEBUG] jive-sdk - Zipping extension_src/data/screenshot_2.png to extension.zip  :  data/screenshot_2.png
+[2018-05-17 10:15:17.083] [DEBUG] jive-sdk - Zipping extension_src/i18n/en.properties to extension.zip  :  i18n/en.properties
+[2018-05-17 10:15:17.083] [DEBUG] jive-sdk - Zipping extension_src/i18n/root.properties to extension.zip  :  i18n/root.properties
+[2018-05-17 10:15:17.084] [DEBUG] jive-sdk - Zipping extension_src/public/canvas.html to extension.zip  :  public/canvas.html
+[2018-05-17 10:15:17.086] [DEBUG] jive-sdk - Zipping extension_src/public/favicon.ico to extension.zip  :  public/favicon.ico
+[2018-05-17 10:15:17.092] [DEBUG] jive-sdk - Zipping extension_src/public/javascripts/bootstrap-30.js to extension.zip  :  public/javascripts/bootstrap-30.js
+[2018-05-17 10:15:17.093] [DEBUG] jive-sdk - Zipping extension_src/public/javascripts/bootstrap-30.min.js to extension.zip  :  public/javascripts/bootstrap-30.min.js
+[2018-05-17 10:15:17.093] [DEBUG] jive-sdk - Zipping extension_src/public/javascripts/bootstrap.min.js to extension.zip  :  public/javascripts/bootstrap.min.js
+[2018-05-17 10:15:17.094] [DEBUG] jive-sdk - Zipping extension_src/public/javascripts/jQuery-1.10.2.js to extension.zip  :  public/javascripts/jQuery-1.10.2.js
+[2018-05-17 10:15:17.095] [DEBUG] jive-sdk - Zipping extension_src/public/javascripts/jquery-1.8.3.js to extension.zip  :  public/javascripts/jquery-1.8.3.js
+[2018-05-17 10:15:17.095] [DEBUG] jive-sdk - Zipping extension_src/public/javascripts/jquery.base64.min.js to extension.zip  :  public/javascripts/jquery.base64.min.js
+[2018-05-17 10:15:17.100] [DEBUG] jive-sdk - Zipping extension_src/public/stylesheets/bootstrap-30.css to extension.zip  :  public/stylesheets/bootstrap-30.css
+[2018-05-17 10:15:17.100] [DEBUG] jive-sdk - Zipping extension_src/public/stylesheets/bootstrap-30.min.css to extension.zip  :  public/stylesheets/bootstrap-30.min.css
+[2018-05-17 10:15:17.101] [DEBUG] jive-sdk - Zipping extension_src/public/stylesheets/bootstrap.css to extension.zip  :  public/stylesheets/bootstrap.css
+[2018-05-17 10:15:17.101] [DEBUG] jive-sdk - Zipping extension_src/public/stylesheets/bootstrap.min.css to extension.zip  :  public/stylesheets/bootstrap.min.css
+[2018-05-17 10:15:17.101] [DEBUG] jive-sdk - Zipping extension_src/public/stylesheets/style.css to extension.zip  :  public/stylesheets/style.css
+[2018-05-17 10:15:17.105] [DEBUG] jive-sdk - Zipping extension_src/public/apps/simpleapp/app.xml to extension.zip  :  public/apps/simpleapp/app.xml
+[2018-05-17 10:15:17.106] [DEBUG] jive-sdk - Zipping extension_src/public/apps/simpleapp/canvas.html to extension.zip  :  public/apps/simpleapp/canvas.html
+[2018-05-17 10:15:17.106] [DEBUG] jive-sdk - Zipping extension_src/public/apps/simpleapp/hdm.html to extension.zip  :  public/apps/simpleapp/hdm.html
+[2018-05-17 10:15:17.106] [DEBUG] jive-sdk - Zipping extension_src/public/apps/simpleapp/make_group_public.html to extension.zip  :  public/apps/simpleapp/make_group_public.html
+[2018-05-17 10:15:17.106] [DEBUG] jive-sdk - Zipping extension_src/public/apps/simpleapp/menu.html to extension.zip  :  public/apps/simpleapp/menu.html
+[2018-05-17 10:15:17.107] [DEBUG] jive-sdk - Zipping extension_src/public/apps/simpleapp/test.html to extension.zip  :  public/apps/simpleapp/test.html
+[2018-05-17 10:15:17.118] [DEBUG] jive-sdk - Zipping extension_src/public/apps/simpleapp/images/hdm.png to extension.zip  :  public/apps/simpleapp/images/hdm.png
+[2018-05-17 10:15:17.118] [DEBUG] jive-sdk - Zipping extension_src/public/apps/simpleapp/images/icon128.png to extension.zip  :  public/apps/simpleapp/images/icon128.png
+[2018-05-17 10:15:17.119] [DEBUG] jive-sdk - Zipping extension_src/public/apps/simpleapp/images/icon16.png to extension.zip  :  public/apps/simpleapp/images/icon16.png
+[2018-05-17 10:15:17.119] [DEBUG] jive-sdk - Zipping extension_src/public/apps/simpleapp/images/icon48.png to extension.zip  :  public/apps/simpleapp/images/icon48.png
+[2018-05-17 10:15:17.120] [DEBUG] jive-sdk - Zipping extension_src/public/apps/simpleapp/images/oldhdm.png to extension.zip  :  public/apps/simpleapp/images/oldhdm.png
+[2018-05-17 10:15:17.120] [DEBUG] jive-sdk - Zipping extension_src/public/apps/simpleapp/javascripts/Jive_ID.js to extension.zip  :  public/apps/simpleapp/javascripts/Jive_ID.js
+[2018-05-17 10:15:17.120] [DEBUG] jive-sdk - Zipping extension_src/public/apps/simpleapp/javascripts/Upload_Files.js to extension.zip  :  public/apps/simpleapp/javascripts/Upload_Files.js
+[2018-05-17 10:15:17.120] [DEBUG] jive-sdk - Zipping extension_src/public/apps/simpleapp/javascripts/_DS_Store to extension.zip  :  public/apps/simpleapp/javascripts/_DS_Store
+[2018-05-17 10:15:17.121] [DEBUG] jive-sdk - Zipping extension_src/public/apps/simpleapp/javascripts/app.js to extension.zip  :  public/apps/simpleapp/javascripts/app.js
+[2018-05-17 10:15:17.121] [DEBUG] jive-sdk - Zipping extension_src/public/apps/simpleapp/javascripts/appe.js to extension.zip  :  public/apps/simpleapp/javascripts/appe.js
+[2018-05-17 10:15:17.122] [DEBUG] jive-sdk - Zipping extension_src/public/apps/simpleapp/javascripts/bootstrap.min.js to extension.zip  :  public/apps/simpleapp/javascripts/bootstrap.min.js
+[2018-05-17 10:15:17.122] [DEBUG] jive-sdk - Zipping extension_src/public/apps/simpleapp/javascripts/canvas.html to extension.zip  :  public/apps/simpleapp/javascripts/canvas.html
+[2018-05-17 10:15:17.122] [DEBUG] jive-sdk - Zipping extension_src/public/apps/simpleapp/javascripts/coreapi-context-resolver-v3.js to extension.zip  :  public/apps/simpleapp/javascripts/coreapi-context-resolver-v3.js
+[2018-05-17 10:15:17.123] [DEBUG] jive-sdk - Zipping extension_src/public/apps/simpleapp/javascripts/google_drive.js to extension.zip  :  public/apps/simpleapp/javascripts/google_drive.js
+[2018-05-17 10:15:17.123] [DEBUG] jive-sdk - Zipping extension_src/public/apps/simpleapp/javascripts/hdm.js to extension.zip  :  public/apps/simpleapp/javascripts/hdm.js
+[2018-05-17 10:15:17.126] [DEBUG] jive-sdk - Zipping extension_src/public/apps/simpleapp/javascripts/hive-users.js to extension.zip  :  public/apps/simpleapp/javascripts/hive-users.js
+[2018-05-17 10:15:17.126] [DEBUG] jive-sdk - Zipping extension_src/public/apps/simpleapp/javascripts/jquery-3.1.1.min.js to extension.zip  :  public/apps/simpleapp/javascripts/jquery-3.1.1.min.js
+[2018-05-17 10:15:17.127] [DEBUG] jive-sdk - Zipping extension_src/public/apps/simpleapp/javascripts/main.js to extension.zip  :  public/apps/simpleapp/javascripts/main.js
+[2018-05-17 10:15:17.127] [DEBUG] jive-sdk - Zipping extension_src/public/apps/simpleapp/javascripts/make_group_public.js to extension.zip  :  public/apps/simpleapp/javascripts/make_group_public.js
+[2018-05-17 10:15:17.127] [DEBUG] jive-sdk - Zipping extension_src/public/apps/simpleapp/javascripts/menu.html to extension.zip  :  public/apps/simpleapp/javascripts/menu.html
+[2018-05-17 10:15:17.128] [DEBUG] jive-sdk - Zipping extension_src/public/apps/simpleapp/javascripts/space-auto-follow.js to extension.zip  :  public/apps/simpleapp/javascripts/space-auto-follow.js
+[2018-05-17 10:15:17.128] [DEBUG] jive-sdk - Zipping extension_src/public/apps/simpleapp/javascripts/spin.js to extension.zip  :  public/apps/simpleapp/javascripts/spin.js
+[2018-05-17 10:15:17.129] [DEBUG] jive-sdk - Zipping extension_src/public/apps/simpleapp/locales/all_ALL.xml to extension.zip  :  public/apps/simpleapp/locales/all_ALL.xml
+[2018-05-17 10:15:17.129] [DEBUG] jive-sdk - Zipping extension_src/public/apps/simpleapp/locales/en_ALL.xml to extension.zip  :  public/apps/simpleapp/locales/en_ALL.xml
+[2018-05-17 10:15:17.129] [DEBUG] jive-sdk - Zipping extension_src/public/apps/simpleapp/stylesheets/bootstrap.min.css to extension.zip  :  public/apps/simpleapp/stylesheets/bootstrap.min.css
+[2018-05-17 10:15:17.129] [DEBUG] jive-sdk - Zipping extension_src/public/apps/simpleapp/stylesheets/hdm.css to extension.zip  :  public/apps/simpleapp/stylesheets/hdm.css
+[2018-05-17 10:15:17.130] [DEBUG] jive-sdk - Zipping extension_src/public/apps/simpleapp/stylesheets/main.css to extension.zip  :  public/apps/simpleapp/stylesheets/main.css
+[2018-05-17 10:15:17.242] [INFO] jive-sdk - Updated 1 data file(s): [jiveExtension]

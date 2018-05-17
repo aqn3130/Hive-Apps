@@ -613,29 +613,9 @@ $ (function(){
 $ (function(){
 	$ ( "#addSGMem" ).click(function() {
 		if ( hiveArrays.sGrpId.length === 0 ) {
-			alert("The list is empty!");
+			$ ( "#alertASG" ).text("The list is empty!");
 		}
 		else {
-			// var batchRequests = osapi.newBatch();
-			// $ ( "#alertASG" ).text( "Loading..." );
-			// $ ( hiveArrays.sGrpId ).each(function(index,id){
-			// 	batchRequests.add
-			// 	(
-			// 		id,group.sGrpObj.createMembers(["/people/"+id])
-			// 	)
-			// });
-			// batchRequests.execute(function(response){
-			// 	if ( response.error ) {
-			// 		var code = response.error.code;
-			// 		group.sg_message = response.error.message;
-			// 		$ ( "#alertASG" ).text( "Error: " + group.sg_message );
-			// 	}
-			// 	else {
-			// 		$ ( "#alertASG" ).text( "Added Members: "+hiveArrays.sGrpId.length );
-
-			// 	}
-			// });
-
 			var array_in_batches = set_array_batch(hiveArrays.sGrpId,25);
 			execute_request(array_in_batches);
 		}
@@ -650,24 +630,6 @@ function execute_request(array_batch){
 		( function(x) {
 			setTimeout( function(){ 
 			$ ( array_batch[x] ).each( function( index , id ){
-				// osapi.jive.core.post( {
-				// 	v : "v3",
-				// 	href : "/securityGroups/" + group.sGrpID + ["/people/"+id]
-				// } ).execute( function ( response ) {
-				// 	if ( response.error ) {
-				// 		$ ( "#alertASG" ).text( response.error.message );
-				// 	}
-				// 	else {
-				// 		$("#alertASG").text( "Completed Batch: " + x + " of " + array_batch.length );
-	
-				// 		count += 1;
-				// 		if(array_batch.length - 1 === x){
-				// 			$("#alertASG").text("All Batches Completed!");
-				// 			$("#alertASG").text("Total added: " + count);
-				// 		}
-				// 	}
-				// });
-
 				group.sGrpObj.createMembers(["/people/"+id]).execute(function(response){
 				if ( response.error ) {
 					$ ( "#alertASG" ).text( response.error.message );
@@ -676,8 +638,7 @@ function execute_request(array_batch){
 					$("#alertASG").text( "Completed Batch: " + x + " of " + array_batch.length );
 					count += 1;
 					if ( array_batch.length - 1 === x ) {
-						$("#alertASG").text("All Batches Completed!");
-						$("#alertASG").text("Total added: " + count);
+						$("#alertASG").text("All Batches Completed, Total added: " + count);
 					}
 				}
 				});
