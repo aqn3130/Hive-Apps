@@ -136,7 +136,7 @@ $ (function() {
 	$ ( "#addAllButton" ).click(function(){
 		$( "#alertUFG" ).text( "Loading..." );
 		var x = 0;
-		if ( x != 1 || group.objectGroup === null ) {
+		if ( group.objectGroup === null ) {
 				window.alert( "Please pick a group" );
 		}
 		else {
@@ -433,7 +433,8 @@ $(function(){
 		var folArr = [];
 		var i;
 		for( i= 0; i < hiveArrays.groupFol.length; i++ ){
-			folArr.push(hiveArrays.groupFol[i].displayName)
+			// folArr.push(hiveArrays.groupFol[i].displayName);
+			folArr.push(hiveArrays.groupFol[i].emails[0].value);
 		}
 		var csvCont = "data:text/csv;charset=utf-8,";
 		dataString = folArr.join(",");
